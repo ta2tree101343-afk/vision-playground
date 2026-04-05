@@ -1,4 +1,4 @@
-import type { ImageOperationType } from '../types/api';
+import type { OperationType } from '../types/api';
 import type { OperationOption, ParameterState } from '../types/image';
 
 export const defaultParameterState: ParameterState = {
@@ -10,7 +10,7 @@ export const defaultParameterState: ParameterState = {
   detectionThreshold: 45,
 };
 
-export const operationLabels: Record<ImageOperationType, string> = {
+export const operationLabels: Record<OperationType, string> = {
   grayscale: 'Grayscale',
   blur: 'Blur',
   sharpen: 'Sharpen',
@@ -158,6 +158,6 @@ export const operationOptions: OperationOption[] = [
   },
 ];
 
-export function getOperationOption(operation: ImageOperationType): OperationOption {
+export function getOperationOption(operation: OperationType): OperationOption {
   return operationOptions.find((option) => option.value === operation) ?? operationOptions[0];
 }

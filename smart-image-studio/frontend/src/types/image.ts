@@ -1,5 +1,5 @@
 import type {
-  ImageOperationType,
+  OperationType,
   ImageProcessJob,
   PipelineInterpreterMode,
   PipelinePlan,
@@ -24,7 +24,7 @@ export interface ParameterDefinition {
 }
 
 export interface OperationOption {
-  value: ImageOperationType;
+  value: OperationType;
   label: string;
   description: string;
   icon: string;
@@ -41,7 +41,7 @@ export interface ParameterState {
 }
 
 export interface PipelineStepTemplate {
-  operation: ImageOperationType;
+  operation: OperationType;
   parameters: ParameterState;
 }
 
@@ -71,12 +71,6 @@ export interface StudioViewState {
   jobHistory: ImageProcessJob[];
   isProcessing: boolean;
   errorMessage: string | null;
-}
-
-export interface StudioPlannerState {
-  instruction: string;
-  interpretedPlan: PipelinePlan | null;
-  isInterpreting: boolean;
 }
 
 export interface PlannerHistoryEntry {

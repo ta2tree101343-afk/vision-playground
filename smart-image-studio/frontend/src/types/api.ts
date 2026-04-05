@@ -1,4 +1,4 @@
-export type ImageOperationType =
+export type OperationType =
   | 'grayscale'
   | 'blur'
   | 'sharpen'
@@ -11,19 +11,7 @@ export type ImageOperationType =
   | 'object_detection'
   | 'caption_generation';
 
-export type PipelineOperationType =
-  | 'grayscale'
-  | 'blur'
-  | 'sharpen'
-  | 'denoise'
-  | 'edge_detection'
-  | 'contrast'
-  | 'background_removal'
-  | 'object_detection'
-  | 'caption_generation'
-  | 'brightness';
-
-export interface ImageOperationParameters {
+export interface OperationParameters {
   blur_strength?: number;
   brightness?: number;
   contrast?: number;
@@ -32,19 +20,14 @@ export interface ImageOperationParameters {
   detection_threshold?: number;
 }
 
-export interface ImageOperationStep {
-  operation: ImageOperationType;
-  parameters?: ImageOperationParameters;
+export interface OperationStep {
+  operation: OperationType;
+  parameters?: OperationParameters;
 }
 
 export interface ProcessImageRequest {
   file: File;
-  operations: ImageOperationStep[];
-}
-
-export interface PipelineStep {
-  operation: PipelineOperationType;
-  parameters?: ImageOperationParameters;
+  operations: OperationStep[];
 }
 
 export type PipelineInterpreterMode = 'rule_based' | 'llm';
@@ -56,7 +39,7 @@ export interface PipelinePlan {
   summary: string;
   confidence: PipelinePlanConfidence;
   notes: string[];
-  steps: PipelineStep[];
+  steps: OperationStep[];
 }
 
 export interface PipelineInterpretRequest {
@@ -78,7 +61,7 @@ export interface ProcessImageResponse {
   original_image_url: string;
   processed_image_url: string;
   processed_filename: string;
-  applied_operations: ImageOperationStep[];
+  applied_operations: OperationStep[];
   analysis?: ImageAnalysisResult | null;
 }
 
@@ -94,7 +77,7 @@ export interface ImageProcessJob {
   created_at: string;
   started_at?: string | null;
   completed_at?: string | null;
-  applied_operations: ImageOperationStep[];
+  applied_operations: OperationStep[];
   result?: ProcessImageResponse | null;
   error_message?: string | null;
 }

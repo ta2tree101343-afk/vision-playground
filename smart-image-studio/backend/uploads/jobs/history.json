@@ -1,0 +1,1994 @@
+[
+  {
+    "job_id": "349c224ad80d45f086e6e816af7a34d6",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "27750021_m.jpg",
+    "queue_position": null,
+    "created_at": "2026-04-01T09:38:08.986180Z",
+    "started_at": "2026-04-01T09:38:08.997618Z",
+    "completed_at": "2026-04-01T09:38:21.648887Z",
+    "applied_operations": [
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "caption_generation",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "ocr",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "object_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": 0.45
+        }
+      },
+      {
+        "operation": "background_removal",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "contrast",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": 20,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 20,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "denoise",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": 8,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 1,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "blur",
+        "parameters": {
+          "blur_strength": 5,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/fbfd997dec5348329f6f251cd930ce70_27750021_m.jpg",
+      "processed_image_url": "http://localhost:8000/uploads/processed/f7790835b44a4d5f82d46234c352722d_27750021_m_processed.png",
+      "processed_filename": "f7790835b44a4d5f82d46234c352722d_27750021_m_processed.png",
+      "applied_operations": [
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "caption_generation",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "ocr",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "object_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": 0.45
+          }
+        },
+        {
+          "operation": "background_removal",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "contrast",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": 20,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 20,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "denoise",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": 8,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 1,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "blur",
+          "parameters": {
+            "blur_strength": 5,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": {
+          "foreground_ratio": 0.3441349911190053,
+          "mask_image_url": "http://localhost:8000/uploads/masks/e10d424fe3ba4f99b303d141f0410ed5_27750021_m_mask.png"
+        },
+        "ocr": {
+          "full_text": "",
+          "lines": []
+        },
+        "object_detection": {
+          "model": "MobileNet SSD (VOC)",
+          "threshold": 0.45,
+          "detections": [
+            {
+              "label": "cat",
+              "confidence": 0.999992847442627,
+              "bounding_box": {
+                "x": 110,
+                "y": 128,
+                "width": 639,
+                "height": 336
+              }
+            }
+          ]
+        },
+        "captions": {
+          "candidates": [
+            {
+              "text": "横長の構図で、落ち着いた印象の画像",
+              "score": 0.72
+            },
+            {
+              "text": "落ち着いたトーンで整理されたビジュアル",
+              "score": 0.64
+            },
+            {
+              "text": "cat を中心に捉えた画像",
+              "score": 0.84
+            },
+            {
+              "text": "cat を切り抜いた画像",
+              "score": 0.68
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "f6bcda2afd8e48e7ae30831d6939d42e",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "27750021_m.jpg",
+    "queue_position": null,
+    "created_at": "2026-04-01T09:37:13.904901Z",
+    "started_at": "2026-04-01T09:37:13.908864Z",
+    "completed_at": "2026-04-01T09:37:13.958018Z",
+    "applied_operations": [
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 1,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/983b1999c1814480857dfe8aa6f1d1a0_27750021_m.jpg",
+      "processed_image_url": "http://localhost:8000/uploads/processed/3ec4428675234c62ac02177eadaf5324_27750021_m_processed.png",
+      "processed_filename": "3ec4428675234c62ac02177eadaf5324_27750021_m_processed.png",
+      "applied_operations": [
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 1,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "34a5251d637049bf996d4f75a482c8df",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "藤田.png",
+    "queue_position": null,
+    "created_at": "2026-04-01T09:36:17.744814Z",
+    "started_at": "2026-04-01T09:36:17.753865Z",
+    "completed_at": "2026-04-01T09:36:18.039732Z",
+    "applied_operations": [
+      {
+        "operation": "object_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": 0.45
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/fb7746eed15a4819ad671dc5c3fdc6bf_image.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/c5a1252e94254842ba4a69b9ffb7d0cb_image_processed.png",
+      "processed_filename": "c5a1252e94254842ba4a69b9ffb7d0cb_image_processed.png",
+      "applied_operations": [
+        {
+          "operation": "object_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": 0.45
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": null,
+        "ocr": null,
+        "object_detection": {
+          "model": "MobileNet SSD (VOC)",
+          "threshold": 0.45,
+          "detections": [
+            {
+              "label": "person",
+              "confidence": 0.9990828037261963,
+              "bounding_box": {
+                "x": 409,
+                "y": 390,
+                "width": 213,
+                "height": 487
+              }
+            },
+            {
+              "label": "person",
+              "confidence": 0.9988683462142944,
+              "bounding_box": {
+                "x": 823,
+                "y": 403,
+                "width": 230,
+                "height": 473
+              }
+            },
+            {
+              "label": "person",
+              "confidence": 0.983555018901825,
+              "bounding_box": {
+                "x": 237,
+                "y": 417,
+                "width": 221,
+                "height": 460
+              }
+            },
+            {
+              "label": "person",
+              "confidence": 0.9677207469940186,
+              "bounding_box": {
+                "x": 631,
+                "y": 431,
+                "width": 184,
+                "height": 446
+              }
+            }
+          ]
+        },
+        "captions": {
+          "candidates": [
+            {
+              "text": "person を中心に捉えた画像",
+              "score": 0.84
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "be38f0ef47174e9ea934984d335d2607",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "27750021_m.jpg",
+    "queue_position": null,
+    "created_at": "2026-04-01T07:52:03.746211Z",
+    "started_at": "2026-04-01T07:52:03.753014Z",
+    "completed_at": "2026-04-01T07:52:03.806116Z",
+    "applied_operations": [
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "caption_generation",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/27cb9cbfb76240a481b187ed344d99f1_27750021_m.jpg",
+      "processed_image_url": "http://localhost:8000/uploads/processed/48d84fee5c164b30a21d16a2176ac0c1_27750021_m_processed.png",
+      "processed_filename": "48d84fee5c164b30a21d16a2176ac0c1_27750021_m_processed.png",
+      "applied_operations": [
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "caption_generation",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": null,
+        "ocr": null,
+        "object_detection": null,
+        "captions": {
+          "candidates": [
+            {
+              "text": "横長の構図で、落ち着いた印象の画像",
+              "score": 0.72
+            },
+            {
+              "text": "落ち着いたトーンで整理されたビジュアル",
+              "score": 0.64
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "798ccb3aa4b34c1abc442e4d1a47620f",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "27750021_m.jpg",
+    "queue_position": null,
+    "created_at": "2026-04-01T00:29:19.291415Z",
+    "started_at": "2026-04-01T00:29:19.296519Z",
+    "completed_at": "2026-04-01T00:29:19.347561Z",
+    "applied_operations": [
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/aff58393f86b4e189bf8cf94e64a9662_27750021_m.jpg",
+      "processed_image_url": "http://localhost:8000/uploads/processed/c08d5aafa7024ad986092362babacf2f_27750021_m_processed.png",
+      "processed_filename": "c08d5aafa7024ad986092362babacf2f_27750021_m_processed.png",
+      "applied_operations": [
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "2a4ddf6543c54f59987c3ce68003c773",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "27750021_m.jpg",
+    "queue_position": null,
+    "created_at": "2026-04-01T00:21:09.826585Z",
+    "started_at": "2026-04-01T00:21:09.831693Z",
+    "completed_at": "2026-04-01T00:21:09.894298Z",
+    "applied_operations": [
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/dea95bb1ffb048c3850b8fcb62d87077_27750021_m.jpg",
+      "processed_image_url": "http://localhost:8000/uploads/processed/f699d5b2186b46a8b413f22eb564ca88_27750021_m_processed.png",
+      "processed_filename": "f699d5b2186b46a8b413f22eb564ca88_27750021_m_processed.png",
+      "applied_operations": [
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "4bee5e7e762a40648cfbf19ea73d6358",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "藤田.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:11:30.757751Z",
+    "started_at": "2026-03-31T14:11:30.764082Z",
+    "completed_at": "2026-03-31T14:11:30.831518Z",
+    "applied_operations": [
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/1ba8c21335084263ac5274059423ae42_image.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/c7f7c08bf5174965b0a594d423329134_image_processed.png",
+      "processed_filename": "c7f7c08bf5174965b0a594d423329134_image_processed.png",
+      "applied_operations": [
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "cd44ff2891a94d0990888a29045ac6cb",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "藤田.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:11:15.667716Z",
+    "started_at": "2026-03-31T14:11:15.672752Z",
+    "completed_at": "2026-03-31T14:11:15.758869Z",
+    "applied_operations": [
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 1,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/5986c52465c8475499a7ec4205f8b586_image.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/aae621779f9c47d1a656c02b3338e7ab_image_processed.png",
+      "processed_filename": "aae621779f9c47d1a656c02b3338e7ab_image_processed.png",
+      "applied_operations": [
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 1,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "9dfa86e414ab4d8eb763ea2e095c4f29",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "藤田.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:10:56.292652Z",
+    "started_at": "2026-03-31T14:10:56.295581Z",
+    "completed_at": "2026-03-31T14:10:56.376724Z",
+    "applied_operations": [
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 1,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/0e1ee863a3f34519ae436b459b67bc31_image.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/c797f5e86e084b269334d40333f84d6d_image_processed.png",
+      "processed_filename": "c797f5e86e084b269334d40333f84d6d_image_processed.png",
+      "applied_operations": [
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 1,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "6ef4ef7b0f8d4cca992c6ff738b2772c",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "藤田.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:09:39.306343Z",
+    "started_at": "2026-03-31T14:09:39.309144Z",
+    "completed_at": "2026-03-31T14:09:39.391292Z",
+    "applied_operations": [
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 25,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 2,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/013cfc259af34f8e9e6ad0a73dc95427_image.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/b9bbb267609c4587a86bdb2d64cacfa3_image_processed.png",
+      "processed_filename": "b9bbb267609c4587a86bdb2d64cacfa3_image_processed.png",
+      "applied_operations": [
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 25,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 2,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "3cf730f7f4cf46a6acc89f133959a775",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "藤田.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:09:09.075930Z",
+    "started_at": "2026-03-31T14:09:09.081958Z",
+    "completed_at": "2026-03-31T14:09:09.147195Z",
+    "applied_operations": [
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/5a85727751de4f88a9a90033b638abee_image.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/197982d640e044009c0b3978c1a511fd_image_processed.png",
+      "processed_filename": "197982d640e044009c0b3978c1a511fd_image_processed.png",
+      "applied_operations": [
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "d0d7c67450a4461fabd49b954d9125b2",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:07:17.399630Z",
+    "started_at": "2026-03-31T14:07:17.404948Z",
+    "completed_at": "2026-03-31T14:07:17.462667Z",
+    "applied_operations": [
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 25,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 2,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/2db3117b88084e19923d137d6c4000e0_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/2c8d1cd8733b49a7b34d096a21cfb7ae_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "2c8d1cd8733b49a7b34d096a21cfb7ae_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 25,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 2,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "1d0618bd3e4d4cd09706893b199e89e9",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:06:00.705080Z",
+    "started_at": "2026-03-31T14:06:00.713500Z",
+    "completed_at": "2026-03-31T14:06:00.790157Z",
+    "applied_operations": [
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 20,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/8fe143153e224d8facda1fe71b4b4f94_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/a3a87bedb9354090964883d879ff5e59_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "a3a87bedb9354090964883d879ff5e59_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 20,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "ca019f5f16ca4ee3b47b88aa170a6e00",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:05:29.678386Z",
+    "started_at": "2026-03-31T14:05:29.680852Z",
+    "completed_at": "2026-03-31T14:05:30.020653Z",
+    "applied_operations": [
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 30,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 2,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "ocr",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/428754a45c5e40408d0b081c07b7e2a8_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/07ef481a2b794eb3a1d6097455ce8d46_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "07ef481a2b794eb3a1d6097455ce8d46_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 30,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 2,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "ocr",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": null,
+        "ocr": {
+          "full_text": "",
+          "lines": []
+        },
+        "object_detection": null,
+        "captions": null
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "35b1276cce444dff866fd4fc5fb2d88b",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:04:57.022611Z",
+    "started_at": "2026-03-31T14:04:57.027166Z",
+    "completed_at": "2026-03-31T14:05:03.304913Z",
+    "applied_operations": [
+      {
+        "operation": "background_removal",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 10,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 2,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/ca36cee0574a49dcb7cc5fbd40c80d68_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/546d6330ffb14c839c8eae754bc1ee50_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "546d6330ffb14c839c8eae754bc1ee50_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "background_removal",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 10,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 2,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": {
+          "foreground_ratio": 0.5916733635300994,
+          "mask_image_url": "http://localhost:8000/uploads/masks/3786ebc39e5143238146b245c7c63cb6_2026-03-31-14-27-53_mask.png"
+        },
+        "ocr": null,
+        "object_detection": null,
+        "captions": {
+          "candidates": [
+            {
+              "text": "被写体 を切り抜いた画像",
+              "score": 0.68
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "b9b1650aefa94221bb24d9f89f6efb90",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T14:04:39.274960Z",
+    "started_at": "2026-03-31T14:04:39.285422Z",
+    "completed_at": "2026-03-31T14:04:39.370491Z",
+    "applied_operations": [
+      {
+        "operation": "blur",
+        "parameters": {
+          "blur_strength": 5,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/61709064083146aabf13f895857bebd4_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/f03c1f3e76b74c1e8e58fad831921be6_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "f03c1f3e76b74c1e8e58fad831921be6_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "blur",
+          "parameters": {
+            "blur_strength": 5,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "cf4f1736cd70478485661688a209b984",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:56:55.410705Z",
+    "started_at": "2026-03-31T13:56:55.420294Z",
+    "completed_at": "2026-03-31T13:56:55.471670Z",
+    "applied_operations": [
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/7ebea2b061a94b16bc63cf189ffe66b2_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/6a994bb6614d4daab7289d12d4ac96bf_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "6a994bb6614d4daab7289d12d4ac96bf_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "0568a30fe71c40e1a339d197fecbfd5c",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:53:34.364561Z",
+    "started_at": "2026-03-31T13:53:34.367250Z",
+    "completed_at": "2026-03-31T13:53:34.401705Z",
+    "applied_operations": [
+      {
+        "operation": "blur",
+        "parameters": {
+          "blur_strength": 5,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/44977b03aec04c2699ad59d288e26da7_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/c524eb1303d247f58f46da7d4446bde1_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "c524eb1303d247f58f46da7d4446bde1_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "blur",
+          "parameters": {
+            "blur_strength": 5,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "8ad950688bea412ba6b1a8664459579f",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:50:12.542581Z",
+    "started_at": "2026-03-31T13:50:12.545907Z",
+    "completed_at": "2026-03-31T13:50:12.586114Z",
+    "applied_operations": [
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/15b7e750bc174aeab87ef0907f7c25f8_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/f0542111f61f4a21b5be339e72e508a1_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "f0542111f61f4a21b5be339e72e508a1_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "215c9e738dc1460193c851f0ed297e51",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:49:58.011228Z",
+    "started_at": "2026-03-31T13:49:58.017160Z",
+    "completed_at": "2026-03-31T13:49:58.226582Z",
+    "applied_operations": [
+      {
+        "operation": "object_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": 0.45
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/aa462824012546ffab5cb3f22bb9204f_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/3d9294a21fea4f819529412e90c55b7f_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "3d9294a21fea4f819529412e90c55b7f_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "object_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": 0.45
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": null,
+        "ocr": null,
+        "object_detection": {
+          "model": "MobileNet SSD (VOC)",
+          "threshold": 0.45,
+          "detections": [
+            {
+              "label": "cat",
+              "confidence": 0.9999961853027344,
+              "bounding_box": {
+                "x": 134,
+                "y": 127,
+                "width": 809,
+                "height": 427
+              }
+            }
+          ]
+        },
+        "captions": {
+          "candidates": [
+            {
+              "text": "cat を中心に捉えた画像",
+              "score": 0.84
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "7e135310db3e4e46b8347c48916ee353",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:49:43.473624Z",
+    "started_at": "2026-03-31T13:49:43.476098Z",
+    "completed_at": "2026-03-31T13:49:43.537407Z",
+    "applied_operations": [
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/7f4d297f77df47c5b94c84002ac67f93_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/c0e3d5f8c892491388e75f84511e8228_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "c0e3d5f8c892491388e75f84511e8228_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "15392a0f1f6340a0bdfa1b179cca9b1a",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:46:43.164481Z",
+    "started_at": "2026-03-31T13:46:43.167787Z",
+    "completed_at": "2026-03-31T13:46:43.246120Z",
+    "applied_operations": [
+      {
+        "operation": "blur",
+        "parameters": {
+          "blur_strength": 5,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/eeb78d7a878249ccb20b148e460d01ad_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/0d2f2491f56541e2b3c907168f5f71d1_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "0d2f2491f56541e2b3c907168f5f71d1_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "blur",
+          "parameters": {
+            "blur_strength": 5,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "977a8586c5c64804ad356d63addd67c0",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:46:16.196569Z",
+    "started_at": "2026-03-31T13:46:16.198814Z",
+    "completed_at": "2026-03-31T13:46:16.255603Z",
+    "applied_operations": [
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 20,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/7dcfb2688de646fdba2e92b415d5928d_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/068b4d47b6564274aeb3ff5e2c05ff59_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "068b4d47b6564274aeb3ff5e2c05ff59_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 20,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": null
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "30fed48c7b784ec09b2e713c988049c1",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:41:02.775039Z",
+    "started_at": "2026-03-31T13:41:02.778843Z",
+    "completed_at": "2026-03-31T13:41:03.506104Z",
+    "applied_operations": [
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 30,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 2,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "ocr",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/fe2fd6d15065422590a8f7decf6de347_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/be126e61c3ba44b493c759e9a428d6a4_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "be126e61c3ba44b493c759e9a428d6a4_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 30,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 2,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "ocr",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": null,
+        "ocr": {
+          "full_text": "",
+          "lines": []
+        },
+        "object_detection": null,
+        "captions": null
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "1c478a897eed441aa4099d3d55c7d8c3",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:37:12.798639Z",
+    "started_at": "2026-03-31T13:37:12.803746Z",
+    "completed_at": "2026-03-31T13:37:20.896515Z",
+    "applied_operations": [
+      {
+        "operation": "background_removal",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/45e20fa62bc742edaf75131a00500c90_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/332b602a12764b4690585c004a4c319a_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "332b602a12764b4690585c004a4c319a_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "background_removal",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": {
+          "foreground_ratio": 0.4452074810052601,
+          "mask_image_url": "http://localhost:8000/uploads/masks/5d07b0b603344b63891ab8dd1a4f3d18_2026-03-31-14-27-53_mask.png"
+        },
+        "ocr": null,
+        "object_detection": null,
+        "captions": {
+          "candidates": [
+            {
+              "text": "被写体 を切り抜いた画像",
+              "score": 0.68
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  },
+  {
+    "job_id": "f993780d9fa44652a14e781fc64ac652",
+    "status": "completed",
+    "progress": 100,
+    "message": "ジョブが完了しました。",
+    "filename": "スクリーンショット 2026-03-31 14.27.53.png",
+    "queue_position": null,
+    "created_at": "2026-03-31T13:28:11.317366Z",
+    "started_at": "2026-03-31T13:28:11.320908Z",
+    "completed_at": "2026-03-31T13:28:15.078700Z",
+    "applied_operations": [
+      {
+        "operation": "grayscale",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "sharpen",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": 1,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "edge_detection",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "brightness",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": 20,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      },
+      {
+        "operation": "background_removal",
+        "parameters": {
+          "blur_strength": null,
+          "brightness": null,
+          "contrast": null,
+          "sharpen_strength": null,
+          "denoise_strength": null,
+          "detection_threshold": null
+        }
+      }
+    ],
+    "result": {
+      "message": "画像処理が完了しました。",
+      "original_image_url": "http://localhost:8000/uploads/originals/93171027224643bf8735ca7f3509701b_2026-03-31-14-27-53.png",
+      "processed_image_url": "http://localhost:8000/uploads/processed/6cd831549f9a40d688b9d96a589b3ee6_2026-03-31-14-27-53_processed.png",
+      "processed_filename": "6cd831549f9a40d688b9d96a589b3ee6_2026-03-31-14-27-53_processed.png",
+      "applied_operations": [
+        {
+          "operation": "grayscale",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "sharpen",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": 1,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "edge_detection",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "brightness",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": 20,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        },
+        {
+          "operation": "background_removal",
+          "parameters": {
+            "blur_strength": null,
+            "brightness": null,
+            "contrast": null,
+            "sharpen_strength": null,
+            "denoise_strength": null,
+            "detection_threshold": null
+          }
+        }
+      ],
+      "analysis": {
+        "background_removal": {
+          "foreground_ratio": 0.0,
+          "mask_image_url": "http://localhost:8000/uploads/masks/eec9d62b5d82498fb3af6d8ff783d77c_2026-03-31-14-27-53_mask.png"
+        },
+        "ocr": null,
+        "object_detection": null,
+        "captions": {
+          "candidates": [
+            {
+              "text": "被写体 を切り抜いた画像",
+              "score": 0.68
+            }
+          ]
+        }
+      }
+    },
+    "error_message": null
+  }
+]

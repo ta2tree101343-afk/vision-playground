@@ -1,31 +1,24 @@
-import type { ImageOperationStep, ImageOperationType, PipelinePlan, PipelineStep } from '../types/api';
-import type { PipelineStepDraft, PipelineStepTemplate } from '../types/image';
+import type { OperationParameters, OperationType, OperationStep, PipelinePlan } from '../types/api';
+import type { ParameterState, PipelineStepDraft, PipelineStepTemplate } from '../types/image';
 import { defaultParameterState } from '../config/imageOperations';
 
-function createStepId(): string {
-  return `step-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+export function createId(prefix: string): string {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function createPipelineStep(
-  operation: ImageOperationType,
-  overrides: Partial<PipelineStepTemplate['parameters']> = {},
+  operation: OperationType,
+  overrides: Partial<ParameterState> = {},
 ): PipelineStepDraft {
   return {
-    id: createStepId(),
+    id: createId('step'),
     operation,
-    parameters: {
-      ...defaultParameterState,
-      ...overrides,
-    },
+    parameters: { ...defaultParameterState, ...overrides },
   };
 }
 
-export function clonePipelineTemplate(step: PipelineStepTemplate): PipelineStepDraft {
-  return createPipelineStep(step.operation, step.parameters);
-}
-
 export function clonePipelineTemplates(steps: PipelineStepTemplate[]): PipelineStepDraft[] {
-  return steps.map(clonePipelineTemplate);
+  return steps.map((step) => createPipelineStep(step.operation, step.parameters));
 }
 
 export function toPipelineTemplates(steps: PipelineStepDraft[]): PipelineStepTemplate[] {
@@ -35,58 +28,26 @@ export function toPipelineTemplates(steps: PipelineStepDraft[]): PipelineStepTem
   }));
 }
 
-export function buildOperationStep(step: PipelineStepDraft): ImageOperationStep {
-  switch (step.operation) {
-    case 'blur':
-      return {
-        operation: step.operation,
-        parameters: {
-          blur_strength: step.parameters.blurStrength,
-        },
-      };
-    case 'brightness':
-      return {
-        operation: step.operation,
-        parameters: {
-          brightness: step.parameters.brightness,
-        },
-      };
-    case 'contrast':
-      return {
-        operation: step.operation,
-        parameters: {
-          contrast: step.parameters.contrast,
-        },
-      };
-    case 'sharpen':
-      return {
-        operation: step.operation,
-        parameters: {
-          sharpen_strength: step.parameters.sharpenStrength,
-        },
-      };
-    case 'denoise':
-      return {
-        operation: step.operation,
-        parameters: {
-          denoise_strength: step.parameters.denoiseStrength,
-        },
-      };
-    case 'object_detection':
-      return {
-        operation: step.operation,
-        parameters: {
-          detection_threshold: step.parameters.detectionThreshold / 100,
-        },
-      };
-    default:
-      return { operation: step.operation };
-  }
+const parameterBuilders: Partial<Record<OperationType, (p: ParameterState) => OperationParameters>> = {
+  blur:             (p) => ({ blur_strength: p.blurStrength }),
+  brightness:       (p) => ({ brightness: p.brightness }),
+  contrast:         (p) => ({ contrast: p.contrast }),
+  sharpen:          (p) => ({ sharpen_strength: p.sharpenStrength }),
+  denoise:          (p) => ({ denoise_strength: p.denoiseStrength }),
+  object_detection: (p) => ({ detection_threshold: p.detectionThreshold / 100 }),
+};
+
+export function buildOperationStep(step: PipelineStepDraft): OperationStep {
+  const builder = parameterBuilders[step.operation];
+  return {
+    operation: step.operation,
+    parameters: builder ? builder(step.parameters) : undefined,
+  };
 }
 
-export function pipelinePlanStepToTemplate(step: PipelineStep): PipelineStepTemplate {
+export function pipelinePlanStepToTemplate(step: OperationStep): PipelineStepTemplate {
   return {
-    operation: step.operation as ImageOperationType,
+    operation: step.operation,
     parameters: {
       ...defaultParameterState,
       blurStrength: step.parameters?.blur_strength ?? defaultParameterState.blurStrength,

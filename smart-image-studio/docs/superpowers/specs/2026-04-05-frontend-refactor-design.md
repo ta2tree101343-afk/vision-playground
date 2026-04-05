@@ -198,6 +198,106 @@ const jobs = useJobTracking({ onCompleted: navigateToResult })
 
 ## スコープ外
 
-- バックエンドの変更（別途指示予定）
 - コンポーネント（`components/`）の変更
 - スタイルの変更
+
+---
+
+## バックエンドリファクタリング設計
+
+### バックエンドの目標
+
+フロントエンドと同じ方針でバックエンドの重複を排除し、操作追加時の変更箇所を最小化する。
+
+### 1. Schema の統合
+
+#### 現状の重複
+
+| `schemas/image.py` | `schemas/pipeline.py` | 差異 |
+| --- | --- | --- |
+| `OperationType` | `PipelineOperationType` | 値が同一 |
+| `ImageOperationParameters` | `PipelineStepParameters` | フィールドが同一 |
+| `ImageOperationStep` | `PipelineStep` | 構造が同一（`PipelineStep` のみ model_validator あり） |
+
+#### 変更内容
+
+`schemas/pipeline.py` から `PipelineOperationType`・`PipelineStepParameters`・`PipelineStep` を削除する。
+`PipelinePlan.steps` の型を `list[ImageOperationStep]` に変更する。
+
+`PipelineStep` が持っていた model_validator（パラメータ整合チェック）を `ImageOperationStep` に移植する。
+
+```python
+# schemas/image.py に追加
+@model_validator(mode="after")
+def validate_supported_parameters(self) -> "ImageOperationStep":
+    parameter_map = {
+        OperationType.BLUR: ["blur_strength"],
+        OperationType.SHARPEN: ["sharpen_strength"],
+        OperationType.DENOISE: ["denoise_strength"],
+        OperationType.BRIGHTNESS: ["brightness"],
+        OperationType.CONTRAST: ["contrast"],
+        OperationType.OBJECT_DETECTION: ["detection_threshold"],
+    }
+    allowed_keys = set(parameter_map.get(self.operation, []))
+    for field_name in self.parameters.model_dump(exclude_none=True):
+        if field_name not in allowed_keys:
+            raise ValueError(
+                f"{self.operation.value} では {field_name} パラメータは使用できません。"
+            )
+    return self
+```
+
+#### bridge 関数の削除
+
+`api/routes/images.py` の `build_operation_steps_from_plan` は `PipelineStep` → `ImageOperationStep` の変換のためだけに存在する。
+Schema 統合後は `PipelinePlan.steps` が直接 `list[ImageOperationStep]` になるため削除できる。
+
+```python
+# Before
+steps = build_operation_steps_from_plan(pipeline_plan)
+
+# After
+steps = pipeline_plan.steps
+```
+
+### 2. ImageProcessor の内部整理
+
+#### 重複 dataclass の統合
+
+`OperationApplicationResult` と `ImageProcessingResult` は同一フィールドを持つ。
+`OperationApplicationResult` を削除し、内部ハンドラも `ImageProcessingResult` を返すよう統一する。
+
+```python
+# Before: 2種類の dataclass
+def _apply_blur(...) -> OperationApplicationResult:
+    return OperationApplicationResult(image=...)
+
+# After: 1種類に統一
+def _apply_blur(...) -> ImageProcessingResult:
+    return ImageProcessingResult(image=...)
+```
+
+#### マスクURL生成ロジックの重複解消
+
+`api/routes/images.py` の `attach_analysis_assets` と `services/job_service.py` の `_process_job` に
+同じマスクURL付与ロジックが存在する。
+
+`attach_analysis_assets` を `services/storage_service.py` に移動し、
+`images.py` と `job_service.py` の両方から import する。
+
+### バックエンドのファイル変更一覧
+
+| ファイル | 変更内容 |
+| --- | --- |
+| `app/schemas/image.py` | `ImageOperationStep` に model_validator を追加 |
+| `app/schemas/pipeline.py` | `PipelineOperationType`・`PipelineStepParameters`・`PipelineStep` を削除。`PipelinePlan.steps` の型を `list[ImageOperationStep]` に変更 |
+| `app/services/image_processor.py` | `OperationApplicationResult` を削除。全ハンドラが `ImageProcessingResult` を返す |
+| `app/api/routes/images.py` | `build_operation_steps_from_plan` を削除 |
+| `app/services/storage_service.py` | `attach_analysis_assets` を追加（`images.py` から移動） |
+| `app/services/job_service.py` | `attach_analysis_assets` の import 先を `storage_service` に変更 |
+
+#### 既存のままのファイル
+
+`rule_based_interpreter.py`・`llm_interpreter.py`・`pipeline_interpreter_factory.py`・
+`pipeline_interpreter.py`・`main.py`・`core/config.py`・`utils/image_validation.py`・
+`api/routes/pipeline.py`・`api/routes/health.py`

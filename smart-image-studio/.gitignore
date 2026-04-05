@@ -1,0 +1,17 @@
+.DS_Store
+.worktrees/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Backend
+backend/.venv/
+backend/__pycache__/
+backend/uploads/originals/
+backend/uploads/processed/
+backend/.env
+**/__pycache__/
+*.py[cod]
+

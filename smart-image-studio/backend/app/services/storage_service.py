@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
 
 from PIL import Image
+
+from app.schemas.image import ImageAnalysisResult
 
 
 @dataclass(frozen=True)
@@ -62,3 +66,26 @@ class LocalImageStorage:
     def _sanitize_stem(stem: str) -> str:
         normalized = re.sub(r"[^a-zA-Z0-9_-]+", "-", stem).strip("-")
         return normalized or "image"
+
+
+def attach_analysis_assets(
+    storage: LocalImageStorage,
+    *,
+    analysis: ImageAnalysisResult | None,
+    background_mask: Image.Image | None,
+    filename: str,
+    base_url: str,
+) -> ImageAnalysisResult | None:
+    if analysis is None or background_mask is None or analysis.background_removal is None:
+        return analysis
+
+    mask_file = storage.save_background_mask(background_mask, filename)
+    return analysis.model_copy(
+        update={
+            "background_removal": analysis.background_removal.model_copy(
+                update={
+                    "mask_image_url": f"{base_url.rstrip('/')}{mask_file.public_path}",
+                }
+            )
+        }
+    )

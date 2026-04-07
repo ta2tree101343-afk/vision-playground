@@ -16,7 +16,7 @@ from app.schemas.image import (
 from app.schemas.pipeline import PipelinePlan
 from app.services.job_service import ImageJobService, build_asset_url
 from app.services.image_processor import ImageProcessingError, ImageProcessor
-from app.services.storage_service import LocalImageStorage
+from app.services.storage_service import LocalImageStorage, attach_analysis_assets
 from app.utils.image_validation import read_and_validate_image
 
 router = APIRouter()
@@ -89,28 +89,6 @@ def build_operation_steps(
 
 
 
-def attach_analysis_assets(
-    *,
-    analysis: ImageAnalysisResult | None,
-    background_mask,
-    filename: str,
-    base_url: str,
-) -> ImageAnalysisResult | None:
-    if analysis is None or background_mask is None or analysis.background_removal is None:
-        return analysis
-
-    mask_file = storage_service.save_background_mask(background_mask, filename)
-    return analysis.model_copy(
-        update={
-            "background_removal": analysis.background_removal.model_copy(
-                update={
-                    "mask_image_url": build_asset_url(base_url, mask_file.public_path),
-                }
-            )
-        }
-    )
-
-
 def execute_processing(
     *,
     request: Request,
@@ -123,6 +101,7 @@ def execute_processing(
         processing_result = image_processor.process(image_bytes, steps)
         processed_file = storage_service.save_processed(processing_result.image, filename)
         analysis = attach_analysis_assets(
+            storage_service,
             analysis=processing_result.analysis
             if isinstance(processing_result.analysis, ImageAnalysisResult)
             else None,

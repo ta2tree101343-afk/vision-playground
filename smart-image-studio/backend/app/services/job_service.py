@@ -17,7 +17,7 @@ from app.schemas.image import (
     ProcessImageResponse,
 )
 from app.services.image_processor import ImageProcessingError, ImageProcessor
-from app.services.storage_service import LocalImageStorage
+from app.services.storage_service import LocalImageStorage, attach_analysis_assets
 
 job_history_adapter = TypeAdapter(list[ImageProcessJob])
 
@@ -178,32 +178,15 @@ class ImageJobService:
                 processing_result.image,
                 payload.filename,
             )
-            analysis = (
-                processing_result.analysis
+            analysis = attach_analysis_assets(
+                self._storage_service,
+                analysis=processing_result.analysis
                 if isinstance(processing_result.analysis, ImageAnalysisResult)
-                else None
+                else None,
+                background_mask=processing_result.background_mask,
+                filename=payload.filename,
+                base_url=payload.base_url,
             )
-            if (
-                analysis is not None
-                and analysis.background_removal is not None
-                and processing_result.background_mask is not None
-            ):
-                mask_file = self._storage_service.save_background_mask(
-                    processing_result.background_mask,
-                    payload.filename,
-                )
-                analysis = analysis.model_copy(
-                    update={
-                        "background_removal": analysis.background_removal.model_copy(
-                            update={
-                                "mask_image_url": build_asset_url(
-                                    payload.base_url,
-                                    mask_file.public_path,
-                                ),
-                            }
-                        )
-                    }
-                )
 
             result = ProcessImageResponse(
                 message="画像処理が完了しました。",

@@ -8,9 +8,13 @@ import { NaturalLanguagePlanner } from '../components/NaturalLanguagePlanner';
 import { PipelineEditor } from '../components/PipelineEditor';
 import { builtInPipelinePresets } from '../config/pipelinePresets';
 import { getOperationOption, operationLabels, operationOptions } from '../config/imageOperations';
-import { useImageStudio } from '../hooks/useImageStudio';
+import { useFile } from '../hooks/useFile';
+import { usePipeline } from '../hooks/usePipeline';
+import { usePlanner } from '../hooks/usePlanner';
+import { useJobTracking } from '../hooks/useJobTracking';
+import { buildOperationStep } from '../utils/pipeline';
 import type { ImageProcessJob, ProcessImageResponse } from '../types/api';
-import type { PipelinePreset, PipelineStepDraft } from '../types/image';
+import type { ParameterKey, PipelinePreset, PipelineStepDraft } from '../types/image';
 import { navigateTo } from '../utils/navigation';
 
 type StudioSectionId =
@@ -559,11 +563,11 @@ function PipelineWorkspace({
   onRemoveStep,
   onParameterChange,
 }: {
-  pipelineSteps: ReturnType<typeof useImageStudio>['state']['pipelineSteps'];
+  pipelineSteps: PipelineStepDraft[];
   onAddOperation: (operation: (typeof operationOptions)[number]['value']) => void;
   onMoveStep: (stepId: string, direction: 'up' | 'down') => void;
   onRemoveStep: (stepId: string) => void;
-  onParameterChange: ReturnType<typeof useImageStudio>['handleStepParameterChange'];
+  onParameterChange: (stepId: string, key: ParameterKey, value: number) => void;
 }) {
   return (
     <div className="space-y-4">
@@ -745,44 +749,25 @@ export function StudioPage() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [previewMode, setPreviewMode] = useState<'before' | 'after'>('before');
 
-  const {
-    state,
-    savedPresets,
-    presetName,
-    naturalLanguageInstruction,
-    pipelineSuggestion,
-    isInterpretingPipeline,
-    plannerMode,
-    plannerHistory,
-    canProcess,
-    canExecuteInterpretedPipeline,
-    canSavePipeline,
-    hasSavedDraft,
-    handleFileSelection,
-    handleLoadDemoImage,
-    handleAddOperation,
-    handleStepParameterChange,
-    handleMoveStep,
-    handleRemoveStep,
-    handleApplyPreset,
-    handleSavePipelineDraft,
-    handleLoadSavedPipeline,
-    handlePresetNameChange,
-    handleSavePreset,
-    handleNaturalLanguageInstructionChange,
-    handlePlannerModeChange,
-    handleSelectNaturalLanguageExample,
-    handleSelectPlannerHistory,
-    handleGeneratePipelineSuggestion,
-    handleApplyPipelineSuggestion,
-    handleProcessPipelineSuggestion,
-    handleProcessImage,
-    handleOpenJobResult,
-  } = useImageStudio({
-    onProcessCompleted: () => navigateTo('/result'),
+  const file = useFile();
+  const pipeline = usePipeline();
+  const planner = usePlanner();
+  const jobs = useJobTracking({
+    onCompleted: () => navigateTo('/result'),
   });
 
-  const activeResult = state.result;
+  const canProcess = !!file.selectedFile && pipeline.steps.length > 0;
+  const canExecuteInterpretedPipeline =
+    !!file.selectedFile &&
+    !!planner.plan &&
+    (planner.plan.steps.length ?? 0) > 0 &&
+    !jobs.isProcessing;
+  const canSavePipeline = pipeline.steps.length > 0;
+  const hasSavedDraft = pipeline.savedDraftAt !== null;
+  const errorMessage =
+    file.errorMessage ?? pipeline.errorMessage ?? planner.errorMessage ?? jobs.errorMessage;
+
+  const activeResult = jobs.activeJob?.result ?? null;
   const isProcessingSection = activeSection === 'processing';
   const currentSectionLabel =
     sectionDefinitions.find((section) => section.id === activeSection)?.label ?? '画像処理';
@@ -792,57 +777,65 @@ export function StudioPage() {
       case 'processing':
         return (
           <ProcessingWorkspace
-            selectedFileName={state.selectedFile?.name}
-            previewUrl={state.previewUrl}
+            selectedFileName={file.selectedFile?.name}
+            previewUrl={file.previewUrl}
             afterPreviewUrl={activeResult?.processed_image_url ?? null}
             previewMode={previewMode}
             onPreviewModeChange={setPreviewMode}
-            onFileSelect={handleFileSelection}
-            onLoadDemo={handleLoadDemoImage}
-            onAddOperation={handleAddOperation}
-            pipelineSteps={state.pipelineSteps}
+            onFileSelect={file.selectFile}
+            onLoadDemo={file.loadDemoImage}
+            onAddOperation={pipeline.addStep}
+            pipelineSteps={pipeline.steps}
             builtInPresets={builtInPipelinePresets}
-            savedPresets={savedPresets}
-            presetName={presetName}
+            savedPresets={pipeline.savedPresets}
+            presetName={pipeline.presetName}
             canSavePipeline={canSavePipeline}
             hasSavedDraft={hasSavedDraft}
-            isProcessing={state.isProcessing}
+            isProcessing={jobs.isProcessing}
             canProcess={canProcess}
-            onPresetNameChange={handlePresetNameChange}
-            onApplyPreset={handleApplyPreset}
-            onSaveDraft={handleSavePipelineDraft}
-            onLoadDraft={handleLoadSavedPipeline}
-            onSavePreset={handleSavePreset}
-            onRemoveStep={handleRemoveStep}
-            onProcess={handleProcessImage}
+            onPresetNameChange={pipeline.setPresetName}
+            onApplyPreset={pipeline.applyPreset}
+            onSaveDraft={pipeline.saveDraft}
+            onLoadDraft={pipeline.loadDraft}
+            onSavePreset={pipeline.savePreset}
+            onRemoveStep={pipeline.removeStep}
+            onProcess={() => {
+              if (!file.selectedFile) return;
+              void jobs.submitJob(file.selectedFile, pipeline.steps.map(buildOperationStep));
+            }}
           />
         );
       case 'pipeline':
         return (
           <PipelineWorkspace
-            pipelineSteps={state.pipelineSteps}
-            onAddOperation={handleAddOperation}
-            onMoveStep={handleMoveStep}
-            onRemoveStep={handleRemoveStep}
-            onParameterChange={handleStepParameterChange}
+            pipelineSteps={pipeline.steps}
+            onAddOperation={pipeline.addStep}
+            onMoveStep={pipeline.moveStep}
+            onRemoveStep={pipeline.removeStep}
+            onParameterChange={pipeline.updateStepParameter}
           />
         );
       case 'prompt':
         return (
           <NaturalLanguagePlanner
-            instruction={naturalLanguageInstruction}
-            suggestion={pipelineSuggestion}
-            isInterpreting={isInterpretingPipeline}
+            instruction={planner.instruction}
+            suggestion={planner.plan}
+            isInterpreting={planner.isInterpreting}
             canExecuteSuggestion={canExecuteInterpretedPipeline}
-            interpreterMode={plannerMode}
-            history={plannerHistory}
-            onInstructionChange={handleNaturalLanguageInstructionChange}
-            onInterpreterModeChange={handlePlannerModeChange}
-            onGenerateSuggestion={handleGeneratePipelineSuggestion}
-            onApplySuggestion={handleApplyPipelineSuggestion}
-            onExecuteSuggestion={handleProcessPipelineSuggestion}
-            onSelectExample={handleSelectNaturalLanguageExample}
-            onSelectHistory={handleSelectPlannerHistory}
+            interpreterMode={planner.mode}
+            history={planner.history}
+            onInstructionChange={planner.setInstruction}
+            onInterpreterModeChange={planner.setMode}
+            onGenerateSuggestion={planner.generatePlan}
+            onApplySuggestion={() => {
+              if (planner.plan) pipeline.applyPlan(planner.plan);
+            }}
+            onExecuteSuggestion={() => {
+              if (!file.selectedFile || !planner.plan) return;
+              void jobs.submitPipelinePlan(file.selectedFile, planner.plan);
+            }}
+            onSelectExample={planner.selectExample}
+            onSelectHistory={planner.selectHistory}
           />
         );
       case 'result':
@@ -852,9 +845,9 @@ export function StudioPage() {
       case 'jobs':
         return (
           <JobsWorkspace
-            activeJob={state.activeJob}
-            jobHistory={state.jobHistory}
-            onOpenResult={handleOpenJobResult}
+            activeJob={jobs.activeJob}
+            jobHistory={jobs.jobHistory}
+            onOpenResult={jobs.openJobResult}
           />
         );
     }
@@ -896,14 +889,14 @@ export function StudioPage() {
               isProcessingSection ? 'px-4 py-3 xl:px-0 xl:py-0' : 'px-4 py-3',
             ].join(' ')}
           >
-            {state.errorMessage ? (
+            {errorMessage ? (
               <div className={isProcessingSection ? 'px-4 pt-3 xl:px-4 xl:pt-3' : ''}>
-                <ErrorBanner message={state.errorMessage} />
+                <ErrorBanner message={errorMessage} />
               </div>
             ) : null}
             <div
               className={[
-                state.errorMessage ? (isProcessingSection ? 'px-4 pt-4 xl:px-0 xl:pt-0' : 'mt-4') : '',
+                errorMessage ? (isProcessingSection ? 'px-4 pt-4 xl:px-0 xl:pt-0' : 'mt-4') : '',
                 isProcessingSection ? 'h-full min-h-full' : '',
               ].join(' ')}
             >

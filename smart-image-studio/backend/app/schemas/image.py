@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class OperationType(str, Enum):
@@ -37,6 +37,24 @@ class ImageOperationParameters(BaseModel):
 class ImageOperationStep(BaseModel):
     operation: OperationType
     parameters: ImageOperationParameters = Field(default_factory=ImageOperationParameters)
+
+    @model_validator(mode="after")
+    def validate_supported_parameters(self) -> "ImageOperationStep":
+        parameter_map: dict[OperationType, list[str]] = {
+            OperationType.BLUR: ["blur_strength"],
+            OperationType.SHARPEN: ["sharpen_strength"],
+            OperationType.DENOISE: ["denoise_strength"],
+            OperationType.BRIGHTNESS: ["brightness"],
+            OperationType.CONTRAST: ["contrast"],
+            OperationType.OBJECT_DETECTION: ["detection_threshold"],
+        }
+        allowed_keys = set(parameter_map.get(self.operation, []))
+        for field_name in self.parameters.model_dump(exclude_none=True):
+            if field_name not in allowed_keys:
+                raise ValueError(
+                    f"{self.operation.value} では {field_name} パラメータは使用できません。"
+                )
+        return self
 
 
 class BoundingBox(BaseModel):

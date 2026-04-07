@@ -88,17 +88,6 @@ def build_operation_steps(
     return [ImageOperationStep(operation=operation, parameters=parameters)]
 
 
-def build_operation_steps_from_plan(plan: PipelinePlan) -> list[ImageOperationStep]:
-    return [
-        ImageOperationStep(
-            operation=OperationType(step.operation.value),
-            parameters=ImageOperationParameters.model_validate(
-                step.parameters.model_dump(exclude_none=True)
-            ),
-        )
-        for step in plan.steps
-    ]
-
 
 def attach_analysis_assets(
     *,
@@ -263,7 +252,7 @@ async def process_image_pipeline(
             detail="PipelinePlan に 1 件以上の step が必要です。",
         )
 
-    steps = build_operation_steps_from_plan(pipeline_plan)
+    steps = pipeline_plan.steps
     return execute_processing(
         request=request,
         image_bytes=image_bytes,

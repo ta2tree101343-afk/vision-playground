@@ -34,12 +34,6 @@ class ImageProcessingResult:
     background_mask: Image.Image | None = None
 
 
-@dataclass(frozen=True)
-class OperationApplicationResult:
-    image: Image.Image
-    analysis: ImageAnalysisResult | None = None
-    background_mask: Image.Image | None = None
-
 
 class ImageProcessor:
     def __init__(self) -> None:
@@ -50,7 +44,7 @@ class ImageProcessor:
             OperationType,
             Callable[
                 [Image.Image, ImageOperationParameters],
-                OperationApplicationResult,
+                ImageProcessingResult,
             ],
         ] = {
             OperationType.GRAYSCALE: self._apply_grayscale,
@@ -120,21 +114,21 @@ class ImageProcessor:
 
     def _apply_grayscale(
         self, image: Image.Image, _: ImageOperationParameters
-    ) -> OperationApplicationResult:
-        return OperationApplicationResult(image=ImageOps.grayscale(image).convert("RGB"))
+    ) -> ImageProcessingResult:
+        return ImageProcessingResult(image=ImageOps.grayscale(image).convert("RGB"))
 
     def _apply_blur(
         self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         strength = parameters.blur_strength or 5
         kernel_size = self._normalize_kernel_size(strength)
         cv_image = self._pil_to_cv(image)
         blurred = cv2.GaussianBlur(cv_image, (kernel_size, kernel_size), sigmaX=0)
-        return OperationApplicationResult(image=self._cv_to_pil(blurred))
+        return ImageProcessingResult(image=self._cv_to_pil(blurred))
 
     def _apply_sharpen(
         self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         strength = max(1, min(parameters.sharpen_strength or 1, 5))
         cv_image = self._pil_to_cv(image)
         kernel = np.array(
@@ -142,11 +136,11 @@ class ImageProcessor:
             dtype=np.float32,
         )
         sharpened = cv2.filter2D(cv_image, -1, kernel)
-        return OperationApplicationResult(image=self._cv_to_pil(sharpened))
+        return ImageProcessingResult(image=self._cv_to_pil(sharpened))
 
     def _apply_denoise(
         self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         strength = max(1, min(parameters.denoise_strength or 8, 30))
         cv_image = self._pil_to_cv(image)
         denoised = cv2.fastNlMeansDenoisingColored(
@@ -157,33 +151,33 @@ class ImageProcessor:
             templateWindowSize=7,
             searchWindowSize=21,
         )
-        return OperationApplicationResult(image=self._cv_to_pil(denoised))
+        return ImageProcessingResult(image=self._cv_to_pil(denoised))
 
     def _apply_edge_detection(
         self, image: Image.Image, _: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         cv_image = self._pil_to_cv(image)
         grayscale = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(grayscale, threshold1=100, threshold2=200)
-        return OperationApplicationResult(image=Image.fromarray(edges).convert("RGB"))
+        return ImageProcessingResult(image=Image.fromarray(edges).convert("RGB"))
 
     def _apply_brightness(
         self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         brightness = parameters.brightness or 0
         factor = max(0.0, 1 + brightness / 100)
-        return OperationApplicationResult(image=ImageEnhance.Brightness(image).enhance(factor))
+        return ImageProcessingResult(image=ImageEnhance.Brightness(image).enhance(factor))
 
     def _apply_contrast(
         self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         contrast = parameters.contrast or 0
         factor = max(0.0, 1 + contrast / 100)
-        return OperationApplicationResult(image=ImageEnhance.Contrast(image).enhance(factor))
+        return ImageProcessingResult(image=ImageEnhance.Contrast(image).enhance(factor))
 
     def _apply_background_removal(
         self, image: Image.Image, _: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         image_rgb = image.convert("RGB")
         cv_image = self._pil_to_cv(image_rgb)
         height, width = cv_image.shape[:2]
@@ -221,7 +215,7 @@ class ImageProcessor:
         rgba_image = image_rgb.convert("RGBA")
         rgba_image.putalpha(Image.fromarray(cleaned_mask))
         foreground_ratio = float(np.count_nonzero(cleaned_mask)) / float(cleaned_mask.size)
-        return OperationApplicationResult(
+        return ImageProcessingResult(
             image=rgba_image,
             analysis=ImageAnalysisResult(
                 background_removal=BackgroundRemovalResult(
@@ -233,33 +227,33 @@ class ImageProcessor:
 
     def _apply_ocr(
         self, image: Image.Image, _: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         try:
             execution_result = self._get_ocr_service().recognize(image)
         except Exception as exc:
             raise ImageProcessingError("OCR の実行に失敗しました。") from exc
-        return OperationApplicationResult(
+        return ImageProcessingResult(
             image=execution_result.image,
             analysis=ImageAnalysisResult(ocr=execution_result.result),
         )
 
     def _apply_object_detection(
         self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> OperationApplicationResult:
+    ) -> ImageProcessingResult:
         threshold = parameters.detection_threshold or 0.45
         try:
             execution_result = self._get_object_detection_service().detect(image, threshold)
         except Exception as exc:
             raise ImageProcessingError("物体検出の実行に失敗しました。") from exc
-        return OperationApplicationResult(
+        return ImageProcessingResult(
             image=execution_result.image,
             analysis=ImageAnalysisResult(object_detection=execution_result.result),
         )
 
     def _apply_caption_generation(
         self, image: Image.Image, _: ImageOperationParameters
-    ) -> OperationApplicationResult:
-        return OperationApplicationResult(
+    ) -> ImageProcessingResult:
+        return ImageProcessingResult(
             image=image,
             analysis=ImageAnalysisResult(
                 captions=CaptionResult(candidates=self._build_visual_caption_candidates(image))

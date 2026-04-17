@@ -1,4 +1,5 @@
 import json
+import logging
 from json import JSONDecodeError
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
@@ -7,7 +8,6 @@ from pydantic import ValidationError
 from app.core.config import get_settings
 from app.schemas.image import (
     ImageOperationParameters,
-    ImageAnalysisResult,
     ImageProcessJob,
     ImageOperationStep,
     OperationType,
@@ -16,10 +16,15 @@ from app.schemas.image import (
 from app.schemas.pipeline import PipelinePlan
 from app.services.job_service import ImageJobService, build_asset_url
 from app.services.image_processor import ImageProcessingError, ImageProcessor
-from app.services.storage_service import LocalImageStorage, attach_analysis_assets
+from app.services.storage_service import (
+    LocalImageStorage,
+    MaskSaveError,
+    attach_analysis_assets,
+)
 from app.utils.image_validation import read_and_validate_image
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 storage_service = LocalImageStorage(settings.upload_path)
@@ -88,7 +93,6 @@ def build_operation_steps(
     return [ImageOperationStep(operation=operation, parameters=parameters)]
 
 
-
 def execute_processing(
     *,
     request: Request,
@@ -99,12 +103,12 @@ def execute_processing(
     try:
         original_file = storage_service.save_original(image_bytes, filename)
         processing_result = image_processor.process(image_bytes, steps)
-        processed_file = storage_service.save_processed(processing_result.image, filename)
+        processed_file = storage_service.save_processed(
+            processing_result.image, filename
+        )
         analysis = attach_analysis_assets(
             storage_service,
-            analysis=processing_result.analysis
-            if isinstance(processing_result.analysis, ImageAnalysisResult)
-            else None,
+            analysis=processing_result.analysis,
             background_mask=processing_result.background_mask,
             filename=filename,
             base_url=str(request.base_url),
@@ -114,7 +118,14 @@ def execute_processing(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"画像処理に失敗しました: {exc}",
         ) from exc
+    except MaskSaveError as exc:
+        logger.error("背景マスクの保存に失敗しました: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"背景マスクの保存に失敗しました: {exc}",
+        ) from exc
     except OSError as exc:
+        logger.error("画像ファイルの保存に失敗しました: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="画像ファイルの保存に失敗しました。",
@@ -122,8 +133,12 @@ def execute_processing(
 
     return ProcessImageResponse(
         message="画像処理が完了しました。",
-        original_image_url=build_asset_url(str(request.base_url), original_file.public_path),
-        processed_image_url=build_asset_url(str(request.base_url), processed_file.public_path),
+        original_image_url=build_asset_url(
+            str(request.base_url), original_file.public_path
+        ),
+        processed_image_url=build_asset_url(
+            str(request.base_url), processed_file.public_path
+        ),
         processed_filename=processed_file.filename,
         applied_operations=steps,
         analysis=analysis,
@@ -164,7 +179,9 @@ async def process_image(
     )
 
 
-@router.post("/jobs", response_model=ImageProcessJob, status_code=status.HTTP_202_ACCEPTED)
+@router.post(
+    "/jobs", response_model=ImageProcessJob, status_code=status.HTTP_202_ACCEPTED
+)
 async def create_process_job(
     request: Request,
     file: UploadFile = File(...),

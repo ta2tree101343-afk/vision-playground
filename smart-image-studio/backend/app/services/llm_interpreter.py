@@ -9,7 +9,10 @@ from app.schemas.pipeline import (
     PipelineInterpreterMode,
     PipelinePlan,
 )
-from app.services.pipeline_interpreter import PipelineInterpretationError, PipelineInterpreter
+from app.services.pipeline_interpreter import (
+    PipelineInterpretationError,
+    PipelineInterpreter,
+)
 
 
 class LLMInterpreter(PipelineInterpreter):
@@ -81,7 +84,9 @@ class LLMInterpreter(PipelineInterpreter):
         )
 
         try:
-            with request.urlopen(http_request, timeout=self._settings.llm_timeout_seconds) as response:
+            with request.urlopen(
+                http_request, timeout=self._settings.llm_timeout_seconds
+            ) as response:
                 return json.loads(response.read().decode("utf-8"))
         except error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="ignore")
@@ -93,14 +98,18 @@ class LLMInterpreter(PipelineInterpreter):
                 "LLM API に接続できませんでした。URL とネットワーク設定を確認してください。"
             ) from exc
         except json.JSONDecodeError as exc:
-            raise PipelineInterpretationError("LLM API のレスポンス JSON を解析できませんでした。") from exc
+            raise PipelineInterpretationError(
+                "LLM API のレスポンス JSON を解析できませんでした。"
+            ) from exc
 
     @staticmethod
     def _extract_message_content(payload: dict) -> str:
         try:
             content = payload["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
-            raise PipelineInterpretationError("LLM API のレスポンス形式が不正です。") from exc
+            raise PipelineInterpretationError(
+                "LLM API のレスポンス形式が不正です。"
+            ) from exc
 
         if not isinstance(content, str) or content.strip() == "":
             raise PipelineInterpretationError("LLM の応答本文が空です。")
@@ -121,4 +130,6 @@ class LLMInterpreter(PipelineInterpreter):
         if stripped.startswith("{") and stripped.endswith("}"):
             return stripped
 
-        raise PipelineInterpretationError("LLM の出力から JSON を抽出できませんでした。")
+        raise PipelineInterpretationError(
+            "LLM の出力から JSON を抽出できませんでした。"
+        )

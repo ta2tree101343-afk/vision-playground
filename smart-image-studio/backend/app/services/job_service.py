@@ -1,23 +1,29 @@
 import asyncio
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import RLock
 from uuid import uuid4
 
+logger = logging.getLogger(__name__)
+
 from fastapi import HTTPException, status
 from pydantic import TypeAdapter, ValidationError
 
 from app.schemas.image import (
-    ImageAnalysisResult,
     ImageOperationStep,
     ImageProcessJob,
     JobStatus,
     ProcessImageResponse,
 )
 from app.services.image_processor import ImageProcessingError, ImageProcessor
-from app.services.storage_service import LocalImageStorage, attach_analysis_assets
+from app.services.storage_service import (
+    LocalImageStorage,
+    MaskSaveError,
+    attach_analysis_assets,
+)
 
 job_history_adapter = TypeAdapter(list[ImageProcessJob])
 
@@ -139,6 +145,7 @@ class ImageJobService:
             except asyncio.CancelledError:
                 raise
             except Exception:
+                logger.exception("ジョブ %s で予期しないエラーが発生しました", job_id)
                 self._mark_failed(job_id, "予期しないエラーでジョブが失敗しました。")
             finally:
                 self._queue.task_done()
@@ -147,9 +154,17 @@ class ImageJobService:
         with self._lock:
             payload = self._payloads.get(job_id)
             operations = self._operations.get(job_id, [])
-            self._queue_order = [queued_job_id for queued_job_id in self._queue_order if queued_job_id != job_id]
+            self._queue_order = [
+                queued_job_id
+                for queued_job_id in self._queue_order
+                if queued_job_id != job_id
+            ]
 
         if payload is None:
+            logger.error(
+                "ジョブ %s のペイロードが見つかりません — スキップします", job_id
+            )
+            self._mark_failed(job_id, "内部エラー: ジョブペイロードが見つかりません。")
             return
 
         self._update_job(
@@ -162,7 +177,9 @@ class ImageJobService:
 
         try:
             self._update_job(job_id, progress=12, message="元画像を保存しています。")
-            original_file = self._storage_service.save_original(payload.image_bytes, payload.filename)
+            original_file = self._storage_service.save_original(
+                payload.image_bytes, payload.filename
+            )
 
             def progress_callback(progress: int, message: str) -> None:
                 self._update_job(job_id, progress=progress, message=message)
@@ -173,16 +190,16 @@ class ImageJobService:
                 progress_callback=progress_callback,
             )
 
-            self._update_job(job_id, progress=92, message="加工後画像を保存しています。")
+            self._update_job(
+                job_id, progress=92, message="加工後画像を保存しています。"
+            )
             processed_file = self._storage_service.save_processed(
                 processing_result.image,
                 payload.filename,
             )
             analysis = attach_analysis_assets(
                 self._storage_service,
-                analysis=processing_result.analysis
-                if isinstance(processing_result.analysis, ImageAnalysisResult)
-                else None,
+                analysis=processing_result.analysis,
                 background_mask=processing_result.background_mask,
                 filename=payload.filename,
                 base_url=payload.base_url,
@@ -190,8 +207,12 @@ class ImageJobService:
 
             result = ProcessImageResponse(
                 message="画像処理が完了しました。",
-                original_image_url=build_asset_url(payload.base_url, original_file.public_path),
-                processed_image_url=build_asset_url(payload.base_url, processed_file.public_path),
+                original_image_url=build_asset_url(
+                    payload.base_url, original_file.public_path
+                ),
+                processed_image_url=build_asset_url(
+                    payload.base_url, processed_file.public_path
+                ),
                 processed_filename=processed_file.filename,
                 applied_operations=operations,
                 analysis=analysis,
@@ -208,9 +229,14 @@ class ImageJobService:
             )
         except ImageProcessingError as exc:
             self._mark_failed(job_id, f"画像処理に失敗しました: {exc}")
-        except OSError:
+        except MaskSaveError as exc:
+            logger.error("ジョブ %s: 背景マスクの保存に失敗しました: %s", job_id, exc)
+            self._mark_failed(job_id, f"背景マスクの保存に失敗しました: {exc}")
+        except OSError as exc:
+            logger.error("ジョブ %s: ファイル保存に失敗しました: %s", job_id, exc)
             self._mark_failed(job_id, "画像ファイルの保存に失敗しました。")
         except Exception:
+            logger.exception("ジョブ %s で予期しないエラーが発生しました", job_id)
             self._mark_failed(job_id, "予期しないエラーでジョブが失敗しました。")
         finally:
             with self._lock:
@@ -277,12 +303,21 @@ class ImageJobService:
         return job.model_copy(update={"queue_position": queue_position})
 
     def _persist_history(self) -> None:
-        jobs = sorted(self._jobs.values(), key=lambda job: job.created_at, reverse=True)[: self._history_limit]
+        jobs = sorted(
+            self._jobs.values(), key=lambda job: job.created_at, reverse=True
+        )[: self._history_limit]
         payload = job_history_adapter.dump_python(jobs, mode="json")
-        self._history_path.write_text(
-            json.dumps(payload, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
+        try:
+            self._history_path.write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+        except OSError as exc:
+            logger.warning(
+                "ジョブ履歴の保存に失敗しました (%s): %s — サーバー再起動後にジョブ履歴が失われる可能性があります",
+                self._history_path,
+                exc,
+            )
 
     def _load_history(self) -> None:
         if not self._history_path.exists():
@@ -293,7 +328,10 @@ class ImageJobService:
             if raw_value.strip() == "":
                 return
             loaded_jobs = job_history_adapter.validate_json(raw_value)
-        except (OSError, ValidationError, json.JSONDecodeError):
+        except (OSError, ValidationError, json.JSONDecodeError) as exc:
+            logger.error(
+                "ジョブ履歴の読み込みに失敗しました (%s): %s", self._history_path, exc
+            )
             return
 
         interrupted_at = utc_now()

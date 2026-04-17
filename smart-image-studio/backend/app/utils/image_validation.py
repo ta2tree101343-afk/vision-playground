@@ -44,4 +44,3 @@ async def read_and_validate_image(file: UploadFile) -> bytes:
         ) from exc
 
     return image_bytes
-

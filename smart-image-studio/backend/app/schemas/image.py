@@ -27,6 +27,7 @@ class JobStatus(str, Enum):
 
 class ImageOperationParameters(BaseModel):
     blur_strength: int | None = Field(default=None, ge=1, le=25)
+    blur_sigma: float | None = Field(default=None, ge=0.0, le=10.0)
     brightness: int | None = Field(default=None, ge=-100, le=100)
     contrast: int | None = Field(default=None, ge=-100, le=100)
     sharpen_strength: int | None = Field(default=None, ge=1, le=5)
@@ -36,12 +37,14 @@ class ImageOperationParameters(BaseModel):
 
 class ImageOperationStep(BaseModel):
     operation: OperationType
-    parameters: ImageOperationParameters = Field(default_factory=ImageOperationParameters)
+    parameters: ImageOperationParameters = Field(
+        default_factory=ImageOperationParameters
+    )
 
     @model_validator(mode="after")
     def validate_supported_parameters(self) -> "ImageOperationStep":
         parameter_map: dict[OperationType, list[str]] = {
-            OperationType.BLUR: ["blur_strength"],
+            OperationType.BLUR: ["blur_strength", "blur_sigma"],
             OperationType.SHARPEN: ["sharpen_strength"],
             OperationType.DENOISE: ["denoise_strength"],
             OperationType.BRIGHTNESS: ["brightness"],

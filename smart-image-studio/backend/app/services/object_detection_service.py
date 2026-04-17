@@ -77,7 +77,9 @@ class ObjectDetectionService:
             if class_index >= len(self.class_labels):
                 continue
 
-            raw_box = predictions[0, 0, index, 3:7] * np.array([width, height, width, height])
+            raw_box = predictions[0, 0, index, 3:7] * np.array(
+                [width, height, width, height]
+            )
             start_x, start_y, end_x, end_y = raw_box.astype("int")
             clamped_start_x = max(0, min(start_x, width - 1))
             clamped_start_y = max(0, min(start_y, height - 1))

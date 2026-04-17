@@ -23,7 +23,9 @@ class OcrService:
         result, _ = self._engine(image_array)
 
         if not result:
-            return OcrExecutionResult(image=image_rgb, result=OcrResult(full_text="", lines=[]))
+            return OcrExecutionResult(
+                image=image_rgb, result=OcrResult(full_text="", lines=[])
+            )
 
         annotated_image = image_rgb.copy()
         drawer = ImageDraw.Draw(annotated_image)
@@ -39,7 +41,9 @@ class OcrService:
                     bounding_box=bounding_box,
                 )
             )
-            drawer.polygon([tuple(point) for point in points], outline="#0f766e", width=3)
+            drawer.polygon(
+                [tuple(point) for point in points], outline="#0f766e", width=3
+            )
             self._draw_label(drawer, bounding_box, f"OCR {str(text).strip()}")
 
         full_text = "\n".join(line.text for line in lines if line.text)
@@ -69,4 +73,3 @@ class OcrService:
         label_bottom = label_top + 18
         drawer.rectangle((box.x, label_top, box.x + 140, label_bottom), fill="#0f766e")
         drawer.text((box.x + 6, label_top + 3), text[:22], fill="white")
-

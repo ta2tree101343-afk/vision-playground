@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -9,12 +10,19 @@ from PIL import Image
 
 from app.schemas.image import ImageAnalysisResult
 
+logger = logging.getLogger(__name__)
+
+
+class MaskSaveError(OSError):
+    """背景マスク画像の保存に失敗した場合に raise される。"""
+
 
 @dataclass(frozen=True)
 class StoredImage:
     filename: str
     public_path: str
     file_path: Path
+
 
 class LocalImageStorage:
     def __init__(self, base_dir: Path) -> None:
@@ -51,7 +59,9 @@ class LocalImageStorage:
             file_path=file_path,
         )
 
-    def save_background_mask(self, image: Image.Image, original_filename: str) -> StoredImage:
+    def save_background_mask(
+        self, image: Image.Image, original_filename: str
+    ) -> StoredImage:
         safe_stem = self._sanitize_stem(Path(original_filename).stem or "upload")
         filename = f"{uuid4().hex}_{safe_stem}_mask.png"
         file_path = self.masks_dir / filename
@@ -76,10 +86,30 @@ def attach_analysis_assets(
     filename: str,
     base_url: str,
 ) -> ImageAnalysisResult | None:
-    if analysis is None or background_mask is None or analysis.background_removal is None:
+    if (
+        analysis is None
+        or background_mask is None
+        or analysis.background_removal is None
+    ):
+        if (
+            analysis is not None
+            and analysis.background_removal is not None
+            and background_mask is None
+        ):
+            logger.warning(
+                "attach_analysis_assets: analysis.background_removal が設定されているが "
+                "background_mask が None です (filename=%r) — mask_image_url は null になります",
+                filename,
+            )
         return analysis
 
-    mask_file = storage.save_background_mask(background_mask, filename)
+    try:
+        mask_file = storage.save_background_mask(background_mask, filename)
+    except OSError as exc:
+        raise MaskSaveError(
+            f"背景マスク画像の保存に失敗しました (filename={filename!r})"
+        ) from exc
+
     return analysis.model_copy(
         update={
             "background_removal": analysis.background_removal.model_copy(

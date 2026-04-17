@@ -158,7 +158,8 @@ class ImageProcessor:
 
             # ハロー抑制：局所コントラスト（dilate − erode）に比例した上限で
             # ラプラシアンをクリップし、輪郭周辺の過剰オーバーシュートを防ぐ
-            local_contrast = cv2.dilate(l_f, None) - cv2.erode(l_f, None)
+            _kernel_3x3 = np.ones((3, 3), dtype=np.uint8)
+            local_contrast = cv2.dilate(l_f, _kernel_3x3) - cv2.erode(l_f, _kernel_3x3)
             halo_limit = np.maximum(local_contrast * 0.3, 2.0)
             lap = np.clip(lap, -halo_limit, halo_limit)
 

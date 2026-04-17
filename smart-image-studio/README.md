@@ -166,6 +166,7 @@ smart-image-studio/
 ### backend
 
 - Python
+- Poetry
 - FastAPI
 - Pillow
 - OpenCV
@@ -192,9 +193,7 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+poetry install
 cp .env.example .env
 ```
 
@@ -218,8 +217,7 @@ SMART_IMAGE_STUDIO_LLM_TIMEOUT_SECONDS=30
 
 ```bash
 cd backend
-source .venv/bin/activate
-uvicorn app.main:app --reload --port 8000
+poetry run uvicorn app.main:app --reload --port 8000
 ```
 
 ### frontend を起動

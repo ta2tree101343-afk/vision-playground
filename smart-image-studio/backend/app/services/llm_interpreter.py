@@ -5,8 +5,8 @@ from pydantic import ValidationError
 
 from app.core.config import Settings
 from app.schemas.pipeline import (
-    PipelineInterpretRequest,
     PipelineInterpreterMode,
+    PipelineInterpretRequest,
     PipelinePlan,
 )
 from app.services.pipeline_interpreter import (
@@ -21,9 +21,7 @@ class LLMInterpreter(PipelineInterpreter):
 
     def interpret(self, instruction: str) -> PipelinePlan:
         if not self._settings.llm_api_key or not self._settings.llm_model:
-            raise PipelineInterpretationError(
-                "LLM インタープリタを使うには API キーとモデル名の設定が必要です。"
-            )
+            raise PipelineInterpretationError("LLM インタープリタを使うには API キーとモデル名の設定が必要です。")
 
         payload = self._build_request_payload(instruction)
         raw_response = self._post_to_llm(payload)
@@ -33,9 +31,7 @@ class LLMInterpreter(PipelineInterpreter):
         try:
             plan = PipelinePlan.model_validate_json(normalized_json)
         except ValidationError as exc:
-            raise PipelineInterpretationError(
-                f"LLM の出力を PipelinePlan として検証できませんでした: {exc}"
-            ) from exc
+            raise PipelineInterpretationError(f"LLM の出力を PipelinePlan として検証できませんでした: {exc}") from exc
 
         return plan.model_copy(update={"interpreter": PipelineInterpreterMode.LLM})
 
@@ -84,32 +80,22 @@ class LLMInterpreter(PipelineInterpreter):
         )
 
         try:
-            with request.urlopen(
-                http_request, timeout=self._settings.llm_timeout_seconds
-            ) as response:
+            with request.urlopen(http_request, timeout=self._settings.llm_timeout_seconds) as response:
                 return json.loads(response.read().decode("utf-8"))
         except error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="ignore")
-            raise PipelineInterpretationError(
-                f"LLM API がエラーを返しました: HTTP {exc.code} {detail}"
-            ) from exc
+            raise PipelineInterpretationError(f"LLM API がエラーを返しました: HTTP {exc.code} {detail}") from exc
         except error.URLError as exc:
-            raise PipelineInterpretationError(
-                "LLM API に接続できませんでした。URL とネットワーク設定を確認してください。"
-            ) from exc
+            raise PipelineInterpretationError("LLM API に接続できませんでした。URL とネットワーク設定を確認してください。") from exc
         except json.JSONDecodeError as exc:
-            raise PipelineInterpretationError(
-                "LLM API のレスポンス JSON を解析できませんでした。"
-            ) from exc
+            raise PipelineInterpretationError("LLM API のレスポンス JSON を解析できませんでした。") from exc
 
     @staticmethod
     def _extract_message_content(payload: dict) -> str:
         try:
             content = payload["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
-            raise PipelineInterpretationError(
-                "LLM API のレスポンス形式が不正です。"
-            ) from exc
+            raise PipelineInterpretationError("LLM API のレスポンス形式が不正です。") from exc
 
         if not isinstance(content, str) or content.strip() == "":
             raise PipelineInterpretationError("LLM の応答本文が空です。")
@@ -130,6 +116,4 @@ class LLMInterpreter(PipelineInterpreter):
         if stripped.startswith("{") and stripped.endswith("}"):
             return stripped
 
-        raise PipelineInterpretationError(
-            "LLM の出力から JSON を抽出できませんでした。"
-        )
+        raise PipelineInterpretationError("LLM の出力から JSON を抽出できませんでした。")

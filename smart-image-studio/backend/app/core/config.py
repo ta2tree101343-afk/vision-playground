@@ -11,9 +11,7 @@ class Settings(BaseSettings):
     debug: bool = False
     cors_origins: str = "http://localhost:5173"
     upload_dir: str = "uploads"
-    pipeline_interpreter_mode: PipelineInterpreterMode = (
-        PipelineInterpreterMode.RULE_BASED
-    )
+    pipeline_interpreter_mode: PipelineInterpreterMode = PipelineInterpreterMode.RULE_BASED
     llm_api_base_url: str = "https://api.openai.com/v1"
     llm_api_key: str = ""
     llm_model: str = ""
@@ -36,9 +34,7 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [
-            origin.strip() for origin in self.cors_origins.split(",") if origin.strip()
-        ]
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
 
 @lru_cache

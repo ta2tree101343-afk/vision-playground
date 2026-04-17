@@ -22,24 +22,14 @@ class RuleBasedInterpreter(PipelineInterpreter):
         matched_goals: list[str] = []
         steps: list[ImageOperationStep] = []
 
-        mentions_background = _includes_any(
-            normalized, ["背景", "切り抜", "透過", "削除", "残して"]
-        )
-        mentions_person = _includes_any(
-            normalized, ["人物", "人", "顔", "ポートレート"]
-        )
+        mentions_background = _includes_any(normalized, ["背景", "切り抜", "透過", "削除", "残して"])
+        mentions_person = _includes_any(normalized, ["人物", "人", "顔", "ポートレート"])
         mentions_product = _includes_any(normalized, ["商品", "物撮り", "ec", "物だけ"])
-        mentions_noise = _includes_any(
-            normalized, ["ノイズ", "ざらつき", "荒れ", "滑らか"]
-        )
+        mentions_noise = _includes_any(normalized, ["ノイズ", "ざらつき", "荒れ", "滑らか"])
         mentions_blur = _includes_any(normalized, ["ぼかし", "ぼかして", "blur"])
-        mentions_sharpen = _includes_any(
-            normalized, ["くっきり", "シャープ", "輪郭", "目立", "強調"]
-        )
+        mentions_sharpen = _includes_any(normalized, ["くっきり", "シャープ", "輪郭", "目立", "強調"])
         mentions_brightness = _includes_any(normalized, ["明る", "見やす", "映える"])
-        mentions_contrast = _includes_any(
-            normalized, ["コントラスト", "メリハリ", "はっきり"]
-        )
+        mentions_contrast = _includes_any(normalized, ["コントラスト", "メリハリ", "はっきり"])
         mentions_detection = _includes_any(normalized, ["検出", "何が写", "物体"])
         mentions_caption = _includes_any(normalized, ["説明", "キャプション", "要約"])
         mentions_white_background = _includes_any(normalized, ["白背景", "白い背景"])
@@ -70,13 +60,7 @@ class RuleBasedInterpreter(PipelineInterpreter):
             steps.append(
                 ImageOperationStep(
                     operation=OperationType.BRIGHTNESS,
-                    parameters=ImageOperationParameters(
-                        brightness=18
-                        if mentions_person
-                        else 12
-                        if mentions_product
-                        else 20
-                    ),
+                    parameters=ImageOperationParameters(brightness=18 if mentions_person else 12 if mentions_product else 20),
                 )
             )
             matched_goals.append("明るさ補正を追加")
@@ -113,9 +97,7 @@ class RuleBasedInterpreter(PipelineInterpreter):
             matched_goals.append("キャプション生成を追加")
 
         if mentions_white_background:
-            notes.append(
-                "白背景への塗りつぶしは未対応です。現状は透過背景までを実行します。"
-            )
+            notes.append("白背景への塗りつぶしは未対応です。現状は透過背景までを実行します。")
 
         unique_steps: list[ImageOperationStep] = []
         seen_operations: set[OperationType] = set()
@@ -132,14 +114,10 @@ class RuleBasedInterpreter(PipelineInterpreter):
             confidence = PipelinePlanConfidence.MEDIUM
 
         if not unique_steps:
-            notes.append(
-                "現在のルールでは明確な処理に変換できませんでした。背景除去、ノイズ低減、商品画像整形などで試してください。"
-            )
+            notes.append("現在のルールでは明確な処理に変換できませんでした。背景除去、ノイズ低減、商品画像整形などで試してください。")
 
         summary = (
-            f"{len(unique_steps)} ステップのパイプライン候補を作成しました。"
-            if unique_steps
-            else "処理フローを特定できませんでした。"
+            f"{len(unique_steps)} ステップのパイプライン候補を作成しました。" if unique_steps else "処理フローを特定できませんでした。"
         )
 
         return PipelinePlan(

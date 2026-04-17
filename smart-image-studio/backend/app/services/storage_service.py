@@ -59,9 +59,7 @@ class LocalImageStorage:
             file_path=file_path,
         )
 
-    def save_background_mask(
-        self, image: Image.Image, original_filename: str
-    ) -> StoredImage:
+    def save_background_mask(self, image: Image.Image, original_filename: str) -> StoredImage:
         safe_stem = self._sanitize_stem(Path(original_filename).stem or "upload")
         filename = f"{uuid4().hex}_{safe_stem}_mask.png"
         file_path = self.masks_dir / filename
@@ -86,16 +84,8 @@ def attach_analysis_assets(
     filename: str,
     base_url: str,
 ) -> ImageAnalysisResult | None:
-    if (
-        analysis is None
-        or background_mask is None
-        or analysis.background_removal is None
-    ):
-        if (
-            analysis is not None
-            and analysis.background_removal is not None
-            and background_mask is None
-        ):
+    if analysis is None or background_mask is None or analysis.background_removal is None:
+        if analysis is not None and analysis.background_removal is not None and background_mask is None:
             logger.warning(
                 "attach_analysis_assets: analysis.background_removal が設定されているが "
                 "background_mask が None です (filename=%r) — mask_image_url は null になります",
@@ -106,9 +96,7 @@ def attach_analysis_assets(
     try:
         mask_file = storage.save_background_mask(background_mask, filename)
     except OSError as exc:
-        raise MaskSaveError(
-            f"背景マスク画像の保存に失敗しました (filename={filename!r})"
-        ) from exc
+        raise MaskSaveError(f"背景マスク画像の保存に失敗しました (filename={filename!r})") from exc
 
     return analysis.model_copy(
         update={

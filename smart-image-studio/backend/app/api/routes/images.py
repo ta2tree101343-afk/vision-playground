@@ -8,14 +8,14 @@ from pydantic import ValidationError
 from app.core.config import get_settings
 from app.schemas.image import (
     ImageOperationParameters,
-    ImageProcessJob,
     ImageOperationStep,
+    ImageProcessJob,
     OperationType,
     ProcessImageResponse,
 )
 from app.schemas.pipeline import PipelinePlan
-from app.services.job_service import ImageJobService, build_asset_url
 from app.services.image_processor import ImageProcessingError, ImageProcessor
+from app.services.job_service import ImageJobService, build_asset_url
 from app.services.storage_service import (
     LocalImageStorage,
     MaskSaveError,
@@ -103,9 +103,7 @@ def execute_processing(
     try:
         original_file = storage_service.save_original(image_bytes, filename)
         processing_result = image_processor.process(image_bytes, steps)
-        processed_file = storage_service.save_processed(
-            processing_result.image, filename
-        )
+        processed_file = storage_service.save_processed(processing_result.image, filename)
         analysis = attach_analysis_assets(
             storage_service,
             analysis=processing_result.analysis,
@@ -133,12 +131,8 @@ def execute_processing(
 
     return ProcessImageResponse(
         message="画像処理が完了しました。",
-        original_image_url=build_asset_url(
-            str(request.base_url), original_file.public_path
-        ),
-        processed_image_url=build_asset_url(
-            str(request.base_url), processed_file.public_path
-        ),
+        original_image_url=build_asset_url(str(request.base_url), original_file.public_path),
+        processed_image_url=build_asset_url(str(request.base_url), processed_file.public_path),
         processed_filename=processed_file.filename,
         applied_operations=steps,
         analysis=analysis,
@@ -179,9 +173,7 @@ async def process_image(
     )
 
 
-@router.post(
-    "/jobs", response_model=ImageProcessJob, status_code=status.HTTP_202_ACCEPTED
-)
+@router.post("/jobs", response_model=ImageProcessJob, status_code=status.HTTP_202_ACCEPTED)
 async def create_process_job(
     request: Request,
     file: UploadFile = File(...),

@@ -37,9 +37,7 @@ class ImageOperationParameters(BaseModel):
 
 class ImageOperationStep(BaseModel):
     operation: OperationType
-    parameters: ImageOperationParameters = Field(
-        default_factory=ImageOperationParameters
-    )
+    parameters: ImageOperationParameters = Field(default_factory=ImageOperationParameters)
 
     @model_validator(mode="after")
     def validate_supported_parameters(self) -> "ImageOperationStep":
@@ -54,9 +52,7 @@ class ImageOperationStep(BaseModel):
         allowed_keys = set(parameter_map.get(self.operation, []))
         for field_name in self.parameters.model_dump(exclude_none=True):
             if field_name not in allowed_keys:
-                raise ValueError(
-                    f"{self.operation.value} では {field_name} パラメータは使用できません。"
-                )
+                raise ValueError(f"{self.operation.value} では {field_name} パラメータは使用できません。")
         return self
 
 

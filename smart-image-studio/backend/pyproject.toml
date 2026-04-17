@@ -23,7 +23,7 @@ pytest = "*"
 pytest-cov = "*"
 
 [tool.ruff]
-line-length = 88
+line-length = 140
 target-version = "py313"
 
 [tool.ruff.lint]

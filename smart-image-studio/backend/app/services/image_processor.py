@@ -101,9 +101,7 @@ class ImageProcessor:
             operation_result = handler(image, step.parameters)
             image = operation_result.image
             # 各ステップの解析結果をマージして累積する
-            analysis_result = self._merge_analysis(
-                analysis_result, operation_result.analysis
-            )
+            analysis_result = self._merge_analysis(analysis_result, operation_result.analysis)
             if operation_result.background_mask is not None:
                 background_mask = operation_result.background_mask
 
@@ -123,38 +121,28 @@ class ImageProcessor:
         )
 
     # グレースケール変換（ガンマ補正対応）
-    def _apply_grayscale(
-        self, image: Image.Image, _: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_grayscale(self, image: Image.Image, _: ImageOperationParameters) -> ImageProcessingResult:
         # ガンマ2.2でリニア空間に変換 → グレースケール化 → ガンマ再エンコードの順で処理する
         # これにより知覚的に正確な輝度のグレースケール画像が得られる
         cv_image = self._pil_to_cv(image)
         img_bgr_linear = np.power(cv_image.astype("float32") / 255.0, 2.2)
-        img_gray_linear = cv2.cvtColor(
-            img_bgr_linear.astype("float32"), cv2.COLOR_BGR2GRAY
-        )
+        img_gray_linear = cv2.cvtColor(img_bgr_linear.astype("float32"), cv2.COLOR_BGR2GRAY)
         img_gray = (np.power(img_gray_linear, 1.0 / 2.2) * 255).astype("uint8")
         return ImageProcessingResult(image=Image.fromarray(img_gray).convert("RGB"))
 
     # ぼかし（ガウシアンブラー）
-    def _apply_blur(
-        self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_blur(self, image: Image.Image, parameters: ImageOperationParameters) -> ImageProcessingResult:
         # blur_strength をカーネルサイズに変換し、ガウシアンブラーを適用する
         # blur_sigma が 0 または未指定の場合はカーネルサイズから自動計算する
         strength = parameters.blur_strength or 5
         kernel_size = self._normalize_kernel_size(strength)
-        sigma = (
-            float(parameters.blur_sigma) if parameters.blur_sigma is not None else 0.0
-        )
+        sigma = float(parameters.blur_sigma) if parameters.blur_sigma is not None else 0.0
         cv_image = self._pil_to_cv(image)
         blurred = cv2.GaussianBlur(cv_image, (kernel_size, kernel_size), sigmaX=sigma)
         return ImageProcessingResult(image=self._cv_to_pil(blurred))
 
     # シャープ化（LoG ベースのラプラシアンシャープ化）
-    def _apply_sharpen(
-        self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_sharpen(self, image: Image.Image, parameters: ImageOperationParameters) -> ImageProcessingResult:
         strength = max(1, min(parameters.sharpen_strength or 1, 5))
         cv_image = self._pil_to_cv(image)
         try:
@@ -186,9 +174,7 @@ class ImageProcessor:
         return ImageProcessingResult(image=self._cv_to_pil(result))
 
     # ノイズ除去（Non-Local Means アルゴリズム）
-    def _apply_denoise(
-        self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_denoise(self, image: Image.Image, parameters: ImageOperationParameters) -> ImageProcessingResult:
         # Non-Local Means アルゴリズムでカラー画像のノイズを除去する
         strength = max(1, min(parameters.denoise_strength or 8, 30))
         cv_image = self._pil_to_cv(image)
@@ -203,9 +189,7 @@ class ImageProcessor:
         return ImageProcessingResult(image=self._cv_to_pil(denoised))
 
     # エッジ検出（Canny アルゴリズム）
-    def _apply_edge_detection(
-        self, image: Image.Image, _: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_edge_detection(self, image: Image.Image, _: ImageOperationParameters) -> ImageProcessingResult:
         # グレースケール化してから Canny アルゴリズムでエッジを検出する
         cv_image = self._pil_to_cv(image)
         grayscale = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
@@ -213,29 +197,21 @@ class ImageProcessor:
         return ImageProcessingResult(image=Image.fromarray(edges).convert("RGB"))
 
     # 明るさ調整
-    def _apply_brightness(
-        self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_brightness(self, image: Image.Image, parameters: ImageOperationParameters) -> ImageProcessingResult:
         # brightness を -100〜+100 のオフセットとして受け取り、乗算係数に変換して適用する
         brightness = parameters.brightness or 0
         factor = max(0.0, 1 + brightness / 100)
-        return ImageProcessingResult(
-            image=ImageEnhance.Brightness(image).enhance(factor)
-        )
+        return ImageProcessingResult(image=ImageEnhance.Brightness(image).enhance(factor))
 
     # コントラスト調整
-    def _apply_contrast(
-        self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_contrast(self, image: Image.Image, parameters: ImageOperationParameters) -> ImageProcessingResult:
         # contrast を -100〜+100 のオフセットとして受け取り、乗算係数に変換して適用する
         contrast = parameters.contrast or 0
         factor = max(0.0, 1 + contrast / 100)
         return ImageProcessingResult(image=ImageEnhance.Contrast(image).enhance(factor))
 
     # 背景除去
-    def _apply_background_removal(
-        self, image: Image.Image, _: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_background_removal(self, image: Image.Image, _: ImageOperationParameters) -> ImageProcessingResult:
         # GrabCut アルゴリズムで前景マスクを生成し、RGBA の alpha チャンネルに適用する
         image_rgb = image.convert("RGB")
         cv_image = self._pil_to_cv(image_rgb)
@@ -276,23 +252,15 @@ class ImageProcessor:
         )
         rgba_image = image_rgb.convert("RGBA")
         rgba_image.putalpha(Image.fromarray(cleaned_mask))
-        foreground_ratio = float(np.count_nonzero(cleaned_mask)) / float(
-            cleaned_mask.size
-        )
+        foreground_ratio = float(np.count_nonzero(cleaned_mask)) / float(cleaned_mask.size)
         return ImageProcessingResult(
             image=rgba_image,
-            analysis=ImageAnalysisResult(
-                background_removal=BackgroundRemovalResult(
-                    foreground_ratio=foreground_ratio
-                )
-            ),
+            analysis=ImageAnalysisResult(background_removal=BackgroundRemovalResult(foreground_ratio=foreground_ratio)),
             background_mask=Image.fromarray(cleaned_mask).convert("L"),
         )
 
     # OCR（光学式文字認識）
-    def _apply_ocr(
-        self, image: Image.Image, _: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_ocr(self, image: Image.Image, _: ImageOperationParameters) -> ImageProcessingResult:
         # OCR の実行は OcrService に委譲する
         try:
             execution_result = self._get_ocr_service().recognize(image)
@@ -305,15 +273,11 @@ class ImageProcessor:
         )
 
     # 物体検出
-    def _apply_object_detection(
-        self, image: Image.Image, parameters: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_object_detection(self, image: Image.Image, parameters: ImageOperationParameters) -> ImageProcessingResult:
         # 物体検出は ObjectDetectionService（MobileNet SSD）に委譲する
         threshold = parameters.detection_threshold or 0.45
         try:
-            execution_result = self._get_object_detection_service().detect(
-                image, threshold
-            )
+            execution_result = self._get_object_detection_service().detect(image, threshold)
         except (RuntimeError, OSError) as exc:
             logger.error("物体検出実行エラー: %s", exc)
             raise ImageProcessingError("物体検出の実行に失敗しました。") from exc
@@ -323,17 +287,11 @@ class ImageProcessor:
         )
 
     # キャプション生成
-    def _apply_caption_generation(
-        self, image: Image.Image, _: ImageOperationParameters
-    ) -> ImageProcessingResult:
+    def _apply_caption_generation(self, image: Image.Image, _: ImageOperationParameters) -> ImageProcessingResult:
         # 輝度・向きなど画像の視覚的特徴からキャプション候補を生成する
         return ImageProcessingResult(
             image=image,
-            analysis=ImageAnalysisResult(
-                captions=CaptionResult(
-                    candidates=self._build_visual_caption_candidates(image)
-                )
-            ),
+            analysis=ImageAnalysisResult(captions=CaptionResult(candidates=self._build_visual_caption_candidates(image))),
         )
 
     @staticmethod
@@ -460,16 +418,8 @@ class ImageProcessor:
         image_array = np.array(rgb_image)
         luminance = float(np.mean(image_array))
         width, height = rgb_image.size
-        orientation = (
-            "横長" if width > height else "縦長" if height > width else "正方形"
-        )
-        brightness_label = (
-            "明るい"
-            if luminance >= 180
-            else "落ち着いた"
-            if luminance >= 100
-            else "暗めの"
-        )
+        orientation = "横長" if width > height else "縦長" if height > width else "正方形"
+        brightness_label = "明るい" if luminance >= 180 else "落ち着いた" if luminance >= 100 else "暗めの"
 
         candidates = [
             CaptionCandidate(
@@ -486,13 +436,9 @@ class ImageProcessor:
     def _get_object_detection_service(self) -> ObjectDetectionService:
         if self._object_detection_service is None:
             try:
-                self._object_detection_service = ObjectDetectionService(
-                    self._models_dir
-                )
+                self._object_detection_service = ObjectDetectionService(self._models_dir)
             except FileNotFoundError as exc:
-                raise ImageProcessingError(
-                    "object detection モデルが見つかりません。backend/app/models を確認してください。"
-                ) from exc
+                raise ImageProcessingError("object detection モデルが見つかりません。backend/app/models を確認してください。") from exc
 
         return self._object_detection_service
 
@@ -508,8 +454,6 @@ class ImageProcessor:
             try:
                 self._ocr_service = OcrService()
             except Exception as exc:
-                raise ImageProcessingError(
-                    "OCR エンジンの初期化に失敗しました。"
-                ) from exc
+                raise ImageProcessingError("OCR エンジンの初期化に失敗しました。") from exc
 
         return self._ocr_service

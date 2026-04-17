@@ -49,9 +49,7 @@ class ObjectDetectionService:
             str(self._weights_path),
         )
 
-    def detect(
-        self, image: Image.Image, threshold: float = 0.45
-    ) -> ObjectDetectionExecutionResult:
+    def detect(self, image: Image.Image, threshold: float = 0.45) -> ObjectDetectionExecutionResult:
         image_rgb = image.convert("RGB")
         image_bgr = cv2.cvtColor(np.array(image_rgb), cv2.COLOR_RGB2BGR)
         height, width = image_bgr.shape[:2]
@@ -77,9 +75,7 @@ class ObjectDetectionService:
             if class_index >= len(self.class_labels):
                 continue
 
-            raw_box = predictions[0, 0, index, 3:7] * np.array(
-                [width, height, width, height]
-            )
+            raw_box = predictions[0, 0, index, 3:7] * np.array([width, height, width, height])
             start_x, start_y, end_x, end_y = raw_box.astype("int")
             clamped_start_x = max(0, min(start_x, width - 1))
             clamped_start_y = max(0, min(start_y, height - 1))

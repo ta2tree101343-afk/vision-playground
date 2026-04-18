@@ -211,6 +211,36 @@ SMART_IMAGE_STUDIO_LLM_MODEL=
 SMART_IMAGE_STUDIO_LLM_TIMEOUT_SECONDS=30
 ```
 
+## Docker での起動（推奨）
+
+### 前準備（初回のみ）
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+### 起動
+
+```bash
+cd smart-image-studio
+docker compose up --build  # 初回 or Dockerfile 変更時
+docker compose up          # 通常
+```
+
+### 停止
+
+```bash
+docker compose down          # 停止（named volume は保持）
+docker compose down -v       # named volume も含めて完全削除
+```
+
+起動後:
+
+- frontend: `http://localhost:5173`
+- backend: `http://localhost:8000`
+- health check: `http://localhost:8000/health`
+
 ## ローカル起動手順
 
 ### backend を起動

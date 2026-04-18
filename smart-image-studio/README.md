@@ -8,10 +8,13 @@
 smart-image-studio/
 ├── .gitignore
 ├── README.md
+├── docker-compose.yml
 ├── docs/
 │   └── architecture.md
 ├── frontend/
+│   ├── Dockerfile
 │   ├── .env.example
+│   ├── .dockerignore
 │   ├── index.html
 │   ├── package.json
 │   ├── postcss.config.cjs
@@ -64,7 +67,10 @@ smart-image-studio/
 │       └── vite-env.d.ts
 └── backend/
     ├── .env.example
-    ├── requirements.txt
+    ├── Dockerfile
+    ├── pyproject.toml
+    ├── poetry.lock
+    ├── poetry.toml
     ├── uploads/
     │   └── .gitkeep
     └── app/
@@ -247,6 +253,8 @@ docker compose down -v       # named volume も含めて完全削除
 
 ```bash
 cd backend
+poetry run task dev
+# または
 poetry run uvicorn app.main:app --reload --port 8000
 ```
 
@@ -263,6 +271,16 @@ npm run dev
 - backend: `http://localhost:8000`
 - health check: `http://localhost:8000/health`
 - OpenAPI: `http://localhost:8000/docs`
+
+## 開発ツール（backend）
+
+```bash
+cd backend
+poetry run task format    # ruff format（コードフォーマット）
+poetry run task lint      # ruff check（lint）
+poetry run task typecheck # mypy（型チェック）
+poetry run task test      # pytest（テスト）
+```
 
 ## API 設計
 

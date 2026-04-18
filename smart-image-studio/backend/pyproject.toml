@@ -21,6 +21,13 @@ ruff = "*"
 mypy = "*"
 pytest = "*"
 pytest-cov = "*"
+taskipy = "*"
+
+[tool.taskipy.tasks]
+format = "ruff format app/"
+lint = "ruff check app/"
+typecheck = "mypy app/"
+test = "pytest"
 
 [tool.ruff]
 line-length = 140

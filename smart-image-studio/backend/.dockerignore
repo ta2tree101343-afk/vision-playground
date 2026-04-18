@@ -2,5 +2,9 @@
 __pycache__/
 *.py[cod]
 .env
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.python-version
 uploads/originals/
 uploads/processed/

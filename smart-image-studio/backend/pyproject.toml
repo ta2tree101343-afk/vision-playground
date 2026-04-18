@@ -24,6 +24,7 @@ pytest-cov = "*"
 taskipy = "*"
 
 [tool.taskipy.tasks]
+dev = "uvicorn app.main:app --reload --port 8000"
 format = "ruff format app/"
 lint = "ruff check app/"
 typecheck = "mypy app/"

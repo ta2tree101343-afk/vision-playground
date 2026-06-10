@@ -1,18 +1,29 @@
 .DS_Store
 .worktrees/
+.superpowers/
 
 # Frontend
 frontend/node_modules/
 frontend/dist/
 frontend/.env.local
 frontend/.env
+frontend/tailwind.config.js
+frontend/tailwind.config.d.ts
+frontend/vite.config.js
+frontend/vite.config.d.ts
 
 # Backend
 backend/.venv/
 backend/__pycache__/
 backend/uploads/originals/
 backend/uploads/processed/
+backend/uploads/masks/
+backend/uploads/jobs/
+backend/uploads/batches/
 backend/.env
 **/__pycache__/
 *.py[cod]
+
+# ML models (large binary — download separately or use Git LFS)
+backend/src/app/assets/ml_models/*.caffemodel
 

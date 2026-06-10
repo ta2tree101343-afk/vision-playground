@@ -9,6 +9,8 @@ const config: Config = {
         brand: '#0f766e',
         accent: '#14b8a6',
         paper: '#f8fafc',
+        'accent-teal': '#0ee8b6',
+        'teal-action': '#1f7d58',
       },
       boxShadow: {
         panel: '0 18px 45px -24px rgba(15, 23, 42, 0.35)',

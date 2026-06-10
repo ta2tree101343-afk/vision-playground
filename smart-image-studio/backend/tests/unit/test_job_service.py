@@ -71,7 +71,7 @@ async def test_process_job_marks_failed_on_mask_save_error(tmp_path: Path) -> No
     image_processor.process.return_value = ImageProcessingResult(image=img)
     storage_service.save_processed.return_value = _stored(tmp_path, "proc.png", "/uploads/processed/proc.png")
 
-    with patch("app.services.job_service.attach_analysis_assets", side_effect=MaskSaveError("disk full")):
+    with patch("app.services.storage_service.attach_analysis_assets", side_effect=MaskSaveError("disk full")):
         job = await svc.enqueue_job(image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops())
         await asyncio.sleep(0.1)
 
@@ -136,7 +136,7 @@ async def test_process_job_completes_successfully(tmp_path: Path) -> None:
     image_processor.process.return_value = ImageProcessingResult(image=img)
     storage_service.save_processed.return_value = _stored(tmp_path, "proc.png", "/uploads/processed/proc.png")
 
-    with patch("app.services.job_service.attach_analysis_assets", return_value=None):
+    with patch("app.services.storage_service.attach_analysis_assets", return_value=None):
         job = await svc.enqueue_job(image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops())
         await asyncio.sleep(0.1)
 

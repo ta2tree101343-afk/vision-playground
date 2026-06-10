@@ -15,19 +15,22 @@ opencv-python = ">=4.10,<5.0"
 numpy = ">=1.26,<3.0"
 pydantic-settings = ">=2.4,<3.0"
 rapidocr-onnxruntime = ">=1.2,<2.0"
+openai = ">=1.66,<2.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "*"
 mypy = "*"
 pytest = "*"
 pytest-cov = "*"
+pytest-asyncio = "*"
+httpx = "*"
 taskipy = "*"
 
 [tool.taskipy.tasks]
-dev = "uvicorn app.main:app --reload --port 8000"
-format = "ruff format app/"
-lint = "ruff check app/"
-typecheck = "mypy app/"
+dev = "PYTHONPATH=src uvicorn app.main:app --reload --port 8000"
+format = "ruff format src/app/"
+lint = "ruff check src/app/"
+typecheck = "mypy src/app/"
 test = "pytest"
 
 [tool.ruff]
@@ -41,9 +44,12 @@ select = ["E", "F", "I"]
 python_version = "3.13"
 strict = false
 ignore_missing_imports = true
+mypy_path = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+asyncio_mode = "auto"
 
 [build-system]
 requires = ["poetry-core"]

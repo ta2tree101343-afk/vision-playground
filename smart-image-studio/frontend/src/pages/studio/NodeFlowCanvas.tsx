@@ -139,14 +139,14 @@ function SortableNodeCard({
 
 function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[number]['value']) => void }) {
   const [open, setOpen] = useState(false);
-  const [openUpward, setOpenUpward] = useState(false);
+  const [dropdownMaxHeight, setDropdownMaxHeight] = useState(320);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      setOpenUpward(window.innerHeight - rect.bottom < 320);
+      setDropdownMaxHeight(Math.max(120, window.innerHeight - rect.bottom - 8));
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setOpen(false);
@@ -181,9 +181,9 @@ function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[number][
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div
-            className={`absolute left-0 z-20 w-48 overflow-y-auto rounded-xl border p-1 shadow-2xl ${openUpward ? 'bottom-full mb-2' : 'top-full mt-2'}`}
+            className="absolute left-0 top-full z-20 mt-2 w-48 overflow-y-auto rounded-xl border p-1 shadow-2xl"
             style={{
-              maxHeight: '320px',
+              maxHeight: `${dropdownMaxHeight}px`,
               background: 'var(--bg-panel-raised)',
               borderColor: 'var(--border-default)',
             }}

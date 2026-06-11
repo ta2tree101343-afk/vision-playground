@@ -42,6 +42,8 @@ class JobService:
         self._image_processor = image_processor
         self._storage_service = storage_service
         self._repository = job_repository
+        # _payloads/_queue_order are in-process memory: queue state is lost on restart.
+        # mark_interrupted_jobs() handles recovery. Multi-worker support requires a durable queue.
         self._payloads: dict[str, _EnqueuedPayload] = {}
         self._operations: dict[str, list[ImageOperationStep]] = {}
         self._queue_order: list[str] = []
@@ -79,23 +81,15 @@ class JobService:
             created_at=utc_now(),
             applied_operations=operations,
         )
-        with self._lock:
-            self._repository.save(job)
-            self._payloads[job_id] = payload
-            self._operations[job_id] = operations
-            self._queue_order.append(job_id)
+        await asyncio.to_thread(self._register_job, job, payload, operations)
 
         try:
             self._task_queue.enqueue_nowait(job_id)
         except asyncio.QueueFull:
-            with self._lock:
-                self._repository.remove(job_id)
-                self._payloads.pop(job_id, None)
-                self._operations.pop(job_id, None)
-                self._queue_order = [j for j in self._queue_order if j != job_id]
+            await asyncio.to_thread(self._cancel_job, job_id)
             raise JobQueueFullError("ジョブキューが満杯です。しばらく後に再試行してください。")
 
-        return self.get_job(job_id)
+        return await asyncio.to_thread(self.get_job, job_id)
 
     def list_jobs(self) -> list[ImageProcessJob]:
         with self._lock:
@@ -119,10 +113,10 @@ class JobService:
             self._queue_order = [j for j in self._queue_order if j != job_id]
         if payload is None:
             logger.error("ジョブ %s のペイロードが見つかりません", job_id)
-            self._mark_failed(job_id, "内部エラー: ジョブペイロードが見つかりません。")
+            await asyncio.to_thread(self._mark_failed, job_id, "内部エラー: ジョブペイロードが見つかりません。")
             return
 
-        self._update_job(job_id, status=JobStatus.RUNNING, progress=5, message="ジョブを開始しました。", started_at=utc_now())
+        await asyncio.to_thread(self._update_job, job_id, status=JobStatus.RUNNING, progress=5, message="ジョブを開始しました。", started_at=utc_now())
 
         try:
             image_bytes = payload.source_path.read_bytes()
@@ -136,7 +130,7 @@ class JobService:
                 operations,
                 progress_callback=progress_callback,
             )
-            self._update_job(job_id, progress=92, message="加工後画像を保存しています。")
+            await asyncio.to_thread(self._update_job, job_id, progress=92, message="加工後画像を保存しています。")
             result = save_and_build_response(
                 self._storage_service,
                 processed_image=processing_result.image,
@@ -147,7 +141,8 @@ class JobService:
                 original_public_path=payload.public_path,
                 operations=operations,
             )
-            self._update_job(
+            await asyncio.to_thread(
+                self._update_job,
                 job_id,
                 status=JobStatus.COMPLETED,
                 progress=100,
@@ -158,16 +153,18 @@ class JobService:
             )
         except ImageProcessingError as exc:
             logger.exception("ジョブ %s: 画像処理に失敗しました: %s", job_id, exc)
-            self._mark_failed(job_id, f"画像処理に失敗しました: {exc}")
+            msg = f"画像処理に失敗しました: {exc}"
+            await asyncio.to_thread(self._mark_failed, job_id, msg)
         except MaskSaveError as exc:
             logger.exception("ジョブ %s: 背景マスクの保存に失敗しました: %s", job_id, exc)
-            self._mark_failed(job_id, f"背景マスクの保存に失敗しました: {exc}")
+            msg = f"背景マスクの保存に失敗しました: {exc}"
+            await asyncio.to_thread(self._mark_failed, job_id, msg)
         except OSError as exc:
             logger.exception("ジョブ %s: ファイル保存に失敗しました: %s", job_id, exc)
-            self._mark_failed(job_id, "画像ファイルの保存に失敗しました。")
+            await asyncio.to_thread(self._mark_failed, job_id, "画像ファイルの保存に失敗しました。")
         except Exception:
             logger.exception("ジョブ %s で予期しないエラーが発生しました", job_id)
-            self._mark_failed(job_id, "予期しないエラーでジョブが失敗しました。")
+            await asyncio.to_thread(self._mark_failed, job_id, "予期しないエラーでジョブが失敗しました。")
         finally:
             with self._lock:
                 self._payloads.pop(job_id, None)
@@ -217,6 +214,20 @@ class JobService:
             if error_message is not None or status == JobStatus.COMPLETED:
                 updates["error_message"] = error_message
             self._repository.save(job.model_copy(update=updates), persist=status is not None)
+
+    def _register_job(self, job: ImageProcessJob, payload: _EnqueuedPayload, operations: list[ImageOperationStep]) -> None:
+        with self._lock:
+            self._repository.save(job)
+            self._payloads[job.job_id] = payload
+            self._operations[job.job_id] = operations
+            self._queue_order.append(job.job_id)
+
+    def _cancel_job(self, job_id: str) -> None:
+        with self._lock:
+            self._repository.remove(job_id)
+            self._payloads.pop(job_id, None)
+            self._operations.pop(job_id, None)
+            self._queue_order = [j for j in self._queue_order if j != job_id]
 
     def _with_queue_position(self, job: ImageProcessJob) -> ImageProcessJob:
         if job.status != JobStatus.QUEUED:

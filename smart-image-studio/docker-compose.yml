@@ -24,6 +24,8 @@ services:
       - backend_venv:/app/.venv
     env_file:
       - ./backend/.env
+    environment:
+      SMART_IMAGE_STUDIO_DATABASE_URL: postgresql+psycopg://smart_image_studio:smart_image_studio@postgres:5432/smart_image_studio
     depends_on:
       postgres:
         condition: service_healthy

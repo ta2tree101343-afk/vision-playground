@@ -46,12 +46,14 @@ def tmp_upload_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
 @pytest.fixture()
 def client(tmp_upload_dir: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, None]:
     from app.core.config import Settings, get_settings
-    from app.main import app
+    from app.main import create_app
 
     monkeypatch.setenv("SMART_IMAGE_STUDIO_UPLOAD_DIR", str(tmp_upload_dir))
     get_settings.cache_clear()
-    app.dependency_overrides[get_settings] = lambda: Settings(upload_dir=str(tmp_upload_dir))
-    with TestClient(app) as c:
+
+    test_settings = Settings(upload_dir=str(tmp_upload_dir))
+    test_app = create_app(test_settings)
+    test_app.dependency_overrides[get_settings] = lambda: test_settings
+    with TestClient(test_app) as c:
         yield c
-    app.dependency_overrides.clear()
     get_settings.cache_clear()

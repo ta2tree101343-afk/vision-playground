@@ -89,3 +89,23 @@ def test_process_image_brightness_with_valid_parameter_returns_200(client: TestC
         data={"operations": operations},
     )
     assert response.status_code == 200
+
+
+def test_process_image_unknown_parameter_returns_400(client: TestClient) -> None:
+    operations = json.dumps([{"operation": "grayscale", "parameters": {"unknown_param": 99}}])
+    response = client.post(
+        "/api/images/process",
+        files={"file": ("test.png", make_png_bytes(), "image/png")},
+        data={"operations": operations},
+    )
+    assert response.status_code == 400
+
+
+def test_process_image_unknown_step_field_returns_400(client: TestClient) -> None:
+    operations = json.dumps([{"operation": "grayscale", "extra_step_field": "value"}])
+    response = client.post(
+        "/api/images/process",
+        files={"file": ("test.png", make_png_bytes(), "image/png")},
+        data={"operations": operations},
+    )
+    assert response.status_code == 400

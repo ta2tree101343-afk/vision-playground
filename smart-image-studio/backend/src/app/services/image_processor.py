@@ -152,7 +152,8 @@ class ImageProcessor:
             from app.services.caption_service import CaptionService
 
             settings = get_settings()
-            self._caption_service = CaptionService(LmStudioVisionClient(settings.llm_api_base_url, settings.llm_model, settings.llm_api_key))
+            client = LmStudioVisionClient(settings.llm_api_base_url, settings.llm_model, settings.llm_api_key)
+            self._caption_service = CaptionService(client)
         return self._caption_service
 
     @staticmethod

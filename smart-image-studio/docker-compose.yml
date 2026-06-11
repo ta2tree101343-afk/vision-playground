@@ -2,9 +2,9 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: smart_image_studio
-      POSTGRES_PASSWORD: smart_image_studio
-      POSTGRES_DB: smart_image_studio
+      POSTGRES_USER: ${POSTGRES_USER:-smart_image_studio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smart_image_studio}
+      POSTGRES_DB: ${POSTGRES_DB:-smart_image_studio}
     ports:
       - "5432:5432"
     volumes:
@@ -25,7 +25,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      SMART_IMAGE_STUDIO_DATABASE_URL: postgresql+psycopg://smart_image_studio:smart_image_studio@postgres:5432/smart_image_studio
+      SMART_IMAGE_STUDIO_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-smart_image_studio}:${POSTGRES_PASSWORD:-smart_image_studio}@postgres:5432/${POSTGRES_DB:-smart_image_studio}
     depends_on:
       postgres:
         condition: service_healthy

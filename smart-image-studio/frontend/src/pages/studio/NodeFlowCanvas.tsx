@@ -139,14 +139,18 @@ function SortableNodeCard({
 
 function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[number]['value']) => void }) {
   const [open, setOpen] = useState(false);
-  const [dropdownMaxHeight, setDropdownMaxHeight] = useState(320);
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number; maxHeight: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      setDropdownMaxHeight(Math.max(120, window.innerHeight - rect.bottom - 8));
+      setDropdownPos({
+        top: rect.bottom + 8,
+        left: rect.left,
+        maxHeight: Math.max(160, window.innerHeight - rect.bottom - 16),
+      });
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setOpen(false);
@@ -156,7 +160,7 @@ function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[number][
   }, [open]);
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div ref={containerRef}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -177,13 +181,15 @@ function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[number][
         <span className="text-center text-[10px] font-medium leading-tight">Add Node / Tool</span>
       </button>
 
-      {open && (
+      {open && dropdownPos && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div
-            className="absolute left-0 top-full z-20 mt-2 w-48 overflow-y-auto rounded-xl border p-1 shadow-2xl"
+            className="fixed z-20 w-48 overflow-y-auto rounded-xl border p-1 shadow-2xl"
             style={{
-              maxHeight: `${dropdownMaxHeight}px`,
+              top: dropdownPos.top,
+              left: dropdownPos.left,
+              maxHeight: dropdownPos.maxHeight,
               background: 'var(--bg-panel-raised)',
               borderColor: 'var(--border-default)',
             }}

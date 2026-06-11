@@ -17,8 +17,10 @@ backend/.venv/
 backend/__pycache__/
 backend/uploads/originals/
 backend/uploads/processed/
-backend/uploads/masks/
-backend/uploads/jobs/
+backend/uploads/masks/*
+!backend/uploads/masks/.gitkeep
+backend/uploads/jobs/*
+!backend/uploads/jobs/.gitkeep
 backend/uploads/batches/
 backend/.env
 **/__pycache__/

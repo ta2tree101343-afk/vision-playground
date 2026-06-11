@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
+from app.core.responses import UnicodeJSONResponse
 from app.dependencies.service_dependency import get_job_service
 from app.handlers.exception_handler import add_exception_handlers
 from app.middlewares.cors_middleware import add_cors_middleware
@@ -23,7 +24,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         yield
         await get_job_service().shutdown()
 
-    _app = FastAPI(title=settings.app_name, debug=settings.debug, lifespan=lifespan)
+    _app = FastAPI(title=settings.app_name, debug=settings.debug, lifespan=lifespan, default_response_class=UnicodeJSONResponse)
     add_cors_middleware(_app, settings)
     _app.add_middleware(GZipMiddleware, minimum_size=1000)
     add_logging_middleware(_app)

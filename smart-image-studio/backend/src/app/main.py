@@ -1,3 +1,4 @@
+import asyncio
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
@@ -5,22 +6,24 @@ from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.core.config import Settings, get_settings
+from app.core.config import get_settings
 from app.core.logging import configure_logging
 from app.core.responses import UnicodeJSONResponse
-from app.dependencies.service_dependency import get_job_service
+from app.db.engine import _run_alembic_upgrade
+from app.dependencies.service_dependency import get_job_repository, get_job_service
 from app.handlers.exception_handler import add_exception_handlers
 from app.middlewares.cors_middleware import add_cors_middleware
 from app.middlewares.logging_middleware import add_logging_middleware
 from app.routes.router import api_router
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
-    if settings is None:
-        settings = get_settings()
+def create_app() -> FastAPI:
+    settings = get_settings()
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
+        await asyncio.to_thread(_run_alembic_upgrade)
+        get_job_repository().mark_interrupted_jobs()
         yield
         await get_job_service().shutdown()
 

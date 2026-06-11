@@ -18,11 +18,10 @@ from app.services.storage_service import StorageService
 from conftest import make_png_bytes
 
 
-def _make_service(tmp_path: Path) -> tuple[JobService, MagicMock, MagicMock]:
+def _make_service(job_repo: "JobRepository") -> tuple[JobService, MagicMock, MagicMock]:
     image_processor = MagicMock(spec=ImageProcessor)
     storage_service = MagicMock(spec=StorageService)
-    repo = JobRepository(tmp_path / "history.json")
-    svc = JobService(image_processor, storage_service, repo)
+    svc = JobService(image_processor, storage_service, job_repo)
     return svc, image_processor, storage_service
 
 
@@ -36,19 +35,19 @@ def _ops() -> list[ImageOperationStep]:
     return [ImageOperationStep(operation=OperationType.GRAYSCALE)]
 
 
-def test_get_job_raises_not_found_for_unknown_id(tmp_path: Path) -> None:
-    svc, _, _ = _make_service(tmp_path)
+def test_get_job_raises_not_found_for_unknown_id(job_repo: JobRepository) -> None:
+    svc, _, _ = _make_service(job_repo)
     with pytest.raises(JobNotFoundError):
         svc.get_job("nonexistent")
 
 
-def test_list_jobs_returns_empty_initially(tmp_path: Path) -> None:
-    svc, _, _ = _make_service(tmp_path)
+def test_list_jobs_returns_empty_initially(job_repo: JobRepository) -> None:
+    svc, _, _ = _make_service(job_repo)
     assert svc.list_jobs() == []
 
 
-async def test_process_job_marks_failed_on_image_processing_error(tmp_path: Path) -> None:
-    svc, image_processor, storage_service = _make_service(tmp_path)
+async def test_process_job_marks_failed_on_image_processing_error(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, image_processor, storage_service = _make_service(job_repo)
     storage_service.save_original.return_value = _stored(tmp_path)
     image_processor.process.side_effect = ImageProcessingError("bad image")
 
@@ -63,8 +62,8 @@ async def test_process_job_marks_failed_on_image_processing_error(tmp_path: Path
     await svc.shutdown()
 
 
-async def test_process_job_marks_failed_on_mask_save_error(tmp_path: Path) -> None:
-    svc, image_processor, storage_service = _make_service(tmp_path)
+async def test_process_job_marks_failed_on_mask_save_error(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, image_processor, storage_service = _make_service(job_repo)
     storage_service.save_original.return_value = _stored(tmp_path)
 
     img = Image.new("RGB", (4, 4))
@@ -83,8 +82,8 @@ async def test_process_job_marks_failed_on_mask_save_error(tmp_path: Path) -> No
     await svc.shutdown()
 
 
-async def test_process_job_marks_failed_on_os_error(tmp_path: Path) -> None:
-    svc, image_processor, storage_service = _make_service(tmp_path)
+async def test_process_job_marks_failed_on_os_error(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, image_processor, storage_service = _make_service(job_repo)
     storage_service.save_original.return_value = _stored(tmp_path)
 
     img = Image.new("RGB", (4, 4))
@@ -101,8 +100,8 @@ async def test_process_job_marks_failed_on_os_error(tmp_path: Path) -> None:
     await svc.shutdown()
 
 
-async def test_process_job_marks_failed_on_unexpected_exception(tmp_path: Path) -> None:
-    svc, image_processor, storage_service = _make_service(tmp_path)
+async def test_process_job_marks_failed_on_unexpected_exception(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, image_processor, storage_service = _make_service(job_repo)
     storage_service.save_original.return_value = _stored(tmp_path)
     image_processor.process.side_effect = ValueError("totally unexpected")
 
@@ -116,8 +115,8 @@ async def test_process_job_marks_failed_on_unexpected_exception(tmp_path: Path) 
     await svc.shutdown()
 
 
-async def test_enqueue_job_removes_from_repo_when_queue_full(tmp_path: Path) -> None:
-    svc, _, storage_service = _make_service(tmp_path)
+async def test_enqueue_job_removes_from_repo_when_queue_full(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, _, storage_service = _make_service(job_repo)
     storage_service.save_original.return_value = _stored(tmp_path)
 
     with patch.object(svc._task_queue, "enqueue_nowait", side_effect=asyncio.QueueFull):
@@ -128,8 +127,8 @@ async def test_enqueue_job_removes_from_repo_when_queue_full(tmp_path: Path) -> 
     assert svc.list_jobs() == []
 
 
-async def test_process_job_completes_successfully(tmp_path: Path) -> None:
-    svc, image_processor, storage_service = _make_service(tmp_path)
+async def test_process_job_completes_successfully(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, image_processor, storage_service = _make_service(job_repo)
     storage_service.save_original.return_value = _stored(tmp_path)
 
     img = Image.new("RGB", (4, 4))
@@ -149,8 +148,8 @@ async def test_process_job_completes_successfully(tmp_path: Path) -> None:
     await svc.shutdown()
 
 
-async def test_queue_position_is_set_for_queued_jobs(tmp_path: Path) -> None:
-    svc, _, storage_service = _make_service(tmp_path)
+async def test_queue_position_is_set_for_queued_jobs(tmp_path: Path, job_repo: JobRepository) -> None:
+    svc, _, storage_service = _make_service(job_repo)
 
     slow_event = asyncio.Event()
 

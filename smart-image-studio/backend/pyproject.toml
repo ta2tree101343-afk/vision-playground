@@ -16,6 +16,9 @@ numpy = ">=1.26,<3.0"
 pydantic-settings = ">=2.4,<3.0"
 rapidocr-onnxruntime = ">=1.2,<2.0"
 openai = ">=1.66,<2.0"
+sqlalchemy = ">=2.0,<3.0"
+psycopg = {extras = ["binary"], version = ">=3.2,<4.0"}
+alembic = ">=1.13,<2.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "*"
@@ -25,6 +28,7 @@ pytest-cov = "*"
 pytest-asyncio = "*"
 httpx = "*"
 taskipy = "*"
+testcontainers = {extras = ["postgres"], version = ">=4.0,<5.0"}
 
 [tool.taskipy.tasks]
 dev = "PYTHONPATH=src uvicorn app.main:app --reload --port 8000"

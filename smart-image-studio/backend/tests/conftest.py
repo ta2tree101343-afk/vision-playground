@@ -1,10 +1,13 @@
 import io
 from collections.abc import Generator
+from contextlib import nullcontext
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
+from sqlalchemy import Engine, create_engine, text
+from sqlalchemy.orm import Session
 
 
 def make_png_bytes(width: int = 10, height: int = 10, color: tuple[int, int, int] = (128, 128, 128)) -> bytes:
@@ -43,17 +46,59 @@ def tmp_upload_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return tmp_path_factory.mktemp("uploads")
 
 
+@pytest.fixture(scope="session")
+def postgres_url() -> Generator[str, None, None]:
+    from testcontainers.postgres import PostgresContainer
+
+    with PostgresContainer("postgres:16-alpine") as pg:
+        yield pg.get_connection_url(driver="psycopg")
+
+
+@pytest.fixture(scope="session")
+def db_engine(postgres_url: str) -> Generator[Engine, None, None]:
+    from app.db.engine import _run_alembic_upgrade
+
+    engine = create_engine(postgres_url)
+    _run_alembic_upgrade(url=postgres_url)
+    yield engine
+    engine.dispose()
+
+
+@pytest.fixture
+def db_session(db_engine: Engine) -> Generator[Session, None, None]:
+    with db_engine.connect() as conn:
+        conn.begin()
+        with Session(conn, join_transaction_mode="create_savepoint") as session:
+            yield session
+        conn.rollback()
+
+
+@pytest.fixture
+def job_repo(db_session: Session) -> "JobRepository":
+    from app.repositories.job_repository import JobRepository
+
+    return JobRepository(lambda: nullcontext(db_session))
+
+
 @pytest.fixture()
-def client(tmp_upload_dir: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, None]:
-    from app.core.config import Settings, get_settings
+def client(
+    tmp_upload_dir: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    postgres_url: str,
+    db_engine: Engine,
+) -> Generator[TestClient, None, None]:
+    from app.core.config import get_settings
     from app.main import create_app
 
     monkeypatch.setenv("SMART_IMAGE_STUDIO_UPLOAD_DIR", str(tmp_upload_dir))
+    monkeypatch.setenv("SMART_IMAGE_STUDIO_DATABASE_URL", postgres_url)
     get_settings.cache_clear()
 
-    test_settings = Settings(upload_dir=str(tmp_upload_dir))
-    test_app = create_app(test_settings)
-    test_app.dependency_overrides[get_settings] = lambda: test_settings
-    with TestClient(test_app) as c:
-        yield c
-    get_settings.cache_clear()
+    try:
+        with TestClient(create_app()) as c:
+            yield c
+    finally:
+        with db_engine.connect() as conn:
+            conn.execute(text("TRUNCATE TABLE jobs"))
+            conn.commit()
+        get_settings.cache_clear()

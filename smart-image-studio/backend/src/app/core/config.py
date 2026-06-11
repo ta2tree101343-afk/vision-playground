@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     debug: bool = False
     cors_origins: str = "http://localhost:5173"
     upload_dir: str = "uploads"
-    database_url: str = "postgresql+psycopg://smart_image_studio:smart_image_studio@localhost:5432/smart_image_studio"
+    database_url: str
     llm_api_base_url: str = "http://localhost:1234/v1"
     llm_model: str = "qwen/qwen3-vl-8b"
     llm_api_key: str = "lm-studio"

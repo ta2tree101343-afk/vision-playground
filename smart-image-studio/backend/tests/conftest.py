@@ -1,7 +1,13 @@
 import io
+import os
 from collections.abc import Generator
 from contextlib import nullcontext
 from pathlib import Path
+
+# database_url has no default in Settings; set a placeholder so Settings() does not raise
+# ValidationError during test collection/import. The client fixture overrides this with
+# the real testcontainers URL before creating the app.
+os.environ.setdefault("SMART_IMAGE_STUDIO_DATABASE_URL", "postgresql+psycopg://localhost/test_unconfigured")
 
 import pytest
 from fastapi.testclient import TestClient

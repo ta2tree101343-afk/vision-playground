@@ -5,8 +5,8 @@ import { readSessionJson, writeSessionJson, removeSessionItem } from '@shared/li
 const KEY = 'smart-image-studio/latest-result';
 const LOG = 'processResultStore';
 
-export function saveLatestProcessResult(result: ProcessImageResponse): void {
-  writeSessionJson(KEY, normalizeProcessResult(result), LOG);
+export function saveLatestProcessResult(result: ProcessImageResponse): boolean {
+  return writeSessionJson(KEY, normalizeProcessResult(result), LOG);
 }
 
 export function readLatestProcessResult(): ProcessImageResponse | null {

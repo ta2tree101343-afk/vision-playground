@@ -18,11 +18,13 @@ export function readSessionJson<T>(key: string, logPrefix: string): T | null {
   }
 }
 
-export function writeSessionJson(key: string, value: unknown, logPrefix: string): void {
+export function writeSessionJson(key: string, value: unknown, logPrefix: string): boolean {
   try {
     getSessionStorage()?.setItem(key, JSON.stringify(value));
+    return true;
   } catch (error) {
     console.error(`[${logPrefix}] Failed to save to sessionStorage:`, error);
+    return false;
   }
 }
 

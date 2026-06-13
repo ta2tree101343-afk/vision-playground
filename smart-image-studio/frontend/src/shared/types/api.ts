@@ -2,7 +2,7 @@
 // - Aliases generated names to the frontend names used throughout the codebase.
 // - Overrides ImageProcessJob with a discriminated union (the backend model is flat).
 // - Keeps HealthResponse, ApiValidationErrorDetail, ApiErrorBody, OperationParameters,
-//   and ProcessImageRequest hand-written (shape mismatches or not in OpenAPI spec).
+//   OperationStep, and ProcessImageRequest hand-written (shape mismatches or not in OpenAPI spec).
 export type {
   OperationType,
   ProcessImageResponse,
@@ -17,14 +17,10 @@ export type {
   ImageAnalysisResult,
 } from '@shared/api/__generated__/api.types';
 
-// Alias: backend model is named ImageOperationStep, frontend uses OperationStep
-export type { ImageOperationStep as OperationStep } from '@shared/api/__generated__/api.types';
-
-import type { ProcessImageResponse } from '@shared/api/__generated__/api.types';
-import type { ImageOperationStep as OperationStep } from '@shared/api/__generated__/api.types';
+import type { OperationType, ProcessImageResponse } from '@shared/api/__generated__/api.types';
 
 // Hand-written: OperationParameters typed as { [key: string]: unknown } in generated file,
-// which loses field-level type safety. Keep the typed version.
+// because Pydantic model_serializer collapses the schema in OpenAPI.
 export interface OperationParameters {
   blur_strength?: number | null;
   blur_sigma?: number | null;
@@ -33,6 +29,13 @@ export interface OperationParameters {
   sharpen_strength?: number | null;
   denoise_strength?: number | null;
   detection_threshold?: number | null;
+}
+
+// Hand-written: ImageOperationStep.parameters is { [key: string]: unknown } in generated,
+// which loses field-level type safety. Defined here to use the typed OperationParameters.
+export interface OperationStep {
+  operation: OperationType;
+  parameters?: OperationParameters;
 }
 
 // Hand-written: form upload type — not an OpenAPI schema component

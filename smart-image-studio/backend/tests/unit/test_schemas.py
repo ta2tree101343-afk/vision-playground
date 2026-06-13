@@ -126,3 +126,34 @@ def test_unknown_parameter_field_raises_validation_error() -> None:
 def test_unknown_step_field_raises_validation_error() -> None:
     with pytest.raises(ValidationError):
         ImageOperationStep(operation=OperationType.GRAYSCALE, unknown_field="x")
+
+
+def test_job_response_discriminated_union_queued() -> None:
+    from app.schemas.job_response import ImageProcessJobResponse
+    from pydantic import TypeAdapter
+    adapter = TypeAdapter(ImageProcessJobResponse)
+    job = adapter.validate_python({
+        "job_id": "x", "status": "queued", "progress": 0,
+        "message": "", "filename": "f.png", "created_at": _NOW,
+        "applied_operations": [],
+    })
+    assert job.status == "queued"
+
+
+def test_job_response_discriminated_union_completed() -> None:
+    from app.schemas.image import ProcessImageResponse
+    from app.schemas.job_response import ImageProcessJobResponse
+    from pydantic import TypeAdapter
+    adapter = TypeAdapter(ImageProcessJobResponse)
+    result = ProcessImageResponse(
+        message="ok", original_image_url="/o", processed_image_url="/p",
+        processed_filename="out.png", applied_operations=[],
+    )
+    job = adapter.validate_python({
+        "job_id": "x", "status": "completed", "progress": 100,
+        "message": "", "filename": "f.png", "created_at": _NOW,
+        "started_at": _NOW, "completed_at": _LATER,
+        "applied_operations": [], "result": result.model_dump(mode="json"),
+    })
+    assert job.status == "completed"
+    assert job.result.message == "ok"

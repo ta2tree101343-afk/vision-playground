@@ -1,6 +1,6 @@
 import { apiClient } from '@shared/api/apiClient';
 import type { ImageProcessJob, ProcessImageRequest } from '@shared/types/api';
-import { ImageProcessJob as imageProcessJobSchema } from '@shared/api/__generated__/api.schemas';
+import { GetProcessJobApiImagesJobsJobIdGetResponse as imageProcessJobSchema } from '@shared/api/__generated__/api.schemas';
 import { normalizeProcessJob } from '@shared/lib/processResult';
 
 function parseJob(raw: unknown): ImageProcessJob {

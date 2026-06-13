@@ -74,6 +74,74 @@ export const CaptionResult = zod.object({
 export type CaptionResult = zod.input<typeof CaptionResult>;
 export type CaptionResultOutput = zod.output<typeof CaptionResult>;
 
+export const OperationType = zod.enum(['grayscale', 'blur', 'sharpen', 'denoise', 'edge_detection', 'brightness', 'contrast', 'background_removal', 'ocr', 'object_detection', 'caption_generation']);
+
+export type OperationType = zod.input<typeof OperationType>;
+export type OperationTypeOutput = zod.output<typeof OperationType>;
+
+export const imageOperationParametersBlurStrengthOneMax = 25;
+
+export const imageOperationParametersBlurSigmaOneMin = 0;
+export const imageOperationParametersBlurSigmaOneMax = 10;
+
+export const imageOperationParametersBrightnessOneMin = -100;
+export const imageOperationParametersBrightnessOneMax = 100;
+
+export const imageOperationParametersContrastOneMin = -100;
+export const imageOperationParametersContrastOneMax = 100;
+
+export const imageOperationParametersSharpenStrengthOneMax = 5;
+
+export const imageOperationParametersDenoiseStrengthOneMax = 30;
+
+export const imageOperationParametersDetectionThresholdOneMin = 0.1;
+export const imageOperationParametersDetectionThresholdOneMax = 0.95;
+
+
+
+export const ImageOperationParameters = zod.object({
+  "blur_strength": zod.union([zod.number().min(1).max(imageOperationParametersBlurStrengthOneMax),zod.null()]).optional(),
+  "blur_sigma": zod.union([zod.number().min(imageOperationParametersBlurSigmaOneMin).max(imageOperationParametersBlurSigmaOneMax),zod.null()]).optional(),
+  "brightness": zod.union([zod.number().min(imageOperationParametersBrightnessOneMin).max(imageOperationParametersBrightnessOneMax),zod.null()]).optional(),
+  "contrast": zod.union([zod.number().min(imageOperationParametersContrastOneMin).max(imageOperationParametersContrastOneMax),zod.null()]).optional(),
+  "sharpen_strength": zod.union([zod.number().min(1).max(imageOperationParametersSharpenStrengthOneMax),zod.null()]).optional(),
+  "denoise_strength": zod.union([zod.number().min(1).max(imageOperationParametersDenoiseStrengthOneMax),zod.null()]).optional(),
+  "detection_threshold": zod.union([zod.number().min(imageOperationParametersDetectionThresholdOneMin).max(imageOperationParametersDetectionThresholdOneMax),zod.null()]).optional()
+});
+
+export type ImageOperationParameters = zod.input<typeof ImageOperationParameters>;
+export type ImageOperationParametersOutput = zod.output<typeof ImageOperationParameters>;
+
+export const ImageOperationStep = zod.object({
+  "operation": OperationType,
+  "parameters": ImageOperationParameters.optional()
+});
+
+export type ImageOperationStep = zod.input<typeof ImageOperationStep>;
+export type ImageOperationStepOutput = zod.output<typeof ImageOperationStep>;
+
+export const ocrLineConfidenceMin = 0;
+export const ocrLineConfidenceMax = 1;
+
+
+
+export const OcrLine = zod.object({
+  "text": zod.string(),
+  "confidence": zod.number().min(ocrLineConfidenceMin).max(ocrLineConfidenceMax),
+  "bounding_box": BoundingBox
+});
+
+export type OcrLine = zod.input<typeof OcrLine>;
+export type OcrLineOutput = zod.output<typeof OcrLine>;
+
+export const OcrResult = zod.object({
+  "full_text": zod.string(),
+  "lines": zod.array(OcrLine).optional()
+});
+
+export type OcrResult = zod.input<typeof OcrResult>;
+export type OcrResultOutput = zod.output<typeof OcrResult>;
+
 export const detectedObjectConfidenceMin = 0;
 export const detectedObjectConfidenceMax = 1;
 
@@ -87,6 +155,88 @@ export const DetectedObject = zod.object({
 
 export type DetectedObject = zod.input<typeof DetectedObject>;
 export type DetectedObjectOutput = zod.output<typeof DetectedObject>;
+
+export const objectDetectionResultThresholdMin = 0;
+export const objectDetectionResultThresholdMax = 1;
+
+
+
+export const ObjectDetectionResult = zod.object({
+  "model": zod.string(),
+  "threshold": zod.number().min(objectDetectionResultThresholdMin).max(objectDetectionResultThresholdMax),
+  "detections": zod.array(DetectedObject).optional()
+});
+
+export type ObjectDetectionResult = zod.input<typeof ObjectDetectionResult>;
+export type ObjectDetectionResultOutput = zod.output<typeof ObjectDetectionResult>;
+
+export const ImageAnalysisResult = zod.object({
+  "background_removal": zod.union([BackgroundRemovalResult,zod.null()]).optional(),
+  "ocr": zod.union([OcrResult,zod.null()]).optional(),
+  "object_detection": zod.union([ObjectDetectionResult,zod.null()]).optional(),
+  "captions": zod.union([CaptionResult,zod.null()]).optional()
+});
+
+export type ImageAnalysisResult = zod.input<typeof ImageAnalysisResult>;
+export type ImageAnalysisResultOutput = zod.output<typeof ImageAnalysisResult>;
+
+export const ProcessImageResponse = zod.object({
+  "message": zod.string(),
+  "original_image_url": zod.string(),
+  "processed_image_url": zod.string(),
+  "processed_filename": zod.string(),
+  "applied_operations": zod.array(ImageOperationStep),
+  "analysis": zod.union([ImageAnalysisResult,zod.null()]).optional()
+});
+
+export type ProcessImageResponse = zod.input<typeof ProcessImageResponse>;
+export type ProcessImageResponseOutput = zod.output<typeof ProcessImageResponse>;
+
+export const completedJobResponseProgressMin = 0;
+export const completedJobResponseProgressMax = 100;
+
+
+
+export const CompletedJobResponse = zod.object({
+  "job_id": zod.string(),
+  "progress": zod.number().min(completedJobResponseProgressMin).max(completedJobResponseProgressMax),
+  "message": zod.string(),
+  "filename": zod.string(),
+  "created_at": zod.iso.datetime({"offset":true}),
+  "applied_operations": zod.array(ImageOperationStep),
+  "status": zod.literal("completed"),
+  "started_at": zod.iso.datetime({"offset":true}),
+  "completed_at": zod.iso.datetime({"offset":true}),
+  "result": ProcessImageResponse,
+  "queue_position": zod.null().optional(),
+  "error_message": zod.null().optional()
+});
+
+export type CompletedJobResponse = zod.input<typeof CompletedJobResponse>;
+export type CompletedJobResponseOutput = zod.output<typeof CompletedJobResponse>;
+
+export const failedJobResponseProgressMin = 0;
+export const failedJobResponseProgressMax = 100;
+
+
+
+export const FailedJobResponse = zod.object({
+  "job_id": zod.string(),
+  "progress": zod.number().min(failedJobResponseProgressMin).max(failedJobResponseProgressMax),
+  "message": zod.string(),
+  "filename": zod.string(),
+  "created_at": zod.iso.datetime({"offset":true}),
+  "applied_operations": zod.array(ImageOperationStep),
+  "status": zod.literal("failed"),
+  "started_at": zod.iso.datetime({"offset":true}),
+  "completed_at": zod.iso.datetime({"offset":true}),
+  "error_message": zod.string(),
+  "queue_position": zod.null().optional(),
+  "result": zod.null().optional()
+});
+
+export type FailedJobResponse = zod.input<typeof FailedJobResponse>;
+export type FailedJobResponseOutput = zod.output<typeof FailedJobResponse>;
 
 export const ValidationError = zod.object({
   "loc": zod.array(zod.union([zod.string(),zod.number()])),
@@ -115,110 +265,52 @@ export const HealthCheckResponse = zod.object({
 export type HealthCheckResponse = zod.input<typeof HealthCheckResponse>;
 export type HealthCheckResponseOutput = zod.output<typeof HealthCheckResponse>;
 
-export const ocrLineConfidenceMin = 0;
-export const ocrLineConfidenceMax = 1;
-
-
-
-export const OcrLine = zod.object({
-  "text": zod.string(),
-  "confidence": zod.number().min(ocrLineConfidenceMin).max(ocrLineConfidenceMax),
-  "bounding_box": BoundingBox
-});
-
-export type OcrLine = zod.input<typeof OcrLine>;
-export type OcrLineOutput = zod.output<typeof OcrLine>;
-
-export const OcrResult = zod.object({
-  "full_text": zod.string(),
-  "lines": zod.array(OcrLine).optional()
-});
-
-export type OcrResult = zod.input<typeof OcrResult>;
-export type OcrResultOutput = zod.output<typeof OcrResult>;
-
-export const objectDetectionResultThresholdMin = 0;
-export const objectDetectionResultThresholdMax = 1;
-
-
-
-export const ObjectDetectionResult = zod.object({
-  "model": zod.string(),
-  "threshold": zod.number().min(objectDetectionResultThresholdMin).max(objectDetectionResultThresholdMax),
-  "detections": zod.array(DetectedObject).optional()
-});
-
-export type ObjectDetectionResult = zod.input<typeof ObjectDetectionResult>;
-export type ObjectDetectionResultOutput = zod.output<typeof ObjectDetectionResult>;
-
-export const ImageAnalysisResult = zod.object({
-  "background_removal": zod.union([BackgroundRemovalResult,zod.null()]).optional(),
-  "ocr": zod.union([OcrResult,zod.null()]).optional(),
-  "object_detection": zod.union([ObjectDetectionResult,zod.null()]).optional(),
-  "captions": zod.union([CaptionResult,zod.null()]).optional()
-});
-
-export type ImageAnalysisResult = zod.input<typeof ImageAnalysisResult>;
-export type ImageAnalysisResultOutput = zod.output<typeof ImageAnalysisResult>;
-
-export const ImageOperationParameters = zod.record(zod.string(), zod.unknown());
-
-export type ImageOperationParameters = zod.input<typeof ImageOperationParameters>;
-export type ImageOperationParametersOutput = zod.output<typeof ImageOperationParameters>;
-
-export const OperationType = zod.enum(['grayscale', 'blur', 'sharpen', 'denoise', 'edge_detection', 'brightness', 'contrast', 'background_removal', 'ocr', 'object_detection', 'caption_generation']);
-
-export type OperationType = zod.input<typeof OperationType>;
-export type OperationTypeOutput = zod.output<typeof OperationType>;
-
-export const ImageOperationStep = zod.object({
-  "operation": OperationType,
-  "parameters": ImageOperationParameters.optional()
-});
-
-export type ImageOperationStep = zod.input<typeof ImageOperationStep>;
-export type ImageOperationStepOutput = zod.output<typeof ImageOperationStep>;
-
-export const JobStatus = zod.enum(['queued', 'running', 'completed', 'failed']);
-
-export type JobStatus = zod.input<typeof JobStatus>;
-export type JobStatusOutput = zod.output<typeof JobStatus>;
-
-export const ProcessImageResponse = zod.object({
-  "message": zod.string(),
-  "original_image_url": zod.string(),
-  "processed_image_url": zod.string(),
-  "processed_filename": zod.string(),
-  "applied_operations": zod.array(ImageOperationStep),
-  "analysis": zod.union([ImageAnalysisResult,zod.null()]).optional()
-});
-
-export type ProcessImageResponse = zod.input<typeof ProcessImageResponse>;
-export type ProcessImageResponseOutput = zod.output<typeof ProcessImageResponse>;
-
-export const imageProcessJobProgressMin = 0;
-export const imageProcessJobProgressMax = 100;
+export const queuedJobResponseProgressMin = 0;
+export const queuedJobResponseProgressMax = 100;
 
 
 
 
-export const ImageProcessJob = zod.object({
+export const QueuedJobResponse = zod.object({
   "job_id": zod.string(),
-  "status": JobStatus,
-  "progress": zod.number().min(imageProcessJobProgressMin).max(imageProcessJobProgressMax),
+  "progress": zod.number().min(queuedJobResponseProgressMin).max(queuedJobResponseProgressMax),
   "message": zod.string(),
   "filename": zod.string(),
-  "queue_position": zod.union([zod.number().min(1),zod.null()]).optional(),
   "created_at": zod.iso.datetime({"offset":true}),
-  "started_at": zod.union([zod.iso.datetime({"offset":true}),zod.null()]).optional(),
-  "completed_at": zod.union([zod.iso.datetime({"offset":true}),zod.null()]).optional(),
   "applied_operations": zod.array(ImageOperationStep),
-  "result": zod.union([ProcessImageResponse,zod.null()]).optional(),
-  "error_message": zod.union([zod.string(),zod.null()]).optional()
+  "status": zod.literal("queued"),
+  "queue_position": zod.union([zod.number().min(1),zod.null()]).optional(),
+  "started_at": zod.null().optional(),
+  "completed_at": zod.null().optional(),
+  "result": zod.null().optional(),
+  "error_message": zod.null().optional()
 });
 
-export type ImageProcessJob = zod.input<typeof ImageProcessJob>;
-export type ImageProcessJobOutput = zod.output<typeof ImageProcessJob>;
+export type QueuedJobResponse = zod.input<typeof QueuedJobResponse>;
+export type QueuedJobResponseOutput = zod.output<typeof QueuedJobResponse>;
+
+export const runningJobResponseProgressMin = 0;
+export const runningJobResponseProgressMax = 100;
+
+
+
+export const RunningJobResponse = zod.object({
+  "job_id": zod.string(),
+  "progress": zod.number().min(runningJobResponseProgressMin).max(runningJobResponseProgressMax),
+  "message": zod.string(),
+  "filename": zod.string(),
+  "created_at": zod.iso.datetime({"offset":true}),
+  "applied_operations": zod.array(ImageOperationStep),
+  "status": zod.literal("running"),
+  "started_at": zod.iso.datetime({"offset":true}),
+  "queue_position": zod.null().optional(),
+  "completed_at": zod.null().optional(),
+  "result": zod.null().optional(),
+  "error_message": zod.null().optional()
+});
+
+export type RunningJobResponse = zod.input<typeof RunningJobResponse>;
+export type RunningJobResponseOutput = zod.output<typeof RunningJobResponse>;
 /**
  * サービスが正常に稼働しているかを確認します。
  * @summary ヘルスチェック
@@ -241,7 +333,7 @@ export const ProcessImageApiImagesProcessPostResponse = ProcessImageResponse
  * 最近のジョブを作成日時の降順で返します。
  * @summary ジョブ一覧を取得
  */
-export const ListProcessJobsApiImagesJobsGetResponseItem = ImageProcessJob
+export const ListProcessJobsApiImagesJobsGetResponseItem = zod.union([QueuedJobResponse,RunningJobResponse,CompletedJobResponse,FailedJobResponse])
 export const ListProcessJobsApiImagesJobsGetResponse = zod.array(ListProcessJobsApiImagesJobsGetResponseItem)
 
 
@@ -253,7 +345,7 @@ export const ListProcessJobsApiImagesJobsGetResponse = zod.array(ListProcessJobs
  */
 export const CreateProcessJobApiImagesJobsPostBody = BodyCreateProcessJobApiImagesJobsPost
 
-export const CreateProcessJobApiImagesJobsPostResponse = ImageProcessJob
+export const CreateProcessJobApiImagesJobsPostResponse = zod.union([QueuedJobResponse,RunningJobResponse,CompletedJobResponse,FailedJobResponse])
 
 
 /**
@@ -264,4 +356,4 @@ export const GetProcessJobApiImagesJobsJobIdGetParams = zod.object({
   "job_id": zod.string()
 })
 
-export const GetProcessJobApiImagesJobsJobIdGetResponse = ImageProcessJob
+export const GetProcessJobApiImagesJobsJobIdGetResponse = zod.union([QueuedJobResponse,RunningJobResponse,CompletedJobResponse,FailedJobResponse])

@@ -93,7 +93,29 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/ImageProcessJob"
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/QueuedJobResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RunningJobResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CompletedJobResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/FailedJobResponse"
+                      }
+                    ],
+                    "discriminator": {
+                      "propertyName": "status",
+                      "mapping": {
+                        "queued": "#/components/schemas/QueuedJobResponse",
+                        "running": "#/components/schemas/RunningJobResponse",
+                        "completed": "#/components/schemas/CompletedJobResponse",
+                        "failed": "#/components/schemas/FailedJobResponse"
+                      }
+                    }
                   },
                   "type": "array",
                   "title": "Response List Process Jobs Api Images Jobs Get"
@@ -126,7 +148,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ImageProcessJob"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedJobResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunningJobResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedJobResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedJobResponse"
+                    }
+                  ],
+                  "title": "Response Create Process Job Api Images Jobs Post",
+                  "discriminator": {
+                    "propertyName": "status",
+                    "mapping": {
+                      "queued": "#/components/schemas/QueuedJobResponse",
+                      "running": "#/components/schemas/RunningJobResponse",
+                      "completed": "#/components/schemas/CompletedJobResponse",
+                      "failed": "#/components/schemas/FailedJobResponse"
+                    }
+                  }
                 }
               }
             }
@@ -178,7 +223,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ImageProcessJob"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedJobResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunningJobResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedJobResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedJobResponse"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "status",
+                    "mapping": {
+                      "queued": "#/components/schemas/QueuedJobResponse",
+                      "running": "#/components/schemas/RunningJobResponse",
+                      "completed": "#/components/schemas/CompletedJobResponse",
+                      "failed": "#/components/schemas/FailedJobResponse"
+                    }
+                  },
+                  "title": "Response Get Process Job Api Images Jobs  Job Id  Get"
                 }
               }
             }
@@ -342,6 +410,80 @@
         "type": "object",
         "title": "CaptionResult"
       },
+      "CompletedJobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "applied_operations": {
+            "items": {
+              "$ref": "#/components/schemas/ImageOperationStep"
+            },
+            "type": "array",
+            "title": "Applied Operations"
+          },
+          "status": {
+            "type": "string",
+            "const": "completed",
+            "title": "Status"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Completed At"
+          },
+          "result": {
+            "$ref": "#/components/schemas/ProcessImageResponse"
+          },
+          "queue_position": {
+            "type": "null",
+            "title": "Queue Position"
+          },
+          "error_message": {
+            "type": "null",
+            "title": "Error Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "progress",
+          "message",
+          "filename",
+          "created_at",
+          "applied_operations",
+          "status",
+          "started_at",
+          "completed_at",
+          "result"
+        ],
+        "title": "CompletedJobResponse"
+      },
       "DetectedObject": {
         "properties": {
           "label": {
@@ -365,6 +507,81 @@
           "bounding_box"
         ],
         "title": "DetectedObject"
+      },
+      "FailedJobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "applied_operations": {
+            "items": {
+              "$ref": "#/components/schemas/ImageOperationStep"
+            },
+            "type": "array",
+            "title": "Applied Operations"
+          },
+          "status": {
+            "type": "string",
+            "const": "failed",
+            "title": "Status"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Completed At"
+          },
+          "error_message": {
+            "type": "string",
+            "title": "Error Message"
+          },
+          "queue_position": {
+            "type": "null",
+            "title": "Queue Position"
+          },
+          "result": {
+            "type": "null",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "progress",
+          "message",
+          "filename",
+          "created_at",
+          "applied_operations",
+          "status",
+          "started_at",
+          "completed_at",
+          "error_message"
+        ],
+        "title": "FailedJobResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -440,8 +657,102 @@
         "title": "ImageAnalysisResult"
       },
       "ImageOperationParameters": {
-        "additionalProperties": true,
-        "type": "object"
+        "properties": {
+          "blur_strength": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 25.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blur Strength"
+          },
+          "blur_sigma": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 10.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blur Sigma"
+          },
+          "brightness": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100.0,
+                "minimum": -100.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brightness"
+          },
+          "contrast": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100.0,
+                "minimum": -100.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contrast"
+          },
+          "sharpen_strength": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sharpen Strength"
+          },
+          "denoise_strength": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 30.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Denoise Strength"
+          },
+          "detection_threshold": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 0.95,
+                "minimum": 0.1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detection Threshold"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ImageOperationParameters"
       },
       "ImageOperationStep": {
         "properties": {
@@ -458,121 +769,6 @@
           "operation"
         ],
         "title": "ImageOperationStep"
-      },
-      "ImageProcessJob": {
-        "properties": {
-          "job_id": {
-            "type": "string",
-            "title": "Job Id"
-          },
-          "status": {
-            "$ref": "#/components/schemas/JobStatus"
-          },
-          "progress": {
-            "type": "integer",
-            "maximum": 100.0,
-            "minimum": 0.0,
-            "title": "Progress"
-          },
-          "message": {
-            "type": "string",
-            "title": "Message"
-          },
-          "filename": {
-            "type": "string",
-            "title": "Filename"
-          },
-          "queue_position": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Queue Position"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          },
-          "started_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Started At"
-          },
-          "completed_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Completed At"
-          },
-          "applied_operations": {
-            "items": {
-              "$ref": "#/components/schemas/ImageOperationStep"
-            },
-            "type": "array",
-            "title": "Applied Operations"
-          },
-          "result": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ProcessImageResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "error_message": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Error Message"
-          }
-        },
-        "type": "object",
-        "required": [
-          "job_id",
-          "status",
-          "progress",
-          "message",
-          "filename",
-          "created_at",
-          "applied_operations"
-        ],
-        "title": "ImageProcessJob"
-      },
-      "JobStatus": {
-        "type": "string",
-        "enum": [
-          "queued",
-          "running",
-          "completed",
-          "failed"
-        ],
-        "title": "JobStatus"
       },
       "ObjectDetectionResult": {
         "properties": {
@@ -707,6 +903,156 @@
           "applied_operations"
         ],
         "title": "ProcessImageResponse"
+      },
+      "QueuedJobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "applied_operations": {
+            "items": {
+              "$ref": "#/components/schemas/ImageOperationStep"
+            },
+            "type": "array",
+            "title": "Applied Operations"
+          },
+          "status": {
+            "type": "string",
+            "const": "queued",
+            "title": "Status"
+          },
+          "queue_position": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queue Position"
+          },
+          "started_at": {
+            "type": "null",
+            "title": "Started At"
+          },
+          "completed_at": {
+            "type": "null",
+            "title": "Completed At"
+          },
+          "result": {
+            "type": "null",
+            "title": "Result"
+          },
+          "error_message": {
+            "type": "null",
+            "title": "Error Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "progress",
+          "message",
+          "filename",
+          "created_at",
+          "applied_operations",
+          "status"
+        ],
+        "title": "QueuedJobResponse"
+      },
+      "RunningJobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "applied_operations": {
+            "items": {
+              "$ref": "#/components/schemas/ImageOperationStep"
+            },
+            "type": "array",
+            "title": "Applied Operations"
+          },
+          "status": {
+            "type": "string",
+            "const": "running",
+            "title": "Status"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "queue_position": {
+            "type": "null",
+            "title": "Queue Position"
+          },
+          "completed_at": {
+            "type": "null",
+            "title": "Completed At"
+          },
+          "result": {
+            "type": "null",
+            "title": "Result"
+          },
+          "error_message": {
+            "type": "null",
+            "title": "Error Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "progress",
+          "message",
+          "filename",
+          "created_at",
+          "applied_operations",
+          "status",
+          "started_at"
+        ],
+        "title": "RunningJobResponse"
       },
       "ValidationError": {
         "properties": {

@@ -48,6 +48,53 @@ export type CaptionResult = {
   error_message?: string | null;
 };
 
+export type OperationType = typeof OperationType[keyof typeof OperationType];
+
+
+export const OperationType = {
+  grayscale: 'grayscale',
+  blur: 'blur',
+  sharpen: 'sharpen',
+  denoise: 'denoise',
+  edge_detection: 'edge_detection',
+  brightness: 'brightness',
+  contrast: 'contrast',
+  background_removal: 'background_removal',
+  ocr: 'ocr',
+  object_detection: 'object_detection',
+  caption_generation: 'caption_generation',
+} as const;
+
+export type ImageOperationParameters = {
+  blur_strength?: number | null;
+  blur_sigma?: number | null;
+  brightness?: number | null;
+  contrast?: number | null;
+  sharpen_strength?: number | null;
+  denoise_strength?: number | null;
+  detection_threshold?: number | null;
+};
+
+export type ImageOperationStep = {
+  operation: OperationType;
+  parameters?: ImageOperationParameters;
+};
+
+export type OcrLine = {
+  text: string;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  confidence: number;
+  bounding_box: BoundingBox;
+};
+
+export type OcrResult = {
+  full_text: string;
+  lines?: OcrLine[];
+};
+
 export type DetectedObject = {
   label: string;
   /**
@@ -56,6 +103,74 @@ export type DetectedObject = {
      */
   confidence: number;
   bounding_box: BoundingBox;
+};
+
+export type ObjectDetectionResult = {
+  model: string;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  threshold: number;
+  detections?: DetectedObject[];
+};
+
+export type ImageAnalysisResult = {
+  background_removal?: BackgroundRemovalResult | null;
+  ocr?: OcrResult | null;
+  object_detection?: ObjectDetectionResult | null;
+  captions?: CaptionResult | null;
+};
+
+export type ProcessImageResponse = {
+  message: string;
+  original_image_url: string;
+  processed_image_url: string;
+  processed_filename: string;
+  applied_operations: ImageOperationStep[];
+  analysis?: ImageAnalysisResult | null;
+};
+
+export type CompletedJobResponse = {
+  job_id: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress: number;
+  message: string;
+  filename: string;
+  created_at: string;
+  applied_operations: ImageOperationStep[];
+  status: 'completed';
+  started_at: string;
+  completed_at: string;
+  result: ProcessImageResponse;
+  /** @nullable */
+  queue_position?: null;
+  /** @nullable */
+  error_message?: null;
+};
+
+export type FailedJobResponse = {
+  job_id: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress: number;
+  message: string;
+  filename: string;
+  created_at: string;
+  applied_operations: ImageOperationStep[];
+  status: 'failed';
+  started_at: string;
+  completed_at: string;
+  error_message: string;
+  /** @nullable */
+  queue_position?: null;
+  /** @nullable */
+  result?: null;
 };
 
 export type ValidationErrorCtx = { [key: string]: unknown };
@@ -76,84 +191,8 @@ export type HealthCheckResponse = {
   status: 'ok';
 };
 
-export type OcrLine = {
-  text: string;
-  /**
-     * @minimum 0
-     * @maximum 1
-     */
-  confidence: number;
-  bounding_box: BoundingBox;
-};
-
-export type OcrResult = {
-  full_text: string;
-  lines?: OcrLine[];
-};
-
-export type ObjectDetectionResult = {
-  model: string;
-  /**
-     * @minimum 0
-     * @maximum 1
-     */
-  threshold: number;
-  detections?: DetectedObject[];
-};
-
-export type ImageAnalysisResult = {
-  background_removal?: BackgroundRemovalResult | null;
-  ocr?: OcrResult | null;
-  object_detection?: ObjectDetectionResult | null;
-  captions?: CaptionResult | null;
-};
-
-export type ImageOperationParameters = { [key: string]: unknown };
-
-export type OperationType = typeof OperationType[keyof typeof OperationType];
-
-
-export const OperationType = {
-  grayscale: 'grayscale',
-  blur: 'blur',
-  sharpen: 'sharpen',
-  denoise: 'denoise',
-  edge_detection: 'edge_detection',
-  brightness: 'brightness',
-  contrast: 'contrast',
-  background_removal: 'background_removal',
-  ocr: 'ocr',
-  object_detection: 'object_detection',
-  caption_generation: 'caption_generation',
-} as const;
-
-export type ImageOperationStep = {
-  operation: OperationType;
-  parameters?: ImageOperationParameters;
-};
-
-export type JobStatus = typeof JobStatus[keyof typeof JobStatus];
-
-
-export const JobStatus = {
-  queued: 'queued',
-  running: 'running',
-  completed: 'completed',
-  failed: 'failed',
-} as const;
-
-export type ProcessImageResponse = {
-  message: string;
-  original_image_url: string;
-  processed_image_url: string;
-  processed_filename: string;
-  applied_operations: ImageOperationStep[];
-  analysis?: ImageAnalysisResult | null;
-};
-
-export type ImageProcessJob = {
+export type QueuedJobResponse = {
   job_id: string;
-  status: JobStatus;
   /**
      * @minimum 0
      * @maximum 100
@@ -161,13 +200,41 @@ export type ImageProcessJob = {
   progress: number;
   message: string;
   filename: string;
-  queue_position?: number | null;
   created_at: string;
-  started_at?: string | null;
-  completed_at?: string | null;
   applied_operations: ImageOperationStep[];
-  result?: ProcessImageResponse | null;
-  error_message?: string | null;
+  status: 'queued';
+  queue_position?: number | null;
+  /** @nullable */
+  started_at?: null;
+  /** @nullable */
+  completed_at?: null;
+  /** @nullable */
+  result?: null;
+  /** @nullable */
+  error_message?: null;
+};
+
+export type RunningJobResponse = {
+  job_id: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress: number;
+  message: string;
+  filename: string;
+  created_at: string;
+  applied_operations: ImageOperationStep[];
+  status: 'running';
+  started_at: string;
+  /** @nullable */
+  queue_position?: null;
+  /** @nullable */
+  completed_at?: null;
+  /** @nullable */
+  result?: null;
+  /** @nullable */
+  error_message?: null;
 };
 
 export type healthCheckHealthGetResponse200 = {
@@ -286,7 +353,7 @@ formData.append(`operations`, bodyProcessImageApiImagesProcessPost.operations);
 
 
 export type listProcessJobsApiImagesJobsGetResponse200 = {
-  data: ImageProcessJob[]
+  data: (QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse)[]
   status: 200
 }
 
@@ -330,7 +397,7 @@ export const listProcessJobsApiImagesJobsGet = async ( options?: RequestInit): P
 
 
 export type createProcessJobApiImagesJobsPostResponse202 = {
-  data: ImageProcessJob
+  data: QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse
   status: 202
 }
 
@@ -401,7 +468,7 @@ formData.append(`operations`, bodyCreateProcessJobApiImagesJobsPost.operations);
 
 
 export type getProcessJobApiImagesJobsJobIdGetResponse200 = {
-  data: ImageProcessJob
+  data: QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse
   status: 200
 }
 

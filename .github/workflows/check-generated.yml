@@ -1,0 +1,41 @@
+name: Check generated files
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check-generated:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: smart-image-studio
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install backend dependencies
+        run: cd backend && poetry install --no-root
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Regenerate and check for diff
+        run: |
+          cd backend && poetry run task export-openapi
+          cd frontend && npm run codegen
+          git diff --exit-code

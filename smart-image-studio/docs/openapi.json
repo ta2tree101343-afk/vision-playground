@@ -1,0 +1,753 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Smart Image Studio API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "ヘルスチェック",
+        "description": "サービスが正常に稼働しているかを確認します。",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "\"ok\" を含むレスポンス",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/images/process": {
+      "post": {
+        "tags": [
+          "images"
+        ],
+        "summary": "画像処理",
+        "description": "アップロードされた画像に指定のパイプラインを適用し、加工結果を同期で返します。\n\n`operations` は `ImageOperationStep` の JSON 配列（文字列）です。",
+        "operationId": "process_image_api_images_process_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_process_image_api_images_process_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "加工後の画像URL・適用した処理一覧・解析結果を含むレスポンス",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ファイル名が不正、ファイルが空、画像として認識できない、または operations のバリデーションエラー"
+          },
+          "413": {
+            "description": "ファイルサイズが 20 MB を超えているか、画素数が上限を超えています"
+          },
+          "500": {
+            "description": "画像処理・マスク保存・ファイル保存のいずれかに失敗しました"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/images/jobs": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "ジョブ一覧を取得",
+        "description": "最近のジョブを作成日時の降順で返します。",
+        "operationId": "list_process_jobs_api_images_jobs_get",
+        "responses": {
+          "200": {
+            "description": "ジョブの一覧（新しい順）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ImageProcessJob"
+                  },
+                  "type": "array",
+                  "title": "Response List Process Jobs Api Images Jobs Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "ジョブを作成",
+        "description": "画像処理ジョブをキューに登録し、非同期で処理を開始します。\n\nジョブ ID を使って `GET /jobs/{job_id}` でステータスをポーリングしてください。",
+        "operationId": "create_process_job_api_images_jobs_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_process_job_api_images_jobs_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "作成されたジョブの初期状態（status: queued）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageProcessJob"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ファイル名が不正、ファイルが空、画像として認識できない、または operations のバリデーションエラー"
+          },
+          "413": {
+            "description": "ファイルサイズが 20 MB を超えているか、画素数が上限を超えています"
+          },
+          "503": {
+            "description": "ジョブキューが満杯です。しばらく後に再試行してください"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/images/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "ジョブを取得",
+        "description": "指定した `job_id` のジョブ詳細を返します。",
+        "operationId": "get_process_job_api_images_jobs__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "指定ジョブの現在の状態",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageProcessJob"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "指定されたジョブが見つかりません"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BackgroundRemovalResult": {
+        "properties": {
+          "foreground_ratio": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Foreground Ratio"
+          },
+          "mask_image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mask Image Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "foreground_ratio"
+        ],
+        "title": "BackgroundRemovalResult"
+      },
+      "Body_create_process_job_api_images_jobs_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "operations": {
+            "type": "string",
+            "title": "Operations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "operations"
+        ],
+        "title": "Body_create_process_job_api_images_jobs_post"
+      },
+      "Body_process_image_api_images_process_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "operations": {
+            "type": "string",
+            "title": "Operations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "operations"
+        ],
+        "title": "Body_process_image_api_images_process_post"
+      },
+      "BoundingBox": {
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "X"
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Y"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Width"
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Height"
+          }
+        },
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "title": "BoundingBox"
+      },
+      "CaptionCandidate": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "score"
+        ],
+        "title": "CaptionCandidate"
+      },
+      "CaptionResult": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/CaptionCandidate"
+            },
+            "type": "array",
+            "title": "Candidates"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          }
+        },
+        "type": "object",
+        "title": "CaptionResult"
+      },
+      "DetectedObject": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "bounding_box": {
+            "$ref": "#/components/schemas/BoundingBox"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "confidence",
+          "bounding_box"
+        ],
+        "title": "DetectedObject"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthCheckResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthCheckResponse"
+      },
+      "ImageAnalysisResult": {
+        "properties": {
+          "background_removal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BackgroundRemovalResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ocr": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OcrResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "object_detection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ObjectDetectionResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "captions": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CaptionResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "ImageAnalysisResult"
+      },
+      "ImageOperationParameters": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "ImageOperationStep": {
+        "properties": {
+          "operation": {
+            "$ref": "#/components/schemas/OperationType"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/ImageOperationParameters"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "operation"
+        ],
+        "title": "ImageOperationStep"
+      },
+      "ImageProcessJob": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "queue_position": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queue Position"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "applied_operations": {
+            "items": {
+              "$ref": "#/components/schemas/ImageOperationStep"
+            },
+            "type": "array",
+            "title": "Applied Operations"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcessImageResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status",
+          "progress",
+          "message",
+          "filename",
+          "created_at",
+          "applied_operations"
+        ],
+        "title": "ImageProcessJob"
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "completed",
+          "failed"
+        ],
+        "title": "JobStatus"
+      },
+      "ObjectDetectionResult": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "threshold": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Threshold"
+          },
+          "detections": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedObject"
+            },
+            "type": "array",
+            "title": "Detections"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model",
+          "threshold"
+        ],
+        "title": "ObjectDetectionResult"
+      },
+      "OcrLine": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "bounding_box": {
+            "$ref": "#/components/schemas/BoundingBox"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "confidence",
+          "bounding_box"
+        ],
+        "title": "OcrLine"
+      },
+      "OcrResult": {
+        "properties": {
+          "full_text": {
+            "type": "string",
+            "title": "Full Text"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/OcrLine"
+            },
+            "type": "array",
+            "title": "Lines"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_text"
+        ],
+        "title": "OcrResult"
+      },
+      "OperationType": {
+        "type": "string",
+        "enum": [
+          "grayscale",
+          "blur",
+          "sharpen",
+          "denoise",
+          "edge_detection",
+          "brightness",
+          "contrast",
+          "background_removal",
+          "ocr",
+          "object_detection",
+          "caption_generation"
+        ],
+        "title": "OperationType"
+      },
+      "ProcessImageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "original_image_url": {
+            "type": "string",
+            "title": "Original Image Url"
+          },
+          "processed_image_url": {
+            "type": "string",
+            "title": "Processed Image Url"
+          },
+          "processed_filename": {
+            "type": "string",
+            "title": "Processed Filename"
+          },
+          "applied_operations": {
+            "items": {
+              "$ref": "#/components/schemas/ImageOperationStep"
+            },
+            "type": "array",
+            "title": "Applied Operations"
+          },
+          "analysis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImageAnalysisResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "original_image_url",
+          "processed_image_url",
+          "processed_filename",
+          "applied_operations"
+        ],
+        "title": "ProcessImageResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

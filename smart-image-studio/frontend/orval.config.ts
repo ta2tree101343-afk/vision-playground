@@ -17,6 +17,11 @@ export default defineConfig({
       mode: 'single',
       target: './src/shared/api/__generated__/api.schemas.ts',
       client: 'zod',
+      override: {
+        zod: {
+          generateReusableSchemas: true,
+        },
+      },
     },
   },
 });

@@ -4,7 +4,10 @@ import {
   listProcessJobsApiImagesJobsGet,
   getProcessJobApiImagesJobsJobIdGet,
 } from '@shared/api/__generated__/api.types';
-import { GetProcessJobApiImagesJobsJobIdGetResponse as imageProcessJobSchema } from '@shared/api/__generated__/api.schemas';
+import {
+  GetProcessJobApiImagesJobsJobIdGetResponse as imageProcessJobSchema,
+  ListProcessJobsApiImagesJobsGetResponse as listJobsSchema,
+} from '@shared/api/__generated__/api.schemas';
 import { normalizeProcessJob } from '@shared/lib/processResult';
 
 function parseJob(raw: unknown): ImageProcessJob {
@@ -31,5 +34,5 @@ export async function fetchProcessJob(jobId: string): Promise<ImageProcessJob> {
 
 export async function fetchProcessJobs(): Promise<ImageProcessJob[]> {
   const raw = await listProcessJobsApiImagesJobsGet({ signal: AbortSignal.timeout(10_000) });
-  return (Array.isArray(raw as unknown) ? (raw as unknown as unknown[]) : []).map(parseJob);
+  return listJobsSchema.parse(raw as unknown).map((item) => parseJob(item as unknown));
 }

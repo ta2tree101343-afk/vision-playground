@@ -157,3 +157,30 @@ def test_job_response_discriminated_union_completed() -> None:
     })
     assert job.status == "completed"
     assert job.result.message == "ok"
+
+
+def test_job_response_discriminated_union_failed() -> None:
+    from app.schemas.job_response import ImageProcessJobResponse
+    from pydantic import TypeAdapter
+    adapter = TypeAdapter(ImageProcessJobResponse)
+    job = adapter.validate_python({
+        "job_id": "x", "status": "failed", "progress": 0,
+        "message": "", "filename": "f.png", "created_at": _NOW,
+        "started_at": _NOW, "completed_at": _LATER,
+        "applied_operations": [], "error_message": "something went wrong",
+    })
+    assert job.status == "failed"
+    assert job.error_message == "something went wrong"
+
+
+def test_completed_job_response_requires_result() -> None:
+    from app.schemas.job_response import ImageProcessJobResponse
+    from pydantic import TypeAdapter, ValidationError
+    adapter = TypeAdapter(ImageProcessJobResponse)
+    with pytest.raises(ValidationError):
+        adapter.validate_python({
+            "job_id": "x", "status": "completed", "progress": 100,
+            "message": "", "filename": "f.png", "created_at": _NOW,
+            "started_at": _NOW, "completed_at": _LATER,
+            "applied_operations": [],
+        })

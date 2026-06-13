@@ -1,6 +1,7 @@
 import type { ProcessImageResponse } from '@shared/types/api';
 import { normalizeProcessResult } from '@shared/lib/processResult';
 import { readSessionJson, writeSessionJson, removeSessionItem } from '@shared/lib/sessionJson';
+import { ProcessImageResponse as processImageResponseSchema } from '@shared/api/__generated__/api.schemas';
 
 const KEY = 'smart-image-studio/latest-result';
 const LOG = 'processResultStore';
@@ -22,14 +23,12 @@ export function readLatestProcessResult(): ReadProcessResult {
     return { status: 'error' };
   }
   if (parsed === null) return { status: 'empty' };
-  if (typeof parsed !== 'object') {
-    console.error(`[${LOG}] 保存された処理結果の形式が不正です。`);
+  const validation = processImageResponseSchema.safeParse(parsed);
+  if (!validation.success) {
+    console.error(`[${LOG}] 保存された処理結果の形式が不正です。`, validation.error.issues);
     removeSessionItem(KEY, LOG);
     return { status: 'error' };
   }
-  return { status: 'ok', value: parsed };
+  return { status: 'ok', value: validation.data as ProcessImageResponse };
 }
 
-export function clearLatestProcessResult(): void {
-  removeSessionItem(KEY, LOG);
-}

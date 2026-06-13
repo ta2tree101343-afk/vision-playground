@@ -6,6 +6,7 @@ export default defineConfig({
     output: {
       mode: 'single',
       target: './src/shared/api/__generated__/api.types.ts',
+      client: 'fetch',
       override: {
         useTypeOverInterfaces: true,
       },

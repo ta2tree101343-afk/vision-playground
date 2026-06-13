@@ -6,12 +6,6 @@
  * Smart Image Studio API
  * OpenAPI spec version: 0.1.0
  */
-import * as axios from 'axios';
-import type {
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-
 export type BackgroundRemovalResult = {
   /**
      * @minimum 0
@@ -178,17 +172,91 @@ export type ImageProcessJob = {
   error_message?: string | null;
 };
 
+export type healthCheckHealthGetResponse200 = {
+  data: HealthCheckResponse
+  status: 200
+}
+
+export type healthCheckHealthGetResponseSuccess = (healthCheckHealthGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type healthCheckHealthGetResponse = (healthCheckHealthGetResponseSuccess)
+
+export const getHealthCheckHealthGetUrl = () => {
+
+
+
+
+  return `/health`
+}
+
 /**
  * サービスが正常に稼働しているかを確認します。
  * @summary ヘルスチェック
  */
-export const healthCheckHealthGet = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<HealthCheckResponse>> => {
-    return axios.default.get(
-      `/health`,options
-    );
+export const healthCheckHealthGet = async ( options?: RequestInit): Promise<healthCheckHealthGetResponse> => {
+
+  const res = await fetch(getHealthCheckHealthGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
   }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: healthCheckHealthGetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as healthCheckHealthGetResponse
+}
+
+
+
+export type processImageApiImagesProcessPostResponse200 = {
+  data: ProcessImageResponse
+  status: 200
+}
+
+export type processImageApiImagesProcessPostResponse400 = {
+  data: void
+  status: 400
+}
+
+export type processImageApiImagesProcessPostResponse413 = {
+  data: void
+  status: 413
+}
+
+export type processImageApiImagesProcessPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type processImageApiImagesProcessPostResponse500 = {
+  data: void
+  status: 500
+}
+
+export type processImageApiImagesProcessPostResponseSuccess = (processImageApiImagesProcessPostResponse200) & {
+  headers: Headers;
+};
+export type processImageApiImagesProcessPostResponseError = (processImageApiImagesProcessPostResponse400 | processImageApiImagesProcessPostResponse413 | processImageApiImagesProcessPostResponse422 | processImageApiImagesProcessPostResponse500) & {
+  headers: Headers;
+};
+
+export type processImageApiImagesProcessPostResponse = (processImageApiImagesProcessPostResponseSuccess | processImageApiImagesProcessPostResponseError)
+
+export const getProcessImageApiImagesProcessPostUrl = () => {
+
+
+
+
+  return `/api/images/process`
+}
 
 /**
  * アップロードされた画像に指定のパイプラインを適用し、加工結果を同期で返します。
@@ -196,29 +264,114 @@ export const healthCheckHealthGet = (
  * `operations` は `ImageOperationStep` の JSON 配列（文字列）です。
  * @summary 画像処理
  */
-export const processImageApiImagesProcessPost = (
-    bodyProcessImageApiImagesProcessPost: BodyProcessImageApiImagesProcessPost, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ProcessImageResponse>> => {const formData = new FormData();
+export const processImageApiImagesProcessPost = async (bodyProcessImageApiImagesProcessPost: BodyProcessImageApiImagesProcessPost, options?: RequestInit): Promise<processImageApiImagesProcessPostResponse> => {
+    const formData = new FormData();
 formData.append(`file`, bodyProcessImageApiImagesProcessPost.file);
 formData.append(`operations`, bodyProcessImageApiImagesProcessPost.operations);
 
-    return axios.default.post(
-      `/api/images/process`,
-      formData,options
-    );
+  const res = await fetch(getProcessImageApiImagesProcessPostUrl(),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body: formData
   }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: processImageApiImagesProcessPostResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as processImageApiImagesProcessPostResponse
+}
+
+
+
+export type listProcessJobsApiImagesJobsGetResponse200 = {
+  data: ImageProcessJob[]
+  status: 200
+}
+
+export type listProcessJobsApiImagesJobsGetResponseSuccess = (listProcessJobsApiImagesJobsGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type listProcessJobsApiImagesJobsGetResponse = (listProcessJobsApiImagesJobsGetResponseSuccess)
+
+export const getListProcessJobsApiImagesJobsGetUrl = () => {
+
+
+
+
+  return `/api/images/jobs`
+}
 
 /**
  * 最近のジョブを作成日時の降順で返します。
  * @summary ジョブ一覧を取得
  */
-export const listProcessJobsApiImagesJobsGet = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ImageProcessJob[]>> => {
-    return axios.default.get(
-      `/api/images/jobs`,options
-    );
+export const listProcessJobsApiImagesJobsGet = async ( options?: RequestInit): Promise<listProcessJobsApiImagesJobsGetResponse> => {
+
+  const res = await fetch(getListProcessJobsApiImagesJobsGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
   }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: listProcessJobsApiImagesJobsGetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listProcessJobsApiImagesJobsGetResponse
+}
+
+
+
+export type createProcessJobApiImagesJobsPostResponse202 = {
+  data: ImageProcessJob
+  status: 202
+}
+
+export type createProcessJobApiImagesJobsPostResponse400 = {
+  data: void
+  status: 400
+}
+
+export type createProcessJobApiImagesJobsPostResponse413 = {
+  data: void
+  status: 413
+}
+
+export type createProcessJobApiImagesJobsPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type createProcessJobApiImagesJobsPostResponse503 = {
+  data: void
+  status: 503
+}
+
+export type createProcessJobApiImagesJobsPostResponseSuccess = (createProcessJobApiImagesJobsPostResponse202) & {
+  headers: Headers;
+};
+export type createProcessJobApiImagesJobsPostResponseError = (createProcessJobApiImagesJobsPostResponse400 | createProcessJobApiImagesJobsPostResponse413 | createProcessJobApiImagesJobsPostResponse422 | createProcessJobApiImagesJobsPostResponse503) & {
+  headers: Headers;
+};
+
+export type createProcessJobApiImagesJobsPostResponse = (createProcessJobApiImagesJobsPostResponseSuccess | createProcessJobApiImagesJobsPostResponseError)
+
+export const getCreateProcessJobApiImagesJobsPostUrl = () => {
+
+
+
+
+  return `/api/images/jobs`
+}
 
 /**
  * 画像処理ジョブをキューに登録し、非同期で処理を開始します。
@@ -226,32 +379,79 @@ export const listProcessJobsApiImagesJobsGet = (
  * ジョブ ID を使って `GET /jobs/{job_id}` でステータスをポーリングしてください。
  * @summary ジョブを作成
  */
-export const createProcessJobApiImagesJobsPost = (
-    bodyCreateProcessJobApiImagesJobsPost: BodyCreateProcessJobApiImagesJobsPost, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ImageProcessJob>> => {const formData = new FormData();
+export const createProcessJobApiImagesJobsPost = async (bodyCreateProcessJobApiImagesJobsPost: BodyCreateProcessJobApiImagesJobsPost, options?: RequestInit): Promise<createProcessJobApiImagesJobsPostResponse> => {
+    const formData = new FormData();
 formData.append(`file`, bodyCreateProcessJobApiImagesJobsPost.file);
 formData.append(`operations`, bodyCreateProcessJobApiImagesJobsPost.operations);
 
-    return axios.default.post(
-      `/api/images/jobs`,
-      formData,options
-    );
+  const res = await fetch(getCreateProcessJobApiImagesJobsPostUrl(),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body: formData
   }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: createProcessJobApiImagesJobsPostResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createProcessJobApiImagesJobsPostResponse
+}
+
+
+
+export type getProcessJobApiImagesJobsJobIdGetResponse200 = {
+  data: ImageProcessJob
+  status: 200
+}
+
+export type getProcessJobApiImagesJobsJobIdGetResponse404 = {
+  data: void
+  status: 404
+}
+
+export type getProcessJobApiImagesJobsJobIdGetResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type getProcessJobApiImagesJobsJobIdGetResponseSuccess = (getProcessJobApiImagesJobsJobIdGetResponse200) & {
+  headers: Headers;
+};
+export type getProcessJobApiImagesJobsJobIdGetResponseError = (getProcessJobApiImagesJobsJobIdGetResponse404 | getProcessJobApiImagesJobsJobIdGetResponse422) & {
+  headers: Headers;
+};
+
+export type getProcessJobApiImagesJobsJobIdGetResponse = (getProcessJobApiImagesJobsJobIdGetResponseSuccess | getProcessJobApiImagesJobsJobIdGetResponseError)
+
+export const getGetProcessJobApiImagesJobsJobIdGetUrl = (jobId: string,) => {
+
+
+
+
+  return `/api/images/jobs/${jobId}`
+}
 
 /**
  * 指定した `job_id` のジョブ詳細を返します。
  * @summary ジョブを取得
  */
-export const getProcessJobApiImagesJobsJobIdGet = (
-    jobId: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ImageProcessJob>> => {
-    return axios.default.get(
-      `/api/images/jobs/${jobId}`,options
-    );
-  }
+export const getProcessJobApiImagesJobsJobIdGet = async (jobId: string, options?: RequestInit): Promise<getProcessJobApiImagesJobsJobIdGetResponse> => {
 
-export type HealthCheckHealthGetResult = AxiosResponse<HealthCheckResponse>
-export type ProcessImageApiImagesProcessPostResult = AxiosResponse<ProcessImageResponse>
-export type ListProcessJobsApiImagesJobsGetResult = AxiosResponse<ImageProcessJob[]>
-export type CreateProcessJobApiImagesJobsPostResult = AxiosResponse<ImageProcessJob>
-export type GetProcessJobApiImagesJobsJobIdGetResult = AxiosResponse<ImageProcessJob>
+  const res = await fetch(getGetProcessJobApiImagesJobsJobIdGetUrl(jobId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getProcessJobApiImagesJobsJobIdGetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getProcessJobApiImagesJobsJobIdGetResponse
+}

@@ -7,11 +7,15 @@ export default defineConfig({
       mode: 'single',
       target: './src/shared/api/__generated__/api.types.ts',
       // 'fetch' avoids an axios dependency. Orval always generates fetch wrapper functions
-      // alongside types — there is no types-only mode. The generated functions are unused
-      // dead code; use shared/api/jobApi.ts for all HTTP calls.
+      // alongside types — there is no types-only mode. The generated functions are used
+      // in jobApi.ts via the customFetch mutator below.
       client: 'fetch',
       override: {
         useTypeOverInterfaces: true,
+        mutator: {
+          path: './src/shared/api/mutator.ts',
+          name: 'customFetch',
+        },
       },
     },
   },

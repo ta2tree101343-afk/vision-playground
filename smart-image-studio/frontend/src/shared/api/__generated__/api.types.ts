@@ -4,6 +4,7 @@
  * Smart Image Studio API
  * OpenAPI spec version: 0.1.0
  */
+import { customFetch } from '../mutator';
 export type BackgroundRemovalResult = {
   /**
      * @minimum 0
@@ -263,21 +264,14 @@ export const getHealthCheckHealthGetUrl = () => {
  */
 export const healthCheckHealthGet = async ( options?: RequestInit): Promise<healthCheckHealthGetResponse> => {
 
-  const res = await fetch(getHealthCheckHealthGetUrl(),
+  return customFetch<healthCheckHealthGetResponse>(getHealthCheckHealthGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: healthCheckHealthGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as healthCheckHealthGetResponse
-}
+);}
 
 
 
@@ -334,21 +328,14 @@ export const processImageApiImagesProcessPost = async (bodyProcessImageApiImages
 formData.append(`file`, bodyProcessImageApiImagesProcessPost.file);
 formData.append(`operations`, bodyProcessImageApiImagesProcessPost.operations);
 
-  const res = await fetch(getProcessImageApiImagesProcessPostUrl(),
+  return customFetch<processImageApiImagesProcessPostResponse>(getProcessImageApiImagesProcessPostUrl(),
   {
     ...options,
     method: 'POST'
     ,
     body: formData
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: processImageApiImagesProcessPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as processImageApiImagesProcessPostResponse
-}
+);}
 
 
 
@@ -378,21 +365,14 @@ export const getListProcessJobsApiImagesJobsGetUrl = () => {
  */
 export const listProcessJobsApiImagesJobsGet = async ( options?: RequestInit): Promise<listProcessJobsApiImagesJobsGetResponse> => {
 
-  const res = await fetch(getListProcessJobsApiImagesJobsGetUrl(),
+  return customFetch<listProcessJobsApiImagesJobsGetResponse>(getListProcessJobsApiImagesJobsGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: listProcessJobsApiImagesJobsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as listProcessJobsApiImagesJobsGetResponse
-}
+);}
 
 
 
@@ -449,21 +429,14 @@ export const createProcessJobApiImagesJobsPost = async (bodyCreateProcessJobApiI
 formData.append(`file`, bodyCreateProcessJobApiImagesJobsPost.file);
 formData.append(`operations`, bodyCreateProcessJobApiImagesJobsPost.operations);
 
-  const res = await fetch(getCreateProcessJobApiImagesJobsPostUrl(),
+  return customFetch<createProcessJobApiImagesJobsPostResponse>(getCreateProcessJobApiImagesJobsPostUrl(),
   {
     ...options,
     method: 'POST'
     ,
     body: formData
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createProcessJobApiImagesJobsPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createProcessJobApiImagesJobsPostResponse
-}
+);}
 
 
 
@@ -505,18 +478,11 @@ export const getGetProcessJobApiImagesJobsJobIdGetUrl = (jobId: string,) => {
  */
 export const getProcessJobApiImagesJobsJobIdGet = async (jobId: string, options?: RequestInit): Promise<getProcessJobApiImagesJobsJobIdGetResponse> => {
 
-  const res = await fetch(getGetProcessJobApiImagesJobsJobIdGetUrl(jobId),
+  return customFetch<getProcessJobApiImagesJobsJobIdGetResponse>(getGetProcessJobApiImagesJobsJobIdGetUrl(jobId),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getProcessJobApiImagesJobsJobIdGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getProcessJobApiImagesJobsJobIdGetResponse
-}
+);}

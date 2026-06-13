@@ -1,7 +1,6 @@
 from enum import Enum
-from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_serializer, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class OperationType(str, Enum):
@@ -28,10 +27,6 @@ class ImageOperationParameters(BaseModel):
     sharpen_strength: int | None = Field(default=None, ge=1, le=5)
     denoise_strength: int | None = Field(default=None, ge=1, le=30)
     detection_threshold: float | None = Field(default=None, ge=0.1, le=0.95)
-
-    @model_serializer(mode="wrap")
-    def _exclude_none(self, handler: Any) -> dict[str, Any]:
-        return {k: v for k, v in handler(self).items() if v is not None}
 
     @field_validator("blur_strength")
     @classmethod
@@ -106,6 +101,7 @@ class CaptionCandidate(BaseModel):
 
 class CaptionResult(BaseModel):
     candidates: list[CaptionCandidate] = Field(default_factory=list)
+    error_message: str | None = None
 
 
 class ImageAnalysisResult(BaseModel):

@@ -37,5 +37,5 @@ jobs:
       - name: Regenerate and check for diff
         run: |
           cd backend && poetry run task export-openapi
-          cd frontend && npm run codegen
+          cd ../frontend && npm run codegen
           git diff --exit-code

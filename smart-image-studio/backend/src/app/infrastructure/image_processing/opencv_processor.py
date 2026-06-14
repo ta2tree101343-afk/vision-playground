@@ -94,16 +94,17 @@ def apply_blur(image: Image.Image, parameters: ImageOperationParameters) -> Imag
 
     # RGBA: premultiply → 4ch まとめてぼかし → un-premultiply（透明縁への背景色にじみ防止）
     rgba_f = np.array(image.convert("RGBA"), dtype=np.float32)
-    alpha_f = rgba_f[:, :, 3:4] / 255.0
+    alpha_f = rgba_f[:, :, 3:4] / np.float32(255.0)
     rgba_f[:, :, :3] *= alpha_f
     try:
-        blurred = cv2.GaussianBlur(rgba_f, (kernel_size, kernel_size), sigmaX=sigma)
+        blurred_rgba = cv2.GaussianBlur(rgba_f, (kernel_size, kernel_size), sigmaX=sigma)
     except (cv2.error, ValueError) as exc:
         raise ImageProcessingError(f"ぼかし処理に失敗しました (kernel={kernel_size})。") from exc
-    blurred_alpha = blurred[:, :, 3:4] / 255.0
-    safe_alpha = np.where(blurred_alpha > 0, blurred_alpha, 1.0)
-    blurred[:, :, :3] /= safe_alpha
-    return Image.fromarray(np.clip(blurred, 0, 255).astype(np.uint8), mode="RGBA")
+    blurred_f: np.ndarray = np.asarray(blurred_rgba, dtype=np.float32)
+    blurred_alpha = blurred_f[:, :, 3:4] / np.float32(255.0)
+    safe_alpha = np.where(blurred_alpha > 0, blurred_alpha, np.float32(1.0))
+    blurred_f[:, :, :3] /= safe_alpha  # type: ignore[misc]  # cv2 stubs lose float dtype
+    return Image.fromarray(np.clip(blurred_f, 0, 255).astype(np.uint8), mode="RGBA")
 
 
 def apply_sharpen(image: Image.Image, parameters: ImageOperationParameters) -> Image.Image:

@@ -7,10 +7,18 @@ from PIL import Image, ImageEnhance
 from app.core.exceptions import ImageProcessingError
 from app.schemas.image import BackgroundRemovalResult, ImageAnalysisResult, ImageOperationParameters
 
-# sRGB ガンマ補正の指数（知覚的グレースケール変換に使用）
+# sRGB ガンマ補正の指数
 _GAMMA = 2.2
 
-# シャープ化: LAB 空間 Unsharp Mask の係数
+# BT.709 輝度係数（線形光用）— OpenCV BGR 順
+# Y = 0.2126R + 0.7152G + 0.0722B
+_BT709_B = 0.0722
+_BT709_G = 0.7152
+_BT709_R = 0.2126
+_BT709_BGR = np.array([[_BT709_B, _BT709_G, _BT709_R]], dtype=np.float32)
+
+# シャープ化: LAB 空間 Unsharp Mask の係数・上限
+_SHARPEN_STRENGTH_MAX = 5
 _SHARPEN_SMOOTH_SIGMA = 0.8   # Laplacian 前の平滑化 sigma
 _SHARPEN_HALO_SCALE = 0.3     # ハロー上限をローカルコントラストの何倍に抑えるか
 _SHARPEN_HALO_MIN = 2.0       # ハロー上限の最低値
@@ -20,9 +28,8 @@ _SHARPEN_FACTOR_SCALE = 0.35  # ユーザー強度を Laplacian 係数にスケ�
 _DENOISE_TEMPLATE_WINDOW = 7
 _DENOISE_SEARCH_WINDOW = 21
 
-# Canny エッジ検出の閾値
-_CANNY_THRESHOLD_LOW = 100
-_CANNY_THRESHOLD_HIGH = 200
+# Canny auto-threshold: 中央値 ± sigma 倍でアダプティブに設定
+_CANNY_SIGMA = 0.33
 
 # GrabCut 背景除去
 _GRABCUT_MARGIN_RATIO = 0.05  # マージン幅を短辺の何割にするか
@@ -63,8 +70,9 @@ def _apply_rgb_preserve_alpha(
 def apply_grayscale(image: Image.Image) -> Image.Image:
     def _transform(img: Image.Image) -> Image.Image:
         cv_image = pil_to_cv(img)
-        img_bgr_linear = np.power(cv_image.astype("float32") / 255.0, _GAMMA)
-        img_gray_linear = cv2.cvtColor(img_bgr_linear.astype("float32"), cv2.COLOR_BGR2GRAY)
+        # ガンマデコード → 線形光で BT.709 係数混合 → ガンマエンコード
+        img_linear = np.power(cv_image.astype("float32") / 255.0, _GAMMA)
+        img_gray_linear = np.clip(cv2.transform(img_linear, _BT709_BGR), 0.0, 1.0).squeeze()
         img_gray = (np.power(img_gray_linear, 1.0 / _GAMMA) * 255).astype("uint8")
         return Image.fromarray(img_gray).convert("RGB")
 
@@ -76,19 +84,30 @@ def apply_blur(image: Image.Image, parameters: ImageOperationParameters) -> Imag
     kernel_size = normalize_kernel_size(strength)
     sigma = float(parameters.blur_sigma) if parameters.blur_sigma is not None else 0.0
 
-    def _transform(img: Image.Image) -> Image.Image:
-        cv_image = pil_to_cv(img)
+    if image.mode != "RGBA":
+        cv_image = pil_to_cv(image.convert("RGB"))
         try:
             blurred = cv2.GaussianBlur(cv_image, (kernel_size, kernel_size), sigmaX=sigma)
         except (cv2.error, ValueError) as exc:
             raise ImageProcessingError(f"ぼかし処理に失敗しました (kernel={kernel_size})。") from exc
         return cv_to_pil(blurred)
 
-    return _apply_rgb_preserve_alpha(image, _transform)
+    # RGBA: premultiply → 4ch まとめてぼかし → un-premultiply（透明縁への背景色にじみ防止）
+    rgba_f = np.array(image.convert("RGBA"), dtype=np.float32)
+    alpha_f = rgba_f[:, :, 3:4] / 255.0
+    rgba_f[:, :, :3] *= alpha_f
+    try:
+        blurred = cv2.GaussianBlur(rgba_f, (kernel_size, kernel_size), sigmaX=sigma)
+    except (cv2.error, ValueError) as exc:
+        raise ImageProcessingError(f"ぼかし処理に失敗しました (kernel={kernel_size})。") from exc
+    blurred_alpha = blurred[:, :, 3:4] / 255.0
+    safe_alpha = np.where(blurred_alpha > 0, blurred_alpha, 1.0)
+    blurred[:, :, :3] /= safe_alpha
+    return Image.fromarray(np.clip(blurred, 0, 255).astype(np.uint8), mode="RGBA")
 
 
 def apply_sharpen(image: Image.Image, parameters: ImageOperationParameters) -> Image.Image:
-    strength = parameters.sharpen_strength or 1
+    strength = max(1, min(parameters.sharpen_strength or 1, _SHARPEN_STRENGTH_MAX))
 
     def _transform(img: Image.Image) -> Image.Image:
         cv_image = pil_to_cv(img)
@@ -137,7 +156,11 @@ def apply_edge_detection(image: Image.Image) -> Image.Image:
         cv_image = pil_to_cv(img)
         try:
             grayscale = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
-            edges = cv2.Canny(grayscale, threshold1=_CANNY_THRESHOLD_LOW, threshold2=_CANNY_THRESHOLD_HIGH)
+            median = float(np.median(grayscale))
+            low = max(0, int((1.0 - _CANNY_SIGMA) * median))
+            high = min(255, int((1.0 + _CANNY_SIGMA) * median))
+            high = max(high, low + 1)  # Canny requires threshold2 > threshold1
+            edges = cv2.Canny(grayscale, threshold1=low, threshold2=high)
         except (cv2.error, ValueError) as exc:
             raise ImageProcessingError("エッジ検出に失敗しました。") from exc
         return Image.fromarray(edges).convert("RGB")

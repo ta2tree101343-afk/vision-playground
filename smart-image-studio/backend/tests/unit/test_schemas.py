@@ -129,8 +129,9 @@ def test_unknown_step_field_raises_validation_error() -> None:
 
 
 def test_job_response_discriminated_union_queued() -> None:
-    from app.schemas.job_response import ImageProcessJobResponse
     from pydantic import TypeAdapter
+
+    from app.schemas.job_response import ImageProcessJobResponse
     adapter = TypeAdapter(ImageProcessJobResponse)
     job = adapter.validate_python({
         "job_id": "x", "status": "queued", "progress": 0,
@@ -141,9 +142,10 @@ def test_job_response_discriminated_union_queued() -> None:
 
 
 def test_job_response_discriminated_union_completed() -> None:
+    from pydantic import TypeAdapter
+
     from app.schemas.image import ProcessImageResponse
     from app.schemas.job_response import ImageProcessJobResponse
-    from pydantic import TypeAdapter
     adapter = TypeAdapter(ImageProcessJobResponse)
     result = ProcessImageResponse(
         message="ok", original_image_url="/o", processed_image_url="/p",
@@ -160,8 +162,9 @@ def test_job_response_discriminated_union_completed() -> None:
 
 
 def test_job_response_discriminated_union_failed() -> None:
-    from app.schemas.job_response import ImageProcessJobResponse
     from pydantic import TypeAdapter
+
+    from app.schemas.job_response import ImageProcessJobResponse
     adapter = TypeAdapter(ImageProcessJobResponse)
     job = adapter.validate_python({
         "job_id": "x", "status": "failed", "progress": 0,
@@ -174,8 +177,9 @@ def test_job_response_discriminated_union_failed() -> None:
 
 
 def test_completed_job_response_requires_result() -> None:
-    from app.schemas.job_response import ImageProcessJobResponse
     from pydantic import TypeAdapter, ValidationError
+
+    from app.schemas.job_response import ImageProcessJobResponse
     adapter = TypeAdapter(ImageProcessJobResponse)
     with pytest.raises(ValidationError):
         adapter.validate_python({

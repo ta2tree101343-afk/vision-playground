@@ -10,96 +10,38 @@ smart-image-studio/
 ├── README.md
 ├── docker-compose.yml
 ├── docs/
-│   └── architecture.md
+│   └── openapi.json                  # Orval 型生成用 OpenAPI スナップショット
 ├── frontend/
 │   ├── Dockerfile
 │   ├── .env.example
-│   ├── .dockerignore
-│   ├── index.html
-│   ├── package.json
-│   ├── postcss.config.cjs
-│   ├── tailwind.config.ts
-│   ├── tsconfig.app.json
-│   ├── tsconfig.json
-│   ├── tsconfig.node.json
 │   ├── vite.config.ts
-│   └── src/
-│       ├── App.tsx
-│       ├── api/
-│       │   ├── apiClient.ts
-│       │   ├── imageApi.ts
-│       │   └── pipelineApi.ts
-│       ├── components/
-│       │   ├── ActionPanel.tsx
-│       │   ├── AnalysisPanel.tsx
-│       │   ├── ComparisonPanel.tsx
-│       │   ├── ErrorBanner.tsx
-│       │   ├── Header.tsx
-│       │   ├── JobHistoryPanel.tsx
-│       │   ├── JobStatusPanel.tsx
-│       │   ├── NaturalLanguagePlanner.tsx
-│       │   ├── OperationSelector.tsx
-│       │   ├── ParameterControls.tsx
-│       │   ├── PipelineEditor.tsx
-│       │   ├── StatusBanner.tsx
-│       │   └── UploadPanel.tsx
-│       ├── config/
-│       │   ├── env.ts
-│       │   ├── imageOperations.ts
-│       │   └── pipelinePresets.ts
-│       ├── hooks/
-│       │   └── useImageStudio.ts
-│       ├── pages/
-│       │   ├── ResultPage.tsx
-│       │   └── StudioPage.tsx
-│       ├── styles/
-│       │   └── index.css
-│       ├── types/
-│       │   ├── api.ts
-│       │   └── image.ts
-│       ├── utils/
-│       │   ├── file.ts
-│       │   ├── navigation.ts
-│       │   ├── pipeline.ts
-│       │   ├── pipelineStorage.ts
-│       │   └── processResultStore.ts
-│       ├── main.tsx
-│       └── vite-env.d.ts
+│   └── src/                          # Feature-Sliced Design (FSD)
+│       ├── app/                      # エントリポイント・ルーティング・プロバイダ
+│       ├── pages/                    # StudioPage, ResultPage
+│       ├── widgets/                  # analysis-panel, comparison-panel など
+│       ├── features/                 # image-upload, job-tracking, pipeline-edit, operation-select
+│       ├── entities/                 # image, job, pipeline ドメインオブジェクト
+│       └── shared/                   # api, config, lib, types, ui
 └── backend/
     ├── .env.example
     ├── Dockerfile
     ├── pyproject.toml
-    ├── poetry.lock
-    ├── poetry.toml
-    ├── uploads/
-    │   └── .gitkeep
-    └── app/
-        ├── api/
-        │   ├── router.py
-        │   └── routes/
-        │       ├── health.py
-        │       ├── images.py
-        │       └── pipeline.py
-        ├── core/
-        │   └── config.py
-        ├── models/
-        │   ├── MobileNetSSD_deploy.prototxt
-        │   └── mobilenet_iter_73000.caffemodel
-        ├── schemas/
-        │   ├── image.py
-        │   └── pipeline.py
-        ├── services/
-        │   ├── image_processor.py
-        │   ├── job_service.py
-        │   ├── llm_interpreter.py
-        │   ├── object_detection_service.py
-        │   ├── ocr_service.py
-        │   ├── pipeline_interpreter.py
-        │   ├── pipeline_interpreter_factory.py
-        │   ├── rule_based_interpreter.py
-        │   └── storage_service.py
-        ├── utils/
-        │   └── image_validation.py
+    ├── alembic/                      # DBマイグレーション
+    └── src/app/
+        ├── assets/ml_models/         # MobileNetSSD_deploy.prototxt (caffemodel は要別途DL)
+        ├── controllers/              # リクエスト解析・レスポンス整形
+        ├── core/                     # config, constants, exceptions, logging
+        ├── db/                       # SQLAlchemy engine, models
+        ├── dependencies/             # @lru_cache シングルトンファクトリ
+        ├── handlers/                 # 例外ハンドラ
+        ├── infrastructure/           # image_processing, object_detection, ocr, llm, storage, queue
+        ├── middlewares/              # CORS, ロギング
+        ├── repositories/             # job_repository (SQLAlchemy)
+        ├── routes/                   # HTTPバインディング
+        ├── schemas/                  # Pydantic スキーマ
+        ├── services/                 # ビジネスロジック
+        ├── utils/                    # annotation_util, image_util, datetime_util など
+        ├── validators/               # リクエストバリデーション
         └── main.py
 ```
 
@@ -140,7 +82,6 @@ smart-image-studio/
   - job id 発行
   - 実行中ステータス
   - 進捗表示
-  - 完了通知
   - 処理履歴
 - Before / After 比較表示
   - ズーム同期
@@ -210,11 +151,10 @@ SMART_IMAGE_STUDIO_APP_NAME=Smart Image Studio API
 SMART_IMAGE_STUDIO_DEBUG=false
 SMART_IMAGE_STUDIO_CORS_ORIGINS=http://localhost:5173
 SMART_IMAGE_STUDIO_UPLOAD_DIR=uploads
-SMART_IMAGE_STUDIO_PIPELINE_INTERPRETER_MODE=rule_based
-SMART_IMAGE_STUDIO_LLM_API_BASE_URL=https://api.openai.com/v1
-SMART_IMAGE_STUDIO_LLM_API_KEY=
-SMART_IMAGE_STUDIO_LLM_MODEL=
-SMART_IMAGE_STUDIO_LLM_TIMEOUT_SECONDS=30
+SMART_IMAGE_STUDIO_DATABASE_URL=postgresql+psycopg://smart_image_studio:smart_image_studio@localhost:5432/smart_image_studio
+SMART_IMAGE_STUDIO_LLM_API_BASE_URL=http://localhost:1234/v1
+SMART_IMAGE_STUDIO_LLM_MODEL=qwen/qwen3-vl-8b
+SMART_IMAGE_STUDIO_LLM_API_KEY=lm-studio
 ```
 
 ## Docker での起動（推奨）
@@ -254,8 +194,6 @@ docker compose down -v       # named volume も含めて完全削除
 ```bash
 cd backend
 poetry run task dev
-# または
-poetry run uvicorn app.main:app --reload --port 8000
 ```
 
 ### frontend を起動
@@ -394,17 +332,9 @@ poetry run task test      # pytest（テスト）
 
 個別ジョブの状態を返します。`completed` になると `result` に before / after 用の結果が入ります。
 
-### POST `/api/pipeline/interpret`
-
-自然文を `PipelinePlan` に変換します。backend は settings に応じて `rule_based` または `llm` interpreter を使います。
-
-### POST `/api/images/process-pipeline`
-
-`multipart/form-data` で `file` と `plan` を受け取り、schema validate 済みの `PipelinePlan` を画像処理 executor に渡します。
-
 ## frontend API クライアント設計
 
-### `src/api/apiClient.ts`
+### `src/shared/api/apiClient.ts`
 
 共通責務を持ちます。
 
@@ -413,6 +343,14 @@ poetry run task test      # pytest（テスト）
 - JSON / text レスポンスの共通パース
 - HTTP エラーを `ApiError` に正規化
 - ダウンロード用の blob 取得
+
+### `src/shared/api/jobApi.ts`
+
+ジョブ API のユースケース関数を持ちます。
+
+- `createProcessJob()`
+- `fetchProcessJob()`
+- `fetchProcessJobs()`
 
 ### パイプライン保存
 
@@ -426,51 +364,32 @@ poetry run task test      # pytest（テスト）
 
 ### 非同期ジョブ追跡
 
-- frontend は polling で `/api/images/jobs/{job_id}` を監視
+- `useJobTracking` が polling で `/api/images/jobs/{job_id}` を 1500 ms 間隔で監視
+- ジョブ完了/失敗後にジョブ一覧を再取得し、次のアクティブジョブを再選択
 - 完了後は結果を sessionStorage に保存して `/result` へ遷移
 - ジョブ履歴は `/api/images/jobs` から取得
 
-### `src/api/imageApi.ts`
-
-画像処理 API のユースケース関数を持ちます。
-
-- `fetchHealth()`
-- `processImage()`
-- `createProcessJob()`
-- `fetchProcessJob()`
-- `fetchProcessJobs()`
-- `downloadProcessedImage()`
-
-### `src/api/pipelineApi.ts`
-
-- `interpretPipeline()`
-- `processPipelineImage()`
-
-画面側は `useImageStudio` からこれらを呼び出すだけにして、`fetch` を直接書かない構成にしています。
-
 ## 実装上のポイント
 
-- frontend は `components` / `api` / `hooks` / `types` / `pages` / `styles` に責務分離
-- backend は `routes` / `schemas` / `services` / `utils` に責務分離
-- `operations` を配列で受ける設計にして、将来的な複数処理チェーンに対応しやすくしている
-- 自然文解釈は `PipelineInterpreter` interface を切り、`RuleBasedInterpreter` と `LLMInterpreter` を差し替え可能にしている
+- frontend は **Feature-Sliced Design (FSD)** で `app` / `pages` / `widgets` / `features` / `entities` / `shared` の 6 層に責務分離
+- backend は `route → controller → service → repository` の層構造。`infrastructure/` が外部ライブラリをラップする
+- ジョブは **PostgreSQL** (SQLAlchemy + Alembic) で永続化。`JSONB` 型を使うため SQLite は非対応。インプロセスキューはメモリのみで、再起動時は `mark_interrupted_jobs()` でリカバリ
+- キュー満杯でジョブがキャンセルされた場合、保存済みの元画像ファイルも削除して孤児ファイルを防ぐ
+- `JobRepository.update()` はステータス遷移時に必須タイムスタンプ (`started_at`, `completed_at`) を自動補完する
+- `operations` を配列で受ける設計にして、複数処理チェーンに対応
 - 画像検証を frontend / backend の両方で実施
 - 加工結果は `backend/uploads/processed` にローカル保存
 - OCR は `rapidocr-onnxruntime` を使い、抽出文字列をレスポンスにも返す
-- object detection は repo 同梱の MobileNet SSD モデルでローカル推論する
+- object detection は MobileNet SSD モデルでローカル推論する (`mobilenet_iter_73000.caffemodel` は `.gitignore` で除外されているため、初回は https://github.com/chuanqi305/MobileNet-SSD から手動でダウンロードして `backend/src/app/assets/ml_models/` に配置する必要があります)
 - background removal は GrabCut ベースで透過 PNG を生成する
 
 ## 今後の拡張案
 
-- 背景除去
-- 物体検出
-- OCR
-- 自動キャプション生成
-- 処理履歴保存
 - ユーザーごとの作業セッション管理
-- 複数処理を UI 上で並べて順番に適用するワークフロー
+- クラウドストレージへの保存対応
+- 処理プリセットのサーバーサイド管理・共有
 
 ## 開発メモ
 
-- 詳細な構成意図は [docs/architecture.md](./docs/architecture.md) に記載しています。
+- `docs/openapi.json` は Orval の入力として使うため、削除しないでください。
 - 本 MVP はスマホ完全最適化までは行っていませんが、極端に崩れないレイアウトにしています。

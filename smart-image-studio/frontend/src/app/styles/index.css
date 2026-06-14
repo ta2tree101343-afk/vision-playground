@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* Core backgrounds */
+    --bg-base: #0a0b0c;
+    --bg-shell: #0e1012;
+    --bg-panel: #131518;
+    --bg-panel-raised: #181b1e;
+    --bg-input: #1a1d21;
+
+    /* Borders */
+    --border-subtle: #1f2226;
+    --border-default: #252a2f;
+    --border-strong: #313840;
+
+    /* Node colors */
+    --node-bg: #1c1f24;
+    --node-border: #2c3038;
+    --node-selected-bg: #141e2e;
+    --node-selected-border: #2a5bc8;
+    --node-selected-glow: rgba(42, 91, 200, 0.25);
+    --wire-color: #2a3a50;
+    --wire-active: #2a5bc8;
+    --connector-dot: #3a5a80;
+
+    /* Text */
+    --text-primary: #dce0e8;
+    --text-secondary: #7b8494;
+    --text-muted: #444c5a;
+    --text-label: #5a6270;
+
+    /* Tone tokens (status / notification) */
+    --tone-danger-bg: rgba(135, 65, 65, 0.16);
+    --tone-danger-border: rgba(170, 90, 90, 0.32);
+    --tone-danger-text: #d6a0a0;
+    --tone-danger-border-bright: rgba(248, 113, 113, 0.35);
+    --tone-danger-text-bright: #fca5a5;
+
+    --tone-warning-bg: rgba(145, 105, 50, 0.16);
+    --tone-warning-border: rgba(175, 130, 70, 0.32);
+    --tone-warning-text: #d2b07a;
+
+    --tone-info-bg: rgba(70, 95, 140, 0.16);
+    --tone-info-border: rgba(105, 130, 170, 0.32);
+    --tone-info-text: #a8b8d4;
+
+    --tone-success-bg: rgba(70, 95, 140, 0.16);
+    --tone-success-border: rgba(105, 130, 170, 0.32);
+    --tone-success-text: #a8b8d4;
+
+    --tone-running-bg: rgba(50, 120, 160, 0.14);
+    --tone-running-border: rgba(80, 150, 190, 0.30);
+    --tone-running-text: #8abcd4;
+
+    /* AI result tokens */
+    --tone-ai-bg: rgba(105, 80, 135, 0.15);
+    --tone-ai-border: rgba(135, 105, 165, 0.30);
+    --tone-ai-text: #b9a8cf;
+    --tone-ai-accent: #5fae9a;
+
+    /* Accent purple (vibrant; used for AI operation chips) */
+    --accent-purple-bg: rgba(147, 51, 234, 0.12);
+    --accent-purple-border: rgba(147, 51, 234, 0.30);
+    --accent-purple-border-strong: rgba(147, 51, 234, 0.50);
+    --accent-purple-text: #c084fc;
+
+    /* Visualization */
+    --viz-bar-fill: rgba(74, 127, 240, 0.6);
+
+    /* Accents */
+    --accent-blue: #365c9f;
+    --accent-blue-bright: #6f8fc8;
+    --accent-green: #365c9f;
+    --accent-green-dark: #1e40af;
+    --accent-amber: #b8893c;
+    --accent-teal: #5fae9a;
+    --accent-teal-dim: #14211f;
+
+    /* Interactive accent state backgrounds */
+    --accent-blue-bg: rgba(42, 91, 200, 0.12);
+    --accent-blue-bg-mid: rgba(42, 91, 200, 0.15);
+    --accent-blue-bg-bold: rgba(42, 91, 200, 0.20);
+    --accent-blue-bg-strong: rgba(54, 92, 159, 0.15);
+    --accent-blue-bg-dim: rgba(54, 92, 159, 0.18);
+    --accent-blue-border: rgba(42, 91, 200, 0.30);
+
+    /* Node canvas icon/panel backgrounds */
+    --node-icon-bg: rgba(255, 255, 255, 0.04);
+    --node-add-icon-bg: rgba(255, 255, 255, 0.03);
+    --node-menu-icon-bg: rgba(255, 255, 255, 0.05);
+    --chip-bg: rgba(255, 255, 255, 0.06);
+
+    /* Histogram chart */
+    --chart-red: rgba(200, 140, 140, 0.9);
+    --chart-green: rgba(120, 185, 140, 0.9);
+    --chart-blue: rgba(115, 170, 205, 0.9);
+    --chart-red-line: rgba(200, 140, 140, 0.8);
+    --chart-green-line: rgba(120, 185, 140, 0.8);
+    --chart-blue-line: rgba(115, 170, 205, 0.8);
+    --chart-luma-line: rgba(255, 255, 255, 0.4);
+    --chart-luma-fill: rgba(255, 255, 255, 0.05);
+    --chart-grid: rgba(255, 255, 255, 0.06);
+    --chart-axis: rgba(255, 255, 255, 0.12);
+    --chart-tick: rgba(255, 255, 255, 0.15);
+
+    /* Overlay bounding boxes (AnalysisPanel) */
+    --overlay-detection-border: rgba(74, 140, 175, 0.85);
+    --overlay-detection-bg: rgba(74, 140, 175, 0.04);
+    --overlay-detection-badge-bg: rgba(55, 110, 145, 0.88);
+    --overlay-ocr-border: rgba(85, 120, 185, 0.85);
+    --overlay-ocr-bg: rgba(85, 120, 185, 0.04);
+    --overlay-ocr-badge-bg: rgba(60, 90, 155, 0.88);
+
+    /* Sidebar */
+    --sidebar-bg: #0d1014;
+    --sidebar-border: #1a1e24;
+    --sidebar-item-hover: #161a1f;
+    --sidebar-item-active: #131c2c;
+    --sidebar-item-active-border: #1e3a70;
+
+    font-family: 'IBM Plex Sans JP', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+    background: var(--bg-base);
+  }
+
+  body {
+    @apply min-h-screen antialiased;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  button, input, select {
+    font: inherit;
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    padding: 9px 0;
+    /* Safari: input background IS the track */
+    background: linear-gradient(
+      to right,
+      var(--accent-blue-bright) var(--range-fill, 0%),
+      var(--border-strong) var(--range-fill, 0%)
+    );
+    background-clip: content-box;
+    border-radius: 99px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Chromium: track is rendered via this pseudo-element */
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--accent-blue-bright) var(--range-fill, 0%),
+      var(--border-strong) var(--range-fill, 0%)
+    );
+    border-radius: 99px;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: var(--accent-blue-bright);
+    cursor: pointer;
+    border: 2px solid var(--bg-panel);
+    box-shadow: 0 0 4px rgba(111, 143, 200, 0.35);
+  }
+
+  input[type='range']::-moz-range-progress {
+    height: 2px;
+    background: var(--accent-blue-bright);
+    border-radius: 99px;
+  }
+
+  input[type='range']::-moz-range-track {
+    height: 2px;
+    background: var(--border-strong);
+    border-radius: 99px;
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-blue-bright);
+    cursor: pointer;
+    border: 2px solid var(--bg-panel);
+    box-shadow: 0 0 4px rgba(111, 143, 200, 0.35);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+}
+
+/* Studio shell overrides */
+.studio-dark * {
+  box-sizing: border-box;
+}
+
+/* Node glow effect */
+.node-selected {
+  box-shadow: 0 0 0 1px var(--node-selected-border),
+              0 0 16px var(--node-selected-glow),
+              0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Slider track fill */
+.range-track {
+  position: relative;
+}
+
+/* Inspector accordion */
+.inspector-section {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Mono for values */
+.font-mono-val {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Node connector dot */
+.node-connector {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--connector-dot);
+  border: 1px solid var(--wire-color);
+  flex-shrink: 0;
+}
+
+/* Before/After comparison panel */
+.comparison-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background: var(--border-strong);
+  pointer-events: none;
+}
+
+/* Hover utilities — use instead of onMouseEnter/onMouseLeave to survive React re-renders */
+.hover-border-accent:hover { border-color: var(--accent-blue) !important; }
+.hover-text-primary:hover { color: var(--text-primary) !important; }
+.hover-text-accent:hover { color: var(--accent-blue-bright) !important; }
+.hover-bg-subtle:hover { background: rgba(255,255,255,0.05) !important; }
+.hover-bg-sidebar:hover { background: var(--sidebar-item-hover) !important; }
+.hover-bg-job-result:hover { background: rgba(42,91,200,0.2) !important; }

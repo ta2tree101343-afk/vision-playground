@@ -7,7 +7,7 @@ import cv2  # type: ignore
 import numpy as np  # type: ignore
 from PIL import Image, ImageDraw
 
-from app.domain.image_models import BoundingBox, DetectedObject, ObjectDetectionResult
+from app.schemas.image import BoundingBox, DetectedObject, ObjectDetectionResult
 from app.utils.annotation_util import draw_label
 
 logger = logging.getLogger(__name__)
@@ -51,6 +51,8 @@ class MobileNetSSDDetector:
             raise RuntimeError(
                 f"物体検出モデルが見つかりません。'{models_dir}' に "
                 "MobileNetSSD_deploy.prototxt と mobilenet_iter_73000.caffemodel を配置してください。"
+                " caffemodel は https://github.com/chuanqi305/MobileNet-SSD のリリースから"
+                "ダウンロードして同ディレクトリに置いてください (.gitignore で除外されています)。"
             )
         try:
             self._network = cv2.dnn.readNetFromCaffe(str(prototxt_path), str(weights_path))

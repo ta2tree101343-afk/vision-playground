@@ -1,5 +1,6 @@
-import type { PipelinePreset, PipelineStepDraft, SavedPipelineDraft } from '@entities/pipeline/model/pipeline.types';
+import type { ParameterKey, PipelinePreset, PipelineStepDraft, SavedPipelineDraft } from '@entities/pipeline/model/pipeline.types';
 import { clonePipelineTemplates, toPipelineTemplates } from '@features/pipeline-edit/lib/pipeline';
+import { parameterConstraints, sanitizeParameter } from '@features/operation-select/config/imageOperations';
 import { isBrowser } from '@shared/lib/browser';
 import { OperationType as operationTypeSchema } from '@shared/api/__generated__/api.schemas';
 
@@ -14,12 +15,14 @@ function isPipelineStepLike(value: unknown): value is PipelinePreset['steps'][nu
   return isObject(value) && operationTypeSchema.safeParse(value.operation).success;
 }
 
+const PARAMETER_KEYS = new Set(Object.keys(parameterConstraints));
+
 function sanitizeParameters(params: unknown): Record<string, number> {
   if (!isObject(params)) return {};
   const result: Record<string, number> = {};
   for (const [key, value] of Object.entries(params)) {
-    if (typeof value === 'number' && isFinite(value)) {
-      result[key] = value;
+    if (PARAMETER_KEYS.has(key)) {
+      result[key] = sanitizeParameter(key as ParameterKey, value);
     }
   }
   return result;
@@ -67,6 +70,7 @@ function writeJson(key: string, value: unknown): void {
   } catch (error) {
     throw new Error(
       `[pipelineStorage] Failed to serialize data for key "${key}": ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
     );
   }
 
@@ -75,6 +79,7 @@ function writeJson(key: string, value: unknown): void {
   } catch (error) {
     throw new Error(
       `[pipelineStorage] Failed to write to localStorage for key "${key}". Storage may be full or access may be blocked. Original error: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
     );
   }
 }

@@ -51,7 +51,9 @@ async def create_process_job(
     response_description="ジョブの一覧（新しい順）",
     responses={},
 )
-def list_process_jobs(controller: JobController = Depends(get_job_controller)) -> list[ImageProcessJob]:  # FastAPI serializes via response_model=list[ImageProcessJobResponse]
+def list_process_jobs(  # FastAPI serializes via response_model=list[ImageProcessJobResponse]
+    controller: JobController = Depends(get_job_controller),
+) -> list[ImageProcessJob]:
     return controller.list_jobs()
 
 
@@ -65,5 +67,8 @@ def list_process_jobs(controller: JobController = Depends(get_job_controller)) -
         status.HTTP_404_NOT_FOUND: {"description": "指定されたジョブが見つかりません"},
     },
 )
-def get_process_job(job_id: str, controller: JobController = Depends(get_job_controller)) -> ImageProcessJob:  # FastAPI serializes via response_model=ImageProcessJobResponse
+def get_process_job(  # FastAPI serializes via response_model=ImageProcessJobResponse
+    job_id: str,
+    controller: JobController = Depends(get_job_controller),
+) -> ImageProcessJob:
     return controller.get_job(job_id)

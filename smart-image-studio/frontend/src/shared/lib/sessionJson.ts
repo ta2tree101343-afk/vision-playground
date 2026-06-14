@@ -5,6 +5,9 @@ export function readSessionJson<T>(key: string, logPrefix: string): T | null {
   try {
     rawValue = getSessionStorage()?.getItem(key) ?? null;
   } catch (error) {
+    if (error instanceof DOMException && error.name === 'SecurityError') {
+      throw error;
+    }
     console.error(`[${logPrefix}] sessionStorage.getItem failed:`, error);
     return null;
   }

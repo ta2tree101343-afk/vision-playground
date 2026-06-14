@@ -9,7 +9,7 @@ from app.core.exceptions import ImageProcessingError
 
 logger = logging.getLogger(__name__)
 
-_CAPTION_PROMPT = "この画像を日本語で詳しく説明してください。"
+_CAPTION_PROMPT = "この画像を日本語で箇条書きで説明してください。"
 
 
 class LmStudioVisionClient:

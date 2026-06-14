@@ -8,9 +8,9 @@ function OperationChip({ operation }: { operation: OperationType }) {
     <span
       className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold"
       style={{
-        background: isAI ? 'rgba(147,51,234,0.12)' : 'rgba(255,255,255,0.06)',
-        color: isAI ? '#c084fc' : 'var(--text-secondary)',
-        border: `1px solid ${isAI ? 'rgba(147,51,234,0.3)' : 'var(--border-default)'}`,
+        background: isAI ? 'var(--accent-purple-bg)' : 'var(--chip-bg)',
+        color: isAI ? 'var(--accent-purple-text)' : 'var(--text-secondary)',
+        border: `1px solid ${isAI ? 'var(--accent-purple-border)' : 'var(--border-default)'}`,
       }}
     >
       {operationLabelsJa[operation]}
@@ -38,8 +38,9 @@ function applyFilters(
     filtered = filtered.filter((j) => j.filename.toLowerCase().includes(q));
   }
   if (filterDate) {
-    const dateStart = new Date(filterDate);
-    const dateEnd = new Date(dateStart.getTime() + 24 * 60 * 60 * 1000);
+    const [y, m, d] = filterDate.split('-').map(Number);
+    const dateStart = new Date(y, m - 1, d);
+    const dateEnd = new Date(y, m - 1, d + 1);
     filtered = filtered.filter((j) => {
       const t = new Date(j.created_at).getTime();
       return t >= dateStart.getTime() && t < dateEnd.getTime();
@@ -123,7 +124,7 @@ export function JobHistoryPanel({
                     </div>
 
                     {job.status === 'failed' && job.error_message && (
-                      <div className="mt-2 text-xs" style={{ color: '#fca5a5' }}>
+                      <div className="mt-2 text-xs" style={{ color: 'var(--tone-danger-text-bright)' }}>
                         {job.error_message}
                       </div>
                     )}
@@ -135,7 +136,7 @@ export function JobHistoryPanel({
                       onClick={() => onOpenResult(job)}
                       className="flex-shrink-0 self-start rounded-full px-4 py-1.5 text-sm font-semibold transition-all hover-bg-job-result"
                       style={{
-                        background: 'rgba(42,91,200,0.12)',
+                        background: 'var(--accent-blue-bg)',
                         border: '1px solid rgba(42,91,200,0.3)',
                         color: 'var(--accent-blue-bright)',
                       }}

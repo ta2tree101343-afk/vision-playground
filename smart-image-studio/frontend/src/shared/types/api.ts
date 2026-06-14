@@ -1,7 +1,6 @@
 // Adapter over Orval-generated types.
 // - Aliases generated names to the frontend names used throughout the codebase.
-// - Keeps HealthResponse, ApiValidationErrorDetail, ApiErrorBody hand-written
-//   (generated names and shapes differ from what apiClient.ts uses).
+// - Keeps ApiErrorBody hand-written (used by apiClient.ts for error message extraction).
 // - Keeps ProcessImageRequest hand-written (form upload — not an OpenAPI schema component).
 export type {
   OperationType,
@@ -35,22 +34,15 @@ export interface ProcessImageRequest {
   operations: ImageOperationStep[];
 }
 
-// Hand-written: generated HealthCheckResponse has { status: 'ok' } (literal);
-// apiClient.ts uses { status: string } (wider type for future-proofing).
-export interface HealthResponse {
-  status: string;
+// Hand-written: used by apiClient.ts to extract error messages from API error responses
+export interface ApiErrorBody {
+  detail?: string | ApiValidationErrorDetail[];
 }
 
-// Hand-written: generated HTTPValidationError.detail is ValidationError[] only (no string branch).
-// apiClient.ts uses the string branch for non-validation error responses.
-export interface ApiValidationErrorDetail {
+interface ApiValidationErrorDetail {
   loc?: Array<string | number>;
   msg?: string;
   type?: string;
-}
-
-export interface ApiErrorBody {
-  detail?: string | ApiValidationErrorDetail[];
 }
 
 // Orval v8 does not generate a named union type — it inlines the union per-endpoint.

@@ -63,5 +63,5 @@ export const customFetch = async <T>(url: string, options: RequestInit): Promise
     throw new ApiError(toErrorMessage(response.status, payload), response.status, payload);
   }
 
-  return payload as T;
+  return { data: payload, status: response.status, headers: response.headers } as T;
 };

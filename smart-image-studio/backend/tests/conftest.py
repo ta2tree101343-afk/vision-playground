@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import io
 import os
 from collections.abc import Generator
 from contextlib import nullcontext
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.repositories.job_repository import JobRepository
 
 # database_url has no default in Settings; set a placeholder so Settings() does not raise
 # ValidationError during test collection/import. The client fixture overrides this with
@@ -30,12 +36,28 @@ def png_bytes() -> bytes:
 def _all_cached_fns() -> list:
     from app.core.config import get_settings
     from app.dependencies.service_dependency import (
+        get_caption_service,
+        get_image_controller,
         get_image_processor,
+        get_job_controller,
         get_job_repository,
         get_job_service,
+        get_object_detection_service,
+        get_ocr_service,
         get_storage_service,
     )
-    return [get_settings, get_image_processor, get_storage_service, get_job_repository, get_job_service]
+    return [
+        get_settings,
+        get_ocr_service,
+        get_object_detection_service,
+        get_caption_service,
+        get_image_processor,
+        get_storage_service,
+        get_job_repository,
+        get_job_service,
+        get_image_controller,
+        get_job_controller,
+    ]
 
 
 @pytest.fixture(autouse=True)

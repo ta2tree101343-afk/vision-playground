@@ -37,3 +37,16 @@ backend/.env*
 # ML models (large binary — download separately or use Git LFS)
 backend/src/app/assets/ml_models/*.caffemodel
 
+# Local tool/runtime artifacts
+.claude/
+.playwright-mcp/
+
+# Editor settings
+.vscode/
+**/.vscode/
+
+# Local screenshots
+result-page*.png
+
+# Root-level Node install artifacts
+node_modules/

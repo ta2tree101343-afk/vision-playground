@@ -1,8 +1,7 @@
 import json
 
-from fastapi.testclient import TestClient
-
 from conftest import make_png_bytes
+from fastapi.testclient import TestClient
 
 
 def test_get_jobs_returns_empty_list_initially(client: TestClient) -> None:

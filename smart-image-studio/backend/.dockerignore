@@ -8,3 +8,4 @@ __pycache__/
 .python-version
 uploads/originals/
 uploads/processed/
+uploads/masks/

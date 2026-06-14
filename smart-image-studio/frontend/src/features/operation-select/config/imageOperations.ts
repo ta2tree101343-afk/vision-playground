@@ -1,6 +1,6 @@
 import type { OperationType } from '@shared/types/api';
 import type { OperationOption } from '@features/operation-select/model/operation.types';
-import { asUIThreshold, type ParameterState } from '@entities/pipeline/model/pipeline.types';
+import { asUIThreshold, type ParameterKey, type ParameterState } from '@entities/pipeline/model/pipeline.types';
 
 export const defaultParameterState: ParameterState = {
   blurStrength: 5,
@@ -11,6 +11,36 @@ export const defaultParameterState: ParameterState = {
   denoiseStrength: 8,
   detectionThreshold: asUIThreshold(45),
 };
+
+type ParameterConstraint = {
+  min: number;
+  max: number;
+  integer: boolean;
+  odd?: true;
+};
+
+export const parameterConstraints: Record<ParameterKey, ParameterConstraint> = {
+  blurStrength:       { min: 1,    max: 25,  integer: true, odd: true },
+  blurSigma:          { min: 0,    max: 10,  integer: false },
+  brightness:         { min: -100, max: 100, integer: false },
+  contrast:           { min: -100, max: 100, integer: false },
+  sharpenStrength:    { min: 1,    max: 5,   integer: true },
+  denoiseStrength:    { min: 1,    max: 30,  integer: true },
+  detectionThreshold: { min: 10,   max: 95,  integer: true },
+};
+
+export function sanitizeParameter(key: ParameterKey, value: unknown): number {
+  const { min, max, integer, odd } = parameterConstraints[key];
+  const def = defaultParameterState[key];
+  if (typeof value !== 'number' || !isFinite(value)) return def;
+  if (value < min || value > max) return def;
+  if (integer && !Number.isInteger(value)) return def;
+  if (odd && value % 2 === 0) {
+    const snapped = value + 1;
+    return snapped <= max ? snapped : def;
+  }
+  return value;
+}
 
 export const operationLabels: Record<OperationType, string> = {
   grayscale: 'Grayscale',

@@ -1,9 +1,8 @@
 import json
 from unittest.mock import patch
 
-from fastapi.testclient import TestClient
-
 from conftest import make_png_bytes
+from fastapi.testclient import TestClient
 
 
 def test_process_image_grayscale_returns_200(client: TestClient) -> None:
@@ -61,7 +60,19 @@ def test_process_image_missing_file_returns_422(client: TestClient) -> None:
 def test_process_image_returns_500_on_image_processing_error(client: TestClient) -> None:
     from app.core.exceptions import ImageProcessingError
     operations = json.dumps([{"operation": "grayscale"}])
-    with patch("app.usecases.image_usecase.ImageUsecase.process", side_effect=ImageProcessingError("cv2 failed")):
+    with patch("app.services.image_processor.ImageProcessor.process", side_effect=ImageProcessingError("cv2 failed")):
+        response = client.post(
+            "/api/images/process",
+            files={"file": ("test.png", make_png_bytes(), "image/png")},
+            data={"operations": operations},
+        )
+    assert response.status_code == 500
+
+
+def test_process_image_returns_500_on_mask_save_error(client: TestClient) -> None:
+    from app.core.exceptions import MaskSaveError
+    operations = json.dumps([{"operation": "grayscale"}])
+    with patch("app.controllers.image_controller.save_and_build_response", side_effect=MaskSaveError("mask write failed")):
         response = client.post(
             "/api/images/process",
             files={"file": ("test.png", make_png_bytes(), "image/png")},
@@ -72,7 +83,7 @@ def test_process_image_returns_500_on_image_processing_error(client: TestClient)
 
 def test_process_image_returns_500_on_os_error(client: TestClient) -> None:
     operations = json.dumps([{"operation": "grayscale"}])
-    with patch("app.usecases.image_usecase.ImageUsecase.process", side_effect=OSError("disk full")):
+    with patch("app.services.storage_service.StorageService.save_original", side_effect=OSError("disk full")):
         response = client.post(
             "/api/images/process",
             files={"file": ("test.png", make_png_bytes(), "image/png")},

@@ -9,30 +9,40 @@ import {
   ListProcessJobsApiImagesJobsGetResponse as listJobsSchema,
 } from '@shared/api/__generated__/api.schemas';
 import { normalizeProcessJob } from '@shared/lib/processResult';
+import { ApiError } from '@shared/api/apiClient';
 
 function parseJob(raw: unknown): ImageProcessJob {
-  return normalizeProcessJob(imageProcessJobSchema.parse(raw) as unknown as ImageProcessJob);
+  try {
+    return normalizeProcessJob(imageProcessJobSchema.parse(raw) as unknown as ImageProcessJob);
+  } catch (error) {
+    throw new ApiError('サーバーのレスポンス形式が不正です。', 0, error);
+  }
 }
 
 export async function createProcessJob(payload: ProcessImageRequest): Promise<ImageProcessJob> {
   if (payload.operations.length === 0) {
     throw new Error('画像処理には 1 つ以上の operation が必要です。');
   }
-  const raw = await createProcessJobApiImagesJobsPost({
+  const { data } = await createProcessJobApiImagesJobsPost({
     file: payload.file,
     operations: JSON.stringify(payload.operations),
   });
-  return parseJob(raw);
+  return parseJob(data as unknown);
 }
 
 export async function fetchProcessJob(jobId: string): Promise<ImageProcessJob> {
-  const raw = await getProcessJobApiImagesJobsJobIdGet(jobId, {
+  const { data } = await getProcessJobApiImagesJobsJobIdGet(jobId, {
     signal: AbortSignal.timeout(10_000),
   });
-  return parseJob(raw);
+  return parseJob(data as unknown);
 }
 
 export async function fetchProcessJobs(): Promise<ImageProcessJob[]> {
-  const raw = await listProcessJobsApiImagesJobsGet({ signal: AbortSignal.timeout(10_000) });
-  return listJobsSchema.parse(raw as unknown).map((item) => parseJob(item as unknown));
+  const { data } = await listProcessJobsApiImagesJobsGet({ signal: AbortSignal.timeout(10_000) });
+  try {
+    return listJobsSchema.parse(data as unknown).map((item) => parseJob(item as unknown));
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError('サーバーのレスポンス形式が不正です。', 0, error);
+  }
 }

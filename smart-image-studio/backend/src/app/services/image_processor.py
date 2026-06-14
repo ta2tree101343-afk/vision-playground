@@ -24,6 +24,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+
 @dataclass(frozen=True)
 class ImageProcessingResult:
     image: Image.Image
@@ -33,16 +34,15 @@ class ImageProcessingResult:
 
 
 class ImageProcessor:
-    def __init__(self) -> None:
-        self._ocr_service: "OcrService | None" = None
-        self._object_detection_service: "ObjectDetectionService | None" = None
-        self._caption_service: "CaptionService | None" = None
-
-    def set_ocr_service(self, ocr_service: "OcrService") -> None:
-        self._ocr_service = ocr_service
-
-    def set_object_detection_service(self, detection_service: "ObjectDetectionService") -> None:
-        self._object_detection_service = detection_service
+    def __init__(
+        self,
+        ocr_service_factory: "Callable[[], OcrService]",
+        object_detection_service_factory: "Callable[[], ObjectDetectionService]",
+        caption_service_factory: "Callable[[], CaptionService]",
+    ) -> None:
+        self._ocr_factory = ocr_service_factory
+        self._detection_factory = object_detection_service_factory
+        self._caption_factory = caption_service_factory
 
     def process(
         self,
@@ -110,7 +110,7 @@ class ImageProcessor:
                 result_image, analysis, mask = cv_ops.apply_background_removal(image)
                 return ImageProcessingResult(image=result_image, analysis=analysis, background_mask=mask)
             case OperationType.OCR:
-                ocr_exec = self._get_ocr_service().recognize(image)
+                ocr_exec = self._ocr_factory().recognize(image)
                 return ImageProcessingResult(
                     image=image,
                     analysis=ImageAnalysisResult(ocr=ocr_exec.result),
@@ -118,43 +118,21 @@ class ImageProcessor:
                 )
             case OperationType.OBJECT_DETECTION:
                 threshold = p.detection_threshold or 0.45
-                det_exec = self._get_object_detection_service().detect(image, threshold)
+                det_exec = self._detection_factory().detect(image, threshold)
                 return ImageProcessingResult(
                     image=image,
                     analysis=ImageAnalysisResult(object_detection=det_exec.result),
                     overlays={"object_detection_overlay": det_exec.overlay},
                 )
             case OperationType.CAPTION_GENERATION:
-                captions = self._get_caption_service().generate(image)
+                try:
+                    captions = self._caption_factory().generate(image)
+                except ImageProcessingError as exc:
+                    logger.warning("LM Studio unavailable, skipping LLM caption: %s", exc, exc_info=True)
+                    captions = CaptionResult(candidates=[], error_message=str(exc))
                 return ImageProcessingResult(image=image, analysis=ImageAnalysisResult(captions=captions))
             case _:
                 assert_never(step.operation)
-
-    def _get_ocr_service(self) -> "OcrService":
-        if self._ocr_service is None:
-            from app.services.ocr_service import OcrService
-
-            self._ocr_service = OcrService()
-        return self._ocr_service
-
-    def _get_object_detection_service(self) -> "ObjectDetectionService":
-        if self._object_detection_service is None:
-            from app.core.config import get_settings
-            from app.services.object_detection_service import ObjectDetectionService
-
-            self._object_detection_service = ObjectDetectionService(get_settings().ml_models_path)
-        return self._object_detection_service
-
-    def _get_caption_service(self) -> "CaptionService":
-        if self._caption_service is None:
-            from app.core.config import get_settings
-            from app.infrastructure.llm.lm_studio_client import LmStudioVisionClient
-            from app.services.caption_service import CaptionService
-
-            settings = get_settings()
-            client = LmStudioVisionClient(settings.llm_api_base_url, settings.llm_model, settings.llm_api_key)
-            self._caption_service = CaptionService(client)
-        return self._caption_service
 
     @staticmethod
     def _merge_analysis(current: ImageAnalysisResult | None, incoming: ImageAnalysisResult | None) -> ImageAnalysisResult | None:
@@ -176,7 +154,7 @@ class ImageProcessor:
                 result.background_removal is not None,
                 result.ocr is not None,
                 result.object_detection is not None,
-                result.captions is not None and len(result.captions.candidates) > 0,
+                result.captions is not None,
             )
         )
 
@@ -218,5 +196,6 @@ class ImageProcessor:
             _add(f"{subject} を切り抜いた画像", 0.68)
 
         if candidates:
-            result.captions = CaptionResult(candidates=candidates[:4])
+            existing_error = result.captions.error_message if result.captions is not None else None
+            result.captions = CaptionResult(candidates=candidates[:4], error_message=existing_error)
         return result

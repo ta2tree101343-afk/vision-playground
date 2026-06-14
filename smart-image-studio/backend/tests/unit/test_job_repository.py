@@ -156,3 +156,66 @@ def test_completed_job_roundtrip_preserves_result(job_repo: JobRepository) -> No
     assert result.result is not None
     assert result.result.original_image_url == "http://test/orig.jpg"
     assert result.result.processed_image_url == "http://test/proc.jpg"
+
+
+# --- update() tests ---
+
+def test_update_status_and_progress(job_repo: JobRepository) -> None:
+    job_repo.save(_queued_job("u-1"))
+    job_repo.update("u-1", status=JobStatus.RUNNING, progress=50, message="running now")
+    job = job_repo.find("u-1")
+    assert job is not None
+    assert job.status == JobStatus.RUNNING
+    assert job.progress == 50
+    assert job.message == "running now"
+
+
+def test_update_sets_started_at_only_when_not_already_set(job_repo: JobRepository) -> None:
+    running = _running_job("u-2")
+    original_started_at = running.started_at
+    job_repo.save(running)
+    job_repo.update("u-2", started_at=utc_now())
+    job = job_repo.find("u-2")
+    assert job is not None
+    assert job.started_at == original_started_at
+
+
+def test_update_sets_started_at_when_not_yet_set(job_repo: JobRepository) -> None:
+    job_repo.save(_queued_job("u-3"))
+    t = utc_now()
+    job_repo.update("u-3", started_at=t)
+    job = job_repo.find("u-3")
+    assert job is not None
+    assert job.started_at == t
+
+
+def test_update_result_and_clears_error_on_completed(job_repo: JobRepository) -> None:
+    from app.schemas.image import ProcessImageResponse
+    job_repo.save(_queued_job("u-4"))
+    res = ProcessImageResponse(
+        message="done",
+        original_image_url="http://test/orig.jpg",
+        processed_image_url="http://test/proc.jpg",
+        processed_filename="proc.jpg",
+        applied_operations=[],
+    )
+    job_repo.update("u-4", status=JobStatus.COMPLETED, result=res, error_message=None)
+    job = job_repo.find("u-4")
+    assert job is not None
+    assert job.status == JobStatus.COMPLETED
+    assert job.result is not None
+    assert job.result.original_image_url == "http://test/orig.jpg"
+    assert job.error_message is None
+
+
+def test_update_error_message_on_failed(job_repo: JobRepository) -> None:
+    job_repo.save(_queued_job("u-5"))
+    job_repo.update("u-5", status=JobStatus.FAILED, error_message="something went wrong")
+    job = job_repo.find("u-5")
+    assert job is not None
+    assert job.status == JobStatus.FAILED
+    assert job.error_message == "something went wrong"
+
+
+def test_update_nonexistent_job_does_not_raise(job_repo: JobRepository) -> None:
+    job_repo.update("nonexistent", status=JobStatus.FAILED, error_message="nope")

@@ -7,9 +7,6 @@ from PIL import Image, ImageEnhance
 from app.core.exceptions import ImageProcessingError
 from app.schemas.image import BackgroundRemovalResult, ImageAnalysisResult, ImageOperationParameters
 
-# sRGB ガンマ補正の指数
-_GAMMA = 2.2
-
 # BT.709 輝度係数（線形光用）— OpenCV BGR 順
 # Y = 0.2126R + 0.7152G + 0.0722B
 _BT709_B = 0.0722
@@ -19,9 +16,9 @@ _BT709_BGR = np.array([[_BT709_B, _BT709_G, _BT709_R]], dtype=np.float32)
 
 # シャープ化: LAB 空間 Unsharp Mask の係数・上限
 _SHARPEN_STRENGTH_MAX = 5
-_SHARPEN_SMOOTH_SIGMA = 0.8   # Laplacian 前の平滑化 sigma
-_SHARPEN_HALO_SCALE = 0.3     # ハロー上限をローカルコントラストの何倍に抑えるか
-_SHARPEN_HALO_MIN = 2.0       # ハロー上限の最低値
+_SHARPEN_SMOOTH_SIGMA = 0.8  # Laplacian 前の平滑化 sigma
+_SHARPEN_HALO_SCALE = 0.3  # ハロー上限をローカルコントラストの何倍に抑えるか
+_SHARPEN_HALO_MIN = 2.0  # ハロー上限の最低値
 _SHARPEN_FACTOR_SCALE = 0.35  # ユーザー強度を Laplacian 係数にスケール
 
 # fastNlMeansDenoising ウィンドウサイズ
@@ -34,6 +31,14 @@ _CANNY_SIGMA = 0.33
 # GrabCut 背景除去
 _GRABCUT_MARGIN_RATIO = 0.05  # マージン幅を短辺の何割にするか
 _GRABCUT_ITERATIONS = 5
+
+
+def _srgb_to_linear(c: np.ndarray) -> np.ndarray:
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _linear_to_srgb(c: np.ndarray) -> np.ndarray:
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * (c ** (1.0 / 2.4)) - 0.055)
 
 
 def pil_to_cv(image: Image.Image) -> np.ndarray:
@@ -70,10 +75,10 @@ def _apply_rgb_preserve_alpha(
 def apply_grayscale(image: Image.Image) -> Image.Image:
     def _transform(img: Image.Image) -> Image.Image:
         cv_image = pil_to_cv(img)
-        # ガンマデコード → 線形光で BT.709 係数混合 → ガンマエンコード
-        img_linear = np.power(cv_image.astype("float32") / 255.0, _GAMMA)
+        # sRGB EOTF → 線形光で BT.709 係数混合 → sRGB OETF
+        img_linear = _srgb_to_linear(cv_image.astype(np.float32) / 255.0)
         img_gray_linear = np.clip(cv2.transform(img_linear, _BT709_BGR), 0.0, 1.0).squeeze()
-        img_gray = (np.power(img_gray_linear, 1.0 / _GAMMA) * 255).astype("uint8")
+        img_gray = (np.clip(_linear_to_srgb(img_gray_linear), 0.0, 1.0) * 255).astype("uint8")
         return Image.fromarray(img_gray).convert("RGB")
 
     return _apply_rgb_preserve_alpha(image, _transform)

@@ -1,9 +1,8 @@
 import io
 
 import pytest
-from fastapi import HTTPException, UploadFile
-
 from conftest import make_png_bytes
+from fastapi import HTTPException, UploadFile
 
 
 def _make_upload_file(

@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173"
     upload_dir: str = "uploads"
     database_url: str
+    public_base_url: str = "http://localhost:8000"
     llm_api_base_url: str = "http://localhost:1234/v1"
     llm_model: str = "qwen/qwen3-vl-8b"
     llm_api_key: str = "lm-studio"

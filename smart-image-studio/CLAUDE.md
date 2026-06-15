@@ -105,14 +105,12 @@ Always narrow on `job.status` before accessing status-conditional fields:
 - `'failed'` → `error_message: string` (guaranteed non-null by type)
 - `'running'` → `started_at: string`
 
-`normalizeProcessJob` in `src/entities/image/lib/processResult.ts` normalizes image URLs on all jobs received from the API. It includes a runtime null guard on `result` as defense against schema drift even though the TypeScript type guarantees it.
-
 ### Adding a new image operation
 
 Five locations must be updated together:
 
 1. `frontend/src/shared/types/api.ts` — add to `OperationType` union and `OperationParameters` interface
-2. `frontend/src/features/operation-select/config/imageOperations.ts` — add `OperationOption` with UI label, icon, and `ParameterDefinition[]`
+2. `frontend/src/entities/operation/config/operations.ts` — add `OperationOption` with UI label, icon, and `ParameterDefinition[]`
 3. `frontend/src/features/pipeline-edit/lib/pipeline.ts` — add entry to `parameterBuilders` for the unit/key mapping
 4. `backend/src/app/infrastructure/image_processing/opencv_processor.py` — add the raw CV operation function
 5. `backend/src/app/services/image_processor.py` — add a `case` branch in `_dispatch()` that calls the new function

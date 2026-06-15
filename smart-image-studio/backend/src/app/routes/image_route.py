@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Form, Request, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, UploadFile, status
 from starlette.concurrency import run_in_threadpool
 
 from app.controllers.image_controller import ImageController
@@ -28,7 +28,6 @@ router = APIRouter()
     },
 )
 async def process_image(
-    request: Request,
     file: UploadFile = File(...),
     operations: str = Form(...),
     controller: ImageController = Depends(get_image_controller),
@@ -36,7 +35,6 @@ async def process_image(
     image_bytes = await read_and_validate_image(file)
     return await run_in_threadpool(
         controller.process_image,
-        request=request,
         image_bytes=image_bytes,
         filename=file.filename or "upload.png",
         operations=operations,

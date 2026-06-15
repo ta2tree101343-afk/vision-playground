@@ -26,13 +26,10 @@ jobs:
       - name: Install backend dependencies
         run: cd backend && poetry install --no-root
 
-      - name: Set up Node 20
+      - name: Set up Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: Upgrade npm
-        run: npm install -g npm@11
+          node-version: '22'
 
       - name: Install frontend dependencies
         run: cd frontend && npm ci

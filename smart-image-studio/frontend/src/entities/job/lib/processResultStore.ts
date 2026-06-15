@@ -1,5 +1,4 @@
 import type { ProcessImageResponse } from '@shared/types/api';
-import { normalizeProcessResult } from '@shared/lib/processResult';
 import { readSessionJson, writeSessionJson, removeSessionItem } from '@shared/lib/sessionJson';
 import { ProcessImageResponse as processImageResponseSchema } from '@shared/api/__generated__/api.schemas';
 
@@ -12,7 +11,7 @@ export type ReadProcessResult =
   | { status: 'empty' };
 
 export function saveLatestProcessResult(result: ProcessImageResponse): boolean {
-  return writeSessionJson(KEY, normalizeProcessResult(result), LOG);
+  return writeSessionJson(KEY, result, LOG);
 }
 
 export function readLatestProcessResult(): ReadProcessResult {
@@ -25,7 +24,7 @@ export function readLatestProcessResult(): ReadProcessResult {
   if (parsed === null) return { status: 'empty' };
   const validation = processImageResponseSchema.safeParse(parsed);
   if (!validation.success) {
-    console.error(`[${LOG}] 保存された処理結果の形式が不正です。`, validation.error.issues);
+    console.error('[processResultStore] 保存された処理結果の形式が不正です。', validation.error.issues);
     removeSessionItem(KEY, LOG);
     return { status: 'error' };
   }

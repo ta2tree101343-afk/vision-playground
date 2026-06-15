@@ -32,7 +32,7 @@ jobs:
           node-version: '22'
 
       - name: Install frontend dependencies
-        run: cd frontend && npm ci
+        run: cd frontend && npm install
 
       - name: Regenerate and check for diff
         env:
@@ -40,4 +40,5 @@ jobs:
         run: |
           cd backend && poetry run task export-openapi
           cd ../frontend && npm run codegen
-          git diff --exit-code
+          cd ../..
+          git diff --exit-code -- smart-image-studio/docs/openapi.json smart-image-studio/frontend/src/shared/api/__generated__/

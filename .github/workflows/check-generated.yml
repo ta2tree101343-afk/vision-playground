@@ -31,10 +31,15 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Upgrade npm
+        run: npm install -g npm@11
+
       - name: Install frontend dependencies
         run: cd frontend && npm ci
 
       - name: Regenerate and check for diff
+        env:
+          SMART_IMAGE_STUDIO_DATABASE_URL: "postgresql://ci:ci@localhost/ci"
         run: |
           cd backend && poetry run task export-openapi
           cd ../frontend && npm run codegen

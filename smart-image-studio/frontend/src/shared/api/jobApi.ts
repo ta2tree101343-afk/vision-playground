@@ -8,12 +8,11 @@ import {
   GetProcessJobApiImagesJobsJobIdGetResponse as imageProcessJobSchema,
   ListProcessJobsApiImagesJobsGetResponse as listJobsSchema,
 } from '@shared/api/__generated__/api.schemas';
-import { normalizeProcessJob } from '@shared/lib/processResult';
 import { ApiError } from '@shared/api/apiClient';
 
 function parseJob(raw: unknown): ImageProcessJob {
   try {
-    return normalizeProcessJob(imageProcessJobSchema.parse(raw) as unknown as ImageProcessJob);
+    return imageProcessJobSchema.parse(raw) as unknown as ImageProcessJob;
   } catch (error) {
     throw new ApiError('サーバーのレスポンス形式が不正です。', 0, error);
   }

@@ -26,6 +26,7 @@ services:
       - ./backend/.env
     environment:
       SMART_IMAGE_STUDIO_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-smart_image_studio}:${POSTGRES_PASSWORD:-smart_image_studio}@postgres:5432/${POSTGRES_DB:-smart_image_studio}
+      SMART_IMAGE_STUDIO_PUBLIC_BASE_URL: http://localhost:8000
     depends_on:
       postgres:
         condition: service_healthy

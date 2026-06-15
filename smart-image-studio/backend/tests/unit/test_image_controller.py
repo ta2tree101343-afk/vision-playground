@@ -4,7 +4,6 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from conftest import make_png_bytes
-from fastapi import Request
 from PIL import Image
 
 from app.controllers.image_controller import ImageController
@@ -14,18 +13,6 @@ from app.services.image_processor import ImageProcessingResult, ImageProcessor
 from app.services.storage_service import StorageService
 
 _GRAYSCALE_OPS = '[{"operation":"grayscale"}]'
-
-
-def _make_request() -> Request:
-    scope = {
-        "type": "http",
-        "method": "POST",
-        "path": "/api/images/process",
-        "query_string": b"",
-        "headers": [],
-        "server": ("localhost", 8000),
-    }
-    return Request(scope)
 
 
 def _setup(tmp_path: Path) -> tuple[ImageController, MagicMock, MagicMock]:
@@ -53,7 +40,7 @@ def _setup(tmp_path: Path) -> tuple[ImageController, MagicMock, MagicMock]:
 def test_process_returns_process_image_response(tmp_path: Path) -> None:
     controller, _, _ = _setup(tmp_path)
     result = controller.process_image(
-        request=_make_request(), image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     assert isinstance(result, ProcessImageResponse)
 
@@ -61,7 +48,7 @@ def test_process_returns_process_image_response(tmp_path: Path) -> None:
 def test_process_original_url_contains_originals_path(tmp_path: Path) -> None:
     controller, _, _ = _setup(tmp_path)
     result = controller.process_image(
-        request=_make_request(), image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     assert "/uploads/originals/" in result.original_image_url
 
@@ -69,7 +56,7 @@ def test_process_original_url_contains_originals_path(tmp_path: Path) -> None:
 def test_process_processed_url_contains_processed_path(tmp_path: Path) -> None:
     controller, _, _ = _setup(tmp_path)
     result = controller.process_image(
-        request=_make_request(), image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     assert "/uploads/processed/" in result.processed_image_url
 
@@ -77,7 +64,7 @@ def test_process_processed_url_contains_processed_path(tmp_path: Path) -> None:
 def test_process_calls_image_processor_with_given_steps(tmp_path: Path) -> None:
     controller, image_processor, _ = _setup(tmp_path)
     controller.process_image(
-        request=_make_request(), image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     image_processor.process.assert_called_once()
 
@@ -85,7 +72,7 @@ def test_process_calls_image_processor_with_given_steps(tmp_path: Path) -> None:
 def test_process_saves_original_before_processing(tmp_path: Path) -> None:
     controller, _, storage_service = _setup(tmp_path)
     controller.process_image(
-        request=_make_request(), image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     storage_service.save_original.assert_called_once()
     storage_service.save_processed.assert_called_once()
@@ -94,6 +81,6 @@ def test_process_saves_original_before_processing(tmp_path: Path) -> None:
 def test_process_analysis_is_none_when_processor_returns_none(tmp_path: Path) -> None:
     controller, _, _ = _setup(tmp_path)
     result = controller.process_image(
-        request=_make_request(), image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     assert result.analysis is None

@@ -1,5 +1,6 @@
-from fastapi import HTTPException, Request, status
+from fastapi import HTTPException, status
 
+from app.core.config import get_settings
 from app.core.exceptions import JobNotFoundError, JobQueueFullError
 from app.schemas.job import ImageProcessJob
 from app.services.job_service import JobService
@@ -13,7 +14,6 @@ class JobController:
     async def create_job(
         self,
         *,
-        request: Request,
         image_bytes: bytes,
         filename: str,
         operations: str,
@@ -23,7 +23,7 @@ class JobController:
             return await self._job_service.enqueue_job(
                 image_bytes=image_bytes,
                 filename=filename,
-                base_url=str(request.base_url),
+                base_url=get_settings().public_base_url,
                 operations=steps,
             )
         except JobQueueFullError as exc:

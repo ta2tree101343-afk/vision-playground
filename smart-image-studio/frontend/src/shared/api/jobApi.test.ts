@@ -19,10 +19,6 @@ vi.mock('@shared/api/__generated__/api.types', () => ({
   },
 }));
 
-vi.mock('@shared/lib/processResult', () => ({
-  normalizeProcessJob: vi.fn((job) => job),
-}));
-
 vi.mock('@shared/config/env', () => ({
   env: { apiBaseUrl: 'http://localhost:8000' },
 }));

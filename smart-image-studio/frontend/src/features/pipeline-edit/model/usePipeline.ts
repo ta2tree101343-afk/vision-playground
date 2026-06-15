@@ -6,14 +6,14 @@ import {
   createPipelineStep,
   movePipelineStep,
   toPipelineTemplates,
-} from '@features/pipeline-edit/lib/pipeline';
+} from '../lib/pipeline';
 import {
   deletePipelinePreset,
   readSavedPipelineDraft,
   readSavedPipelinePresets,
   savePipelineDraft,
   savePipelinePreset,
-} from '@features/pipeline-edit/lib/pipelineStorage';
+} from '../lib/pipelineStorage';
 import { toErrorMessage } from '@shared/lib/error';
 import { createId } from '@shared/lib/id';
 

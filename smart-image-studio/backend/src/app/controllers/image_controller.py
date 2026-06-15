@@ -1,7 +1,8 @@
 import logging
 
-from fastapi import HTTPException, Request, status
+from fastapi import HTTPException, status
 
+from app.core.config import get_settings
 from app.core.exceptions import ImageProcessingError, MaskSaveError
 from app.schemas.image import ProcessImageResponse
 from app.services.image_processor import ImageProcessor
@@ -19,13 +20,12 @@ class ImageController:
     def process_image(
         self,
         *,
-        request: Request,
         image_bytes: bytes,
         filename: str,
         operations: str,
     ) -> ProcessImageResponse:
         steps = parse_operation_steps(operations)
-        base_url = str(request.base_url)
+        base_url = get_settings().public_base_url
         try:
             original_file = self._storage_service.save_original(image_bytes, filename)
             processing_result = self._image_processor.process(image_bytes, steps)

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Form, Request, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, UploadFile, status
 
 from app.controllers.job_controller import JobController
 from app.dependencies.service_dependency import get_job_controller
@@ -29,14 +29,12 @@ router = APIRouter()
     },
 )
 async def create_process_job(
-    request: Request,
     file: UploadFile = File(...),
     operations: str = Form(...),
     controller: JobController = Depends(get_job_controller),
 ) -> ImageProcessJob:  # FastAPI serializes via response_model=ImageProcessJobResponse
     image_bytes = await read_and_validate_image(file)
     return await controller.create_job(
-        request=request,
         image_bytes=image_bytes,
         filename=file.filename or "upload.png",
         operations=operations,

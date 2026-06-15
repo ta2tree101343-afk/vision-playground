@@ -380,7 +380,7 @@ poetry run task test      # pytest（テスト）
 - 画像検証を frontend / backend の両方で実施
 - 加工結果は `backend/uploads/processed` にローカル保存
 - OCR は `rapidocr-onnxruntime` を使い、抽出文字列をレスポンスにも返す
-- object detection は MobileNet SSD モデルでローカル推論する (`mobilenet_iter_73000.caffemodel` は `.gitignore` で除外されているため、初回は https://github.com/chuanqi305/MobileNet-SSD から手動でダウンロードして `backend/src/app/assets/ml_models/` に配置する必要があります)
+- object detection は MobileNet SSD モデルでローカル推論する (`mobilenet_iter_73000.caffemodel` は `.gitignore` で除外されているため、初回は <https://github.com/chuanqi305/MobileNet-SSD> から手動でダウンロードして `backend/src/app/assets/ml_models/` に配置する必要があります)
 - background removal は GrabCut ベースで透過 PNG を生成する
 
 ## 今後の拡張案

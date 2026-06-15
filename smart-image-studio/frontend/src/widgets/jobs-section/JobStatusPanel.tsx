@@ -1,5 +1,5 @@
 import type { ImageProcessJob } from '@shared/types/api';
-import { formatTimestamp, statusStyle } from '@features/job-tracking/lib/jobFormatters';
+import { formatTimestamp, statusStyle } from '@features/job-tracking';
 
 interface JobStatusPanelProps {
   job: ImageProcessJob | null;

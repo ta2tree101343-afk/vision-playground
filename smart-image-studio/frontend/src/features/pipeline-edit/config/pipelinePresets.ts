@@ -1,5 +1,5 @@
-import { asUIThreshold, type PipelinePreset } from '@entities/pipeline/model/pipeline.types';
-import { defaultParameterState } from '@features/operation-select/config/imageOperations';
+import { asUIThreshold, type PipelinePreset } from '@entities/pipeline';
+import { defaultParameterState } from '@entities/operation';
 
 function parameters(overrides: Partial<typeof defaultParameterState> = {}) {
   return { ...defaultParameterState, ...overrides };

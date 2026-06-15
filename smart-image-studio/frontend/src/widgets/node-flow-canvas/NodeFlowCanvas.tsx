@@ -14,8 +14,8 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { operationOptions } from '@features/operation-select/config/imageOperations';
-import type { PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import { operationOptions } from '@entities/operation';
+import type { PipelineStepDraft } from '@entities/pipeline';
 import { SortableNodeCard } from './NodeCard';
 import { AddNodeMenu } from './AddNodeMenu';
 import { useNodeConnections } from './useNodeConnections';

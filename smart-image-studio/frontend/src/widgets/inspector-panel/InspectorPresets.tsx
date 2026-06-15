@@ -1,5 +1,5 @@
 import { PRESET_ICONS } from '@shared/ui/studioIcons';
-import type { PipelinePreset } from '@entities/pipeline/model/pipeline.types';
+import type { PipelinePreset } from '@entities/pipeline';
 import { InspectorSection } from './InspectorSection';
 
 export function InspectorPresets({

@@ -1,8 +1,8 @@
 import { type SVGProps } from 'react';
 import { NODE_ICONS } from '@shared/ui/studioIcons';
-import { getOperationOption } from '@features/operation-select/config/imageOperations';
-import type { ParameterDefinition } from '@features/operation-select/model/operation.types';
-import type { ParameterKey, PipelinePreset, PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import { getOperationOption } from '@entities/operation';
+import type { ParameterDefinition } from '@entities/operation';
+import type { ParameterKey, PipelinePreset, PipelineStepDraft } from '@entities/pipeline';
 import { InspectorSlider } from './InspectorSlider';
 import { InspectorSection } from './InspectorSection';
 import { MiniHistogram } from './MiniHistogram';

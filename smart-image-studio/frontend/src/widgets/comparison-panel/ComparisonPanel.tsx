@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { operationLabels } from '@features/operation-select/config/imageOperations';
+import { operationLabels } from '@entities/operation';
 import { LoadingState } from '@shared/ui/LoadingState';
 import { StatusBanner } from '@shared/ui/StatusBanner';
 import type { ProcessImageResponse } from '@shared/types/api';
 import {
   loadComparisonAssets,
   type ComparisonAssets,
-} from '@entities/image/lib/imageComparison';
+} from '@entities/image';
 import { ComparisonViewport } from './ComparisonViewport';
 import { HistogramCard } from './HistogramCard';
 import { ComparisonControls } from './ComparisonControls';

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { asUIThreshold } from '@entities/pipeline/model/pipeline.types';
-import { defaultParameterState } from '@features/operation-select/config/imageOperations';
+import { asUIThreshold } from '@entities/pipeline';
+import { defaultParameterState } from '@entities/operation';
 import { buildOperationStep, operationStepToTemplate } from './pipeline';
 
 describe('buildOperationStep', () => {

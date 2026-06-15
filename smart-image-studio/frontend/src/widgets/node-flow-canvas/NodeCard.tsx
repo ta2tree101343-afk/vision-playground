@@ -2,8 +2,8 @@ import { forwardRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { NODE_ICONS } from '@shared/ui/studioIcons';
-import { getOperationOption } from '@features/operation-select/config/imageOperations';
-import type { PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import { getOperationOption } from '@entities/operation';
+import type { PipelineStepDraft } from '@entities/pipeline';
 
 interface NodeCardProps {
   step: PipelineStepDraft;

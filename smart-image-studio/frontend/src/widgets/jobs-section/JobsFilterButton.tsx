@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NODE_ICONS } from '@shared/ui/studioIcons';
-import { AI_OPS, allOperationKeys, operationLabelsJa } from '@features/operation-select/config/imageOperations';
+import { AI_OPS, allOperationKeys, operationLabelsJa } from '@entities/operation';
 import type { OperationType } from '@shared/types/api';
 
 export function JobsFilterButton({

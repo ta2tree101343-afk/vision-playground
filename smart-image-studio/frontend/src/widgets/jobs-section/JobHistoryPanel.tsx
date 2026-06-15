@@ -1,6 +1,6 @@
 import type { OperationType, ImageProcessJob } from '@shared/types/api';
-import { formatTimestamp, statusStyle } from '@features/job-tracking/lib/jobFormatters';
-import { operationLabelsJa, AI_OPS } from '@features/operation-select/config/imageOperations';
+import { formatTimestamp, statusStyle } from '@features/job-tracking';
+import { operationLabelsJa, AI_OPS } from '@entities/operation';
 
 function OperationChip({ operation }: { operation: OperationType }) {
   const isAI = AI_OPS.has(operation);

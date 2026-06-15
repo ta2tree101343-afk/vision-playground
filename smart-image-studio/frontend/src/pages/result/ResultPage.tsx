@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { AnalysisPanel } from '@widgets/analysis-panel/AnalysisPanel';
-import { ComparisonPanel } from '@widgets/comparison-panel/ComparisonPanel';
-import { ResultTopbar } from '@widgets/result-topbar/ResultTopbar';
+import { AnalysisPanel } from '@widgets/analysis-panel';
+import { ComparisonPanel } from '@widgets/comparison-panel';
+import { ResultTopbar } from '@widgets/result-topbar';
 import { EmptyState } from '@shared/ui/EmptyState';
 import { ErrorBanner } from '@shared/ui/ErrorBanner';
 import { navigateTo } from '@shared/lib/navigation';
-import { readLatestProcessResult } from '@entities/job/lib/processResultStore';
+import { readLatestProcessResult } from '@entities/job';
 import type { OperationStep, OperationType } from '@shared/types/api';
 import { useResultDownload } from './useResultDownload';
 

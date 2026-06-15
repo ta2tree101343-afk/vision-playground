@@ -1,7 +1,7 @@
 import { useState, useEffect, type SVGProps } from 'react';
 import { NODE_ICONS } from '@shared/ui/studioIcons';
-import { operationOptions } from '@features/operation-select/config/imageOperations';
-import type { OperationOption } from '@features/operation-select/model/operation.types';
+import { operationOptions } from '@entities/operation';
+import type { OperationOption } from '@entities/operation';
 
 function PlusIcon(props: SVGProps<SVGSVGElement>) {
   return (

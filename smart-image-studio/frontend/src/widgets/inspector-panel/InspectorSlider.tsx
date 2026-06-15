@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { ParameterKey } from '@entities/pipeline/model/pipeline.types';
+import type { ParameterKey } from '@entities/pipeline';
 
 export function InspectorSlider({
   label,

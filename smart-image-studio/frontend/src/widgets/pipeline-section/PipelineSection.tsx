@@ -1,8 +1,8 @@
 import { SectionShell } from '@shared/ui/SectionShell';
-import { PipelineEditor } from '@features/pipeline-edit/ui/PipelineEditor';
-import { operationOptions } from '@features/operation-select/config/imageOperations';
-import type { OperationOption } from '@features/operation-select/model/operation.types';
-import type { ParameterKey, PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import { PipelineEditor } from '@features/pipeline-edit';
+import { operationOptions } from '@entities/operation';
+import type { OperationOption } from '@entities/operation';
+import type { ParameterKey, PipelineStepDraft } from '@entities/pipeline';
 
 export function PipelineSection({
   pipelineSteps,

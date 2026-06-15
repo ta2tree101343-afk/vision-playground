@@ -1,4 +1,4 @@
-import type { ImageHistogram } from '@entities/image/lib/imageComparison';
+import type { ImageHistogram } from '@entities/image';
 
 const CHART_W = 300;
 const CHART_H = 110;

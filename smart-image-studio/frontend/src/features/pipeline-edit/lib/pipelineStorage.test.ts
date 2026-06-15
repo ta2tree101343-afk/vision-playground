@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { defaultParameterState } from '@features/operation-select/config/imageOperations';
+import { defaultParameterState } from '@entities/operation';
 import { readSavedPipelineDraft, savePipelineDraft } from './pipelineStorage';
 
 const DRAFT_KEY = 'smart-image-studio/pipeline-draft';

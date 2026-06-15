@@ -1,6 +1,6 @@
 import type { OperationParameters, OperationType, OperationStep } from '@shared/types/api';
-import { asUIThreshold, type ParameterState, type PipelineStepDraft, type PipelineStepTemplate, type UIThresholdPercent } from '@entities/pipeline/model/pipeline.types';
-import { defaultParameterState, parameterConstraints } from '@features/operation-select/config/imageOperations';
+import { asUIThreshold, type ParameterState, type PipelineStepDraft, type PipelineStepTemplate, type UIThresholdPercent } from '@entities/pipeline';
+import { defaultParameterState, parameterConstraints } from '@entities/operation';
 import { createId } from '@shared/lib/id';
 
 export function createPipelineStep(

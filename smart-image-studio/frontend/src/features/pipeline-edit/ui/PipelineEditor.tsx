@@ -1,6 +1,6 @@
 import type React from 'react';
-import { getOperationOption } from '@features/operation-select/config/imageOperations';
-import type { ParameterKey, PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import { getOperationOption } from '@entities/operation';
+import type { ParameterKey, PipelineStepDraft } from '@entities/pipeline';
 
 interface PipelineEditorProps {
   steps: PipelineStepDraft[];

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ImageProcessJob, OperationStep, ProcessImageResponse } from '@shared/types/api';
 import { createProcessJob, fetchProcessJob, fetchProcessJobs } from '@shared/api/jobApi';
 
-import { saveLatestProcessResult } from '@entities/job/lib/processResultStore';
+import { saveLatestProcessResult } from '@entities/job';
 import { toErrorMessage } from '@shared/lib/error';
 
 interface UseJobTrackingOptions {

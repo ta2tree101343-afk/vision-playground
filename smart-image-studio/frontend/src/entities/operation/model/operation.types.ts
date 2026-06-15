@@ -1,5 +1,5 @@
 import type { OperationType } from '@shared/types/api';
-import type { ParameterKey } from '@entities/pipeline/model/pipeline.types';
+import type { ParameterKey } from '@entities/pipeline';
 
 export interface ParameterDefinition {
   key: ParameterKey;

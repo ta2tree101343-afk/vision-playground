@@ -1,0 +1,9 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.13",
+  "include": ["src/app"],
+  "extraPaths": ["src"],
+  "typeCheckingMode": "basic",
+  "reportUnreachable": "none"
+}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { downloadProcessedImage } from '@features/image-upload/api/imageApi';
+import { downloadProcessedImage } from '@features/image-upload';
 import type { ProcessImageResponse } from '@shared/types/api';
 
 export function useResultDownload(result: ProcessImageResponse | null) {

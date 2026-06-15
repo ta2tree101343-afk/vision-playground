@@ -1,0 +1,1 @@
+export { ComparisonStrip } from './ComparisonStrip';

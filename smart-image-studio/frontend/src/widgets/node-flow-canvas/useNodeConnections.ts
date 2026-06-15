@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import type { PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import type { PipelineStepDraft } from '@entities/pipeline';
 
 type Connection = { id: string; d: string; active: boolean };
 

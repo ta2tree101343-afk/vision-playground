@@ -1,6 +1,6 @@
-import type { ParameterKey, PipelinePreset, PipelineStepDraft, SavedPipelineDraft } from '@entities/pipeline/model/pipeline.types';
+import type { ParameterKey, PipelinePreset, PipelineStepDraft, SavedPipelineDraft } from '@entities/pipeline';
 import { clonePipelineTemplates, toPipelineTemplates } from '@features/pipeline-edit/lib/pipeline';
-import { parameterConstraints, sanitizeParameter } from '@features/operation-select/config/imageOperations';
+import { parameterConstraints, sanitizeParameter } from '@entities/operation';
 import { isBrowser } from '@shared/lib/browser';
 import { OperationType as operationTypeSchema } from '@shared/api/__generated__/api.schemas';
 

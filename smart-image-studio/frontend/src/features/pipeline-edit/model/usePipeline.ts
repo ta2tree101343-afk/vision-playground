@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { OperationType } from '@shared/types/api';
-import { asUIThreshold, type ParameterKey, type PipelinePreset, type PipelineStepDraft } from '@entities/pipeline/model/pipeline.types';
+import { asUIThreshold, type ParameterKey, type PipelinePreset, type PipelineStepDraft } from '@entities/pipeline';
 import {
   clonePipelineTemplates,
   createPipelineStep,

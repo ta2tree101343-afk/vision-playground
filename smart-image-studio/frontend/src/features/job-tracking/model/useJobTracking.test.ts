@@ -7,7 +7,7 @@ vi.mock('@shared/api/jobApi', () => ({
   fetchProcessJobs: vi.fn(),
 }));
 
-vi.mock('@entities/job/lib/processResultStore', () => ({
+vi.mock('@entities/job', () => ({
   saveLatestProcessResult: vi.fn(),
 }));
 
@@ -16,7 +16,7 @@ vi.mock('@shared/config/env', () => ({
 }));
 
 import { createProcessJob, fetchProcessJob, fetchProcessJobs } from '@shared/api/jobApi';
-import { saveLatestProcessResult } from '@entities/job/lib/processResultStore';
+import { saveLatestProcessResult } from '@entities/job';
 import type { ImageProcessJob, ProcessImageResponse } from '@shared/types/api';
 import { useJobTracking } from './useJobTracking';
 

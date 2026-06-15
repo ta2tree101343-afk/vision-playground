@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SectionShell } from '@shared/ui/SectionShell';
-import { JobHistoryPanel } from '@widgets/job-history-panel/JobHistoryPanel';
-import { JobStatusPanel } from '@widgets/job-status-panel/JobStatusPanel';
+import { JobHistoryPanel } from './JobHistoryPanel';
+import { JobStatusPanel } from './JobStatusPanel';
 import type { ImageProcessJob, OperationType } from '@shared/types/api';
 import { JobsFilterButton } from './JobsFilterButton';
 

@@ -1,6 +1,6 @@
 import type { OperationType } from '@shared/types/api';
-import type { OperationOption } from '@features/operation-select/model/operation.types';
-import { asUIThreshold, type ParameterKey, type ParameterState } from '@entities/pipeline/model/pipeline.types';
+import type { OperationOption } from '@entities/operation/model/operation.types';
+import { asUIThreshold, type ParameterKey, type ParameterState } from '@entities/pipeline';
 
 export const defaultParameterState: ParameterState = {
   blurStrength: 5,

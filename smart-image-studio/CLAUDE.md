@@ -146,9 +146,9 @@ Jobs are persisted in **PostgreSQL** via SQLAlchemy (Alembic migrations under `b
 
 `sessionStorage` access for the latest process result lives in `src/entities/job/lib/processResultStore.ts`. Reads, writes, and removals are wrapped in try/catch blocks to handle `SecurityError` in private browsing mode. Storage is obtained via `getSessionStorage()` from `src/shared/lib/browser.ts`, which returns `null` in SSR environments.
 
-## 開発ワークフロー
+## Development Workflow
 
-- **新しいコードを実装したら必ずコードレビューを実施する**
-  - 実装完了後、`feature-dev:code-reviewer` エージェントでレビューを行う
-  - バグ・ロジック誤り・規約違反・テスト漏れを確認する
-  - レビューで指摘された問題はすべて修正してから次のタスクに進む
+- **Always conduct a code review after implementing new code**
+  - After completing implementation, run a review with the `feature-dev:code-reviewer` agent
+  - Check for bugs, logic errors, convention violations, and missing tests
+  - Fix all issues identified in the review before moving on to the next task

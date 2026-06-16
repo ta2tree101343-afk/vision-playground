@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { downloadProcessedImage } from '@features/image-upload';
+import { downloadBlob } from '@shared/api/apiClient';
 import type { ProcessImageResponse } from '@shared/types/api';
 
 export function useResultDownload(result: ProcessImageResponse | null) {
@@ -12,7 +12,7 @@ export function useResultDownload(result: ProcessImageResponse | null) {
     setErrorMessage(null);
 
     try {
-      const blob = await downloadProcessedImage(result.processed_image_url);
+      const blob = await downloadBlob(result.processed_image_url);
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = objectUrl;

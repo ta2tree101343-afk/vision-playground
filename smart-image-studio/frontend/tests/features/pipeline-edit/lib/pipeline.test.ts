@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { asUIThreshold } from '@entities/pipeline';
 import { defaultParameterState } from '@entities/operation';
-import { buildOperationStep, operationStepToTemplate } from './pipeline';
+import { buildOperationStep, operationStepToTemplate } from '@features/pipeline-edit/lib/pipeline';
 
 describe('buildOperationStep', () => {
   it('converts detectionThreshold from UI percent to API fraction', () => {

@@ -29,7 +29,7 @@ import {
   getProcessJobApiImagesJobsJobIdGet,
 } from '@shared/api/__generated__/api.types';
 import type { ImageProcessJob } from '@shared/types/api';
-import { createProcessJob, fetchProcessJob, fetchProcessJobs } from './jobApi';
+import { createProcessJob, fetchProcessJob, fetchProcessJobs } from '@shared/api/jobApi';
 
 const NOW = '2024-01-01T00:00:00+00:00';
 

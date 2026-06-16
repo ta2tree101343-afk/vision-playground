@@ -4,7 +4,7 @@ vi.mock('@shared/config/env', () => ({
   env: { apiBaseUrl: 'http://localhost:8000' },
 }));
 
-import { customFetch } from './mutator';
+import { customFetch } from '@shared/api/mutator';
 
 function jsonResponse(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), {

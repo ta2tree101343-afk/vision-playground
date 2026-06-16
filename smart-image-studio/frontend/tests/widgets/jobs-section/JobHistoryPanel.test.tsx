@@ -3,7 +3,7 @@ import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import type { ImageProcessJob, OperationStep } from '@shared/types/api';
 
 type CommonOverride = { job_id?: string; filename?: string; applied_operations?: OperationStep[] };
-import { JobHistoryPanel } from './JobHistoryPanel';
+import { JobHistoryPanel } from '@widgets/jobs-section/JobHistoryPanel';
 
 afterEach(cleanup);
 

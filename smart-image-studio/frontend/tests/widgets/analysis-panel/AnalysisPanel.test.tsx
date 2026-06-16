@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import type { ProcessImageResponse } from '@shared/types/api';
-import { AnalysisPanel } from './AnalysisPanel';
+import { AnalysisPanel } from '@widgets/analysis-panel/AnalysisPanel';
 
 afterEach(cleanup);
 
 // Stub child cards to focus on AnalysisPanel's conditional rendering logic.
-vi.mock('./OverlayPreviewCard', () => ({
+vi.mock('@widgets/analysis-panel/OverlayPreviewCard', () => ({
   OverlayPreviewCard: ({ title, entries }: { title: string; entries: unknown[] }) => (
     <div data-testid={`overlay-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       {title} ({entries.length} entries)
@@ -14,7 +14,7 @@ vi.mock('./OverlayPreviewCard', () => ({
   ),
 }));
 
-vi.mock('./BackgroundMaskCard', () => ({
+vi.mock('@widgets/analysis-panel/BackgroundMaskCard', () => ({
   BackgroundMaskCard: ({ foregroundRatio }: { foregroundRatio?: number }) => (
     <div data-testid="background-mask">
       foreground: {foregroundRatio ?? 'n/a'}
@@ -22,7 +22,7 @@ vi.mock('./BackgroundMaskCard', () => ({
   ),
 }));
 
-vi.mock('./CaptionCandidatesCard', () => ({
+vi.mock('@widgets/analysis-panel/CaptionCandidatesCard', () => ({
   CaptionCandidatesCard: ({
     candidates,
     errorMessage,

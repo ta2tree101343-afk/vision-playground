@@ -89,7 +89,10 @@ export const builtInPipelinePresets = [
     description: '画像内の物体を検出してバウンディングボックスを描画します。',
     builtIn: true,
     steps: [
-      { operation: 'object_detection', parameters: parameters({ detectionThreshold: asUIThreshold(45) }) },
+      {
+        operation: 'object_detection',
+        parameters: parameters({ detectionThreshold: asUIThreshold(45) }),
+      },
     ],
   },
   {
@@ -97,9 +100,7 @@ export const builtInPipelinePresets = [
     name: 'AIキャプション生成',
     description: 'AIが画像の内容を読み取りキャプションを生成します。',
     builtIn: true,
-    steps: [
-      { operation: 'caption_generation', parameters: parameters() },
-    ],
+    steps: [{ operation: 'caption_generation', parameters: parameters() }],
   },
   {
     id: 'builtin-full-analysis',
@@ -108,7 +109,10 @@ export const builtInPipelinePresets = [
     builtIn: true,
     steps: [
       { operation: 'ocr', parameters: parameters() },
-      { operation: 'object_detection', parameters: parameters({ detectionThreshold: asUIThreshold(45) }) },
+      {
+        operation: 'object_detection',
+        parameters: parameters({ detectionThreshold: asUIThreshold(45) }),
+      },
       { operation: 'caption_generation', parameters: parameters() },
     ],
   },

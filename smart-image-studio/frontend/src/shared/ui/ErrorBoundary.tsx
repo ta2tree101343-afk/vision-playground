@@ -54,16 +54,30 @@ export class ErrorBoundary extends Component<Props, State> {
           <div
             role="alert"
             className="rounded-2xl border p-8"
-            style={{ background: 'var(--bg-panel)', borderColor: 'var(--tone-danger-border-bright)', maxWidth: '480px' }}
+            style={{
+              background: 'var(--bg-panel)',
+              borderColor: 'var(--tone-danger-border-bright)',
+              maxWidth: '480px',
+            }}
           >
-            <div className="text-lg font-semibold" style={{ color: 'var(--tone-danger-text-bright)' }}>
+            <div
+              className="text-lg font-semibold"
+              style={{ color: 'var(--tone-danger-text-bright)' }}
+            >
               予期しないエラーが発生しました
             </div>
             <div className="mt-2 text-sm" style={{ color: 'var(--text-muted)' }}>
               ページを再読み込みしてください。問題が続く場合はサポートにお問い合わせください。
             </div>
             {import.meta.env.DEV && this.state.error !== null && this.state.error !== undefined && (
-              <div className="mt-4 rounded-lg p-3 text-left text-xs font-mono" style={{ background: 'rgba(0,0,0,0.3)', color: 'var(--tone-danger-text-bright)', overflowX: 'auto' }}>
+              <div
+                className="mt-4 rounded-lg p-3 text-left text-xs font-mono"
+                style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  color: 'var(--tone-danger-text-bright)',
+                  overflowX: 'auto',
+                }}
+              >
                 {toErrorMessage(this.state.error)}
               </div>
             )}

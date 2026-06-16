@@ -92,12 +92,18 @@ export function JobHistoryPanel({
               <div
                 key={job.job_id}
                 className="rounded-xl border px-4 py-3"
-                style={{ background: 'var(--bg-panel-raised)', borderColor: 'var(--border-default)' }}
+                style={{
+                  background: 'var(--bg-panel-raised)',
+                  borderColor: 'var(--border-default)',
+                }}
               >
                 <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="break-all text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                      <div
+                        className="break-all text-sm font-semibold"
+                        style={{ color: 'var(--text-primary)' }}
+                      >
                         {job.filename}
                       </div>
                       <div
@@ -107,24 +113,36 @@ export function JobHistoryPanel({
                         {job.status}
                       </div>
                       {elapsed && (
-                        <div className="font-mono-val text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        <div
+                          className="font-mono-val text-[10px]"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
                           {elapsed}
                         </div>
                       )}
                     </div>
 
-                    <div className="font-mono-val mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+                    <div
+                      className="font-mono-val mt-1 text-xs"
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       {formatTimestamp(job.completed_at ?? job.created_at)}
                     </div>
 
                     <div className="mt-2 flex flex-wrap gap-1">
                       {job.applied_operations.map((item, index) => (
-                        <OperationChip key={`${item.operation}-${index}`} operation={item.operation} />
+                        <OperationChip
+                          key={`${item.operation}-${index}`}
+                          operation={item.operation}
+                        />
                       ))}
                     </div>
 
                     {job.status === 'failed' && job.error_message && (
-                      <div className="mt-2 text-xs" style={{ color: 'var(--tone-danger-text-bright)' }}>
+                      <div
+                        className="mt-2 text-xs"
+                        style={{ color: 'var(--tone-danger-text-bright)' }}
+                      >
                         {job.error_message}
                       </div>
                     )}

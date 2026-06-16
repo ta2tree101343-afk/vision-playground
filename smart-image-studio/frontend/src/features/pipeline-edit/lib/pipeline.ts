@@ -1,5 +1,11 @@
 import type { OperationParameters, OperationType, OperationStep } from '@shared/types/api';
-import { asUIThreshold, type ParameterState, type PipelineStepDraft, type PipelineStepTemplate, type UIThresholdPercent } from '@entities/pipeline';
+import {
+  asUIThreshold,
+  type ParameterState,
+  type PipelineStepDraft,
+  type PipelineStepTemplate,
+  type UIThresholdPercent,
+} from '@entities/pipeline';
 import { defaultParameterState, parameterConstraints } from '@entities/operation';
 import { createId } from '@shared/lib/id';
 
@@ -31,16 +37,20 @@ function toUiDetectionThreshold(value: number | null | undefined): UIThresholdPe
   return asUIThreshold(Math.min(95, Math.max(10, Math.round(percentage))));
 }
 
-const parameterBuilders: Partial<Record<OperationType, (p: ParameterState) => OperationParameters>> = {
-  blur:             (p) => ({ blur_strength: p.blurStrength, blur_sigma: p.blurSigma }),
-  brightness:       (p) => ({ brightness: p.brightness }),
-  contrast:         (p) => ({ contrast: p.contrast }),
-  sharpen:          (p) => ({ sharpen_strength: p.sharpenStrength }),
-  denoise:          (p) => ({ denoise_strength: p.denoiseStrength }),
+const parameterBuilders: Partial<
+  Record<OperationType, (p: ParameterState) => OperationParameters>
+> = {
+  blur: (p) => ({ blur_strength: p.blurStrength, blur_sigma: p.blurSigma }),
+  brightness: (p) => ({ brightness: p.brightness }),
+  contrast: (p) => ({ contrast: p.contrast }),
+  sharpen: (p) => ({ sharpen_strength: p.sharpenStrength }),
+  denoise: (p) => ({ denoise_strength: p.denoiseStrength }),
   object_detection: (p) => {
     const { min, max } = parameterConstraints.detectionThreshold;
     if (p.detectionThreshold < min || p.detectionThreshold > max) {
-      throw new RangeError(`detectionThreshold out of range: ${p.detectionThreshold} (expected ${min}–${max})`);
+      throw new RangeError(
+        `detectionThreshold out of range: ${p.detectionThreshold} (expected ${min}–${max})`,
+      );
     }
     return { detection_threshold: p.detectionThreshold / 100 };
   },
@@ -69,7 +79,6 @@ export function operationStepToTemplate(step: OperationStep): PipelineStepTempla
     },
   };
 }
-
 
 export function movePipelineStep(
   steps: PipelineStepDraft[],

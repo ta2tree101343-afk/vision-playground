@@ -41,7 +41,9 @@ export function InspectorPresets({
                 <div className="flex items-center justify-between gap-1">
                   <span
                     className="text-xs font-semibold leading-tight"
-                    style={{ color: isActive ? 'var(--accent-blue-bright)' : 'var(--text-primary)' }}
+                    style={{
+                      color: isActive ? 'var(--accent-blue-bright)' : 'var(--text-primary)',
+                    }}
                   >
                     {preset.name}
                   </span>

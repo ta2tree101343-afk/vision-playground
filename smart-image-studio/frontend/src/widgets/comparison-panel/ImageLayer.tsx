@@ -12,10 +12,7 @@ export function ImageLayer({
   clipPath?: string;
 }) {
   return (
-    <div
-      className="absolute inset-0 overflow-hidden"
-      style={clipPath ? { clipPath } : undefined}
-    >
+    <div className="absolute inset-0 overflow-hidden" style={clipPath ? { clipPath } : undefined}>
       <div className="absolute inset-0" style={buildTransformStyle(transform)}>
         <img
           src={src}

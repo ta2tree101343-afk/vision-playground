@@ -21,9 +21,7 @@ export function useJobTracking({ onCompleted }: UseJobTrackingOptions = {}) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isProcessing =
-    isPendingSubmit ||
-    activeJob?.status === 'queued' ||
-    activeJob?.status === 'running';
+    isPendingSubmit || activeJob?.status === 'queued' || activeJob?.status === 'running';
 
   useEffect(() => {
     onCompletedRef.current = onCompleted;
@@ -46,7 +44,9 @@ export function useJobTracking({ onCompleted }: UseJobTrackingOptions = {}) {
     }
 
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -73,10 +73,7 @@ export function useJobTracking({ onCompleted }: UseJobTrackingOptions = {}) {
 
         const isActive = job.status === 'queued' || job.status === 'running';
         setActiveJob(isActive ? job : null);
-        setJobHistory((current) => [
-          job,
-          ...current.filter((j) => j.job_id !== job.job_id),
-        ]);
+        setJobHistory((current) => [job, ...current.filter((j) => j.job_id !== job.job_id)]);
         if (isActive) setErrorMessage(null);
 
         if (handledJobsRef.current.has(job.job_id)) return;
@@ -88,7 +85,9 @@ export function useJobTracking({ onCompleted }: UseJobTrackingOptions = {}) {
             return;
           }
           if (!saveLatestProcessResult(job.result)) {
-            setErrorMessage('処理結果の保存に失敗しました。ストレージへの書き込みができませんでした。');
+            setErrorMessage(
+              '処理結果の保存に失敗しました。ストレージへの書き込みができませんでした。',
+            );
             return;
           }
           setErrorMessage(null);
@@ -125,10 +124,15 @@ export function useJobTracking({ onCompleted }: UseJobTrackingOptions = {}) {
     async function scheduledPoll() {
       await poll();
       if (cancelled) return;
-      timerId = window.setTimeout(() => { void scheduledPoll(); }, 1500);
+      timerId = window.setTimeout(() => {
+        void scheduledPoll();
+      }, 1500);
     }
     void scheduledPoll();
-    return () => { cancelled = true; window.clearTimeout(timerId); };
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timerId);
+    };
   }, [activeJob?.job_id, activeJob?.status]);
 
   async function submitJob(file: File, operations: OperationStep[]) {

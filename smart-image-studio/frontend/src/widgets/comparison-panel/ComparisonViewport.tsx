@@ -40,7 +40,9 @@ export function ComparisonViewport({
 }) {
   const viewportDivRef = useRef<HTMLDivElement>(null);
   const onWheelRef = useRef(onWheel);
-  useEffect(() => { onWheelRef.current = onWheel; });
+  useEffect(() => {
+    onWheelRef.current = onWheel;
+  });
 
   useEffect(() => {
     const el = viewportDivRef.current;

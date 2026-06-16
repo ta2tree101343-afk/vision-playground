@@ -97,7 +97,9 @@ export function SortableNodeCard({
   onClick: () => void;
   onNodeRef: (el: HTMLDivElement | null) => void;
 }) {
-  const { setNodeRef, transform, transition, isDragging, attributes, listeners } = useSortable({ id: step.id });
+  const { setNodeRef, transform, transition, isDragging, attributes, listeners } = useSortable({
+    id: step.id,
+  });
 
   return (
     <div
@@ -111,7 +113,13 @@ export function SortableNodeCard({
         cursor: isDragging ? 'grabbing' : 'grab',
       }}
     >
-      <NodeCard ref={onNodeRef} step={step} selected={selected} onClick={onClick} onRemove={onRemove} />
+      <NodeCard
+        ref={onNodeRef}
+        step={step}
+        selected={selected}
+        onClick={onClick}
+        onRemove={onRemove}
+      />
     </div>
   );
 }

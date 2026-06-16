@@ -20,17 +20,32 @@ export function formatTimestamp(
 export function statusStyle(status: ImageProcessJob['status']): CSSProperties {
   switch (status) {
     case 'queued':
-      return { borderColor: 'var(--tone-warning-border)', background: 'var(--tone-warning-bg)', color: 'var(--tone-warning-text)' };
+      return {
+        borderColor: 'var(--tone-warning-border)',
+        background: 'var(--tone-warning-bg)',
+        color: 'var(--tone-warning-text)',
+      };
     case 'running':
-      return { borderColor: 'var(--tone-running-border)', background: 'var(--tone-running-bg)', color: 'var(--tone-running-text)' };
+      return {
+        borderColor: 'var(--tone-running-border)',
+        background: 'var(--tone-running-bg)',
+        color: 'var(--tone-running-text)',
+      };
     case 'completed':
-      return { borderColor: 'var(--tone-info-border)', background: 'var(--tone-info-bg)', color: 'var(--tone-info-text)' };
+      return {
+        borderColor: 'var(--tone-info-border)',
+        background: 'var(--tone-info-bg)',
+        color: 'var(--tone-info-text)',
+      };
     case 'failed':
-      return { borderColor: 'var(--tone-danger-border)', background: 'var(--tone-danger-bg)', color: 'var(--tone-danger-text)' };
+      return {
+        borderColor: 'var(--tone-danger-border)',
+        background: 'var(--tone-danger-bg)',
+        color: 'var(--tone-danger-text)',
+      };
     default: {
       const _: never = status;
       throw new Error(`Unhandled job status: ${_}`);
     }
   }
 }
-

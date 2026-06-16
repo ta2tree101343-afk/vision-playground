@@ -23,7 +23,8 @@ export const maxImageFileSizeInMb = 20;
 
 export function validateImageFile(file: File): string | null {
   const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
-  const typeOk = file.type !== '' ? acceptedImageTypes.has(file.type) : acceptedImageExtensions.has(ext);
+  const typeOk =
+    file.type !== '' ? acceptedImageTypes.has(file.type) : acceptedImageExtensions.has(ext);
 
   if (!typeOk) {
     return 'JPEG / PNG / WebP / GIF / BMP / TIFF の画像ファイルを選択してください。';

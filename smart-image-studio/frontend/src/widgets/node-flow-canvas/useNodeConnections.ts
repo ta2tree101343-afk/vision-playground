@@ -47,7 +47,9 @@ export function useNodeConnections(
   };
 
   const measureConnectionsRef = useRef(measureConnections);
-  useLayoutEffect(() => { measureConnectionsRef.current = measureConnections; });
+  useLayoutEffect(() => {
+    measureConnectionsRef.current = measureConnections;
+  });
 
   useLayoutEffect(() => {
     measureConnectionsRef.current();

@@ -70,7 +70,9 @@ export function OverlayPreviewCard({
         className="rounded-2xl border p-4"
         style={{ borderColor: 'var(--border-default)', background: 'var(--bg-panel-raised)' }}
       >
-        <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</h3>
+        <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+          {title}
+        </h3>
         <div className="mt-4">
           <EmptyState message="表示できる画像URLがありません。" />
         </div>
@@ -83,8 +85,12 @@ export function OverlayPreviewCard({
       className="rounded-2xl border p-4"
       style={{ borderColor: 'var(--border-default)', background: 'var(--bg-panel-raised)' }}
     >
-      <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</h3>
-      <p className="mt-1 text-sm leading-6" style={{ color: 'var(--text-secondary)' }}>{description}</p>
+      <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+        {title}
+      </h3>
+      <p className="mt-1 text-sm leading-6" style={{ color: 'var(--text-secondary)' }}>
+        {description}
+      </p>
 
       <div
         className={`mt-4 rounded-xl border p-3${horizontal ? ' flex items-start gap-3' : ''}`}
@@ -125,7 +131,10 @@ export function OverlayPreviewCard({
                     className="absolute border-2"
                     style={{ ...overlayStyle(entry.boundingBox, dimensions), ...accentStyle }}
                   >
-                    <div className="absolute left-0 top-0 -translate-y-full rounded-md px-2 py-1 text-[10px] font-bold" style={badgeStyle}>
+                    <div
+                      className="absolute left-0 top-0 -translate-y-full rounded-md px-2 py-1 text-[10px] font-bold"
+                      style={badgeStyle}
+                    >
                       {entry.label} {formatConfidence(entry.score)}
                     </div>
                   </div>
@@ -142,10 +151,15 @@ export function OverlayPreviewCard({
                 <div
                   key={`${entry.id}-summary`}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border px-3 py-2 text-sm"
-                  style={{ borderColor: 'var(--border-subtle)', background: 'var(--bg-panel-raised)' }}
+                  style={{
+                    borderColor: 'var(--border-subtle)',
+                    background: 'var(--bg-panel-raised)',
+                  }}
                 >
                   <div className="min-w-0">
-                    <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{entry.label}</div>
+                    <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {entry.label}
+                    </div>
                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       x:{entry.boundingBox.x} y:{entry.boundingBox.y} w:{entry.boundingBox.width} h:
                       {entry.boundingBox.height}
@@ -153,7 +167,11 @@ export function OverlayPreviewCard({
                   </div>
                   <div
                     className="rounded-full border px-2.5 py-1 text-xs font-semibold"
-                    style={{ borderColor: 'var(--border-default)', background: 'var(--bg-panel)', color: 'var(--text-primary)' }}
+                    style={{
+                      borderColor: 'var(--border-default)',
+                      background: 'var(--bg-panel)',
+                      color: 'var(--text-primary)',
+                    }}
                   >
                     {formatConfidence(entry.score)}
                   </div>

@@ -76,13 +76,7 @@ function computeHistogram(canvas: HTMLCanvasElement): ImageHistogram {
     luminance[luma] += alpha;
   }
 
-  const maxCount = Math.max(
-    1,
-    ...red,
-    ...green,
-    ...blue,
-    ...luminance,
-  );
+  const maxCount = Math.max(1, ...red, ...green, ...blue, ...luminance);
 
   function channelRange(bins: number[]): ChannelRange {
     const first = bins.findIndex((v) => v > 0);
@@ -122,10 +116,7 @@ function loadHistogram(image: HTMLImageElement): ImageHistogram {
 }
 
 function createDiffDataUrl(before: HTMLImageElement, after: HTMLImageElement): string {
-  if (
-    before.naturalWidth !== after.naturalWidth ||
-    before.naturalHeight !== after.naturalHeight
-  ) {
+  if (before.naturalWidth !== after.naturalWidth || before.naturalHeight !== after.naturalHeight) {
     throw new Error('画像サイズが異なるため、正確な差分画像を生成できません。');
   }
 
@@ -199,10 +190,7 @@ export async function loadComparisonAssets(
     diffDataUrl = createDiffDataUrl(beforeImage, afterImage);
   } catch (err) {
     console.error('[loadComparisonAssets] diff generation failed:', err);
-    const msg =
-      err instanceof Error
-        ? err.message
-        : '差分画像の生成に失敗しました。';
+    const msg = err instanceof Error ? err.message : '差分画像の生成に失敗しました。';
     diagnostics = diagnostics ? `${diagnostics} / ${msg}` : msg;
   }
 

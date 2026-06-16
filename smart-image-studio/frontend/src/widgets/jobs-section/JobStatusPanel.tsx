@@ -7,19 +7,27 @@ interface JobStatusPanelProps {
 
 function statusLabel(status: ImageProcessJob['status']): string {
   switch (status) {
-    case 'queued':    return 'QUEUED';
-    case 'running':   return 'RUNNING';
-    case 'completed': return 'COMPLETED';
-    case 'failed':    return 'FAILED';
+    case 'queued':
+      return 'QUEUED';
+    case 'running':
+      return 'RUNNING';
+    case 'completed':
+      return 'COMPLETED';
+    case 'failed':
+      return 'FAILED';
   }
 }
 
 function progressColor(status: ImageProcessJob['status']): string {
   switch (status) {
-    case 'queued':    return 'var(--tone-warning-text)';
-    case 'running':   return 'var(--accent-blue-bright)';
-    case 'completed': return 'var(--accent-blue-bright)';
-    case 'failed':    return 'var(--tone-danger-text)';
+    case 'queued':
+      return 'var(--tone-warning-text)';
+    case 'running':
+      return 'var(--accent-blue-bright)';
+    case 'completed':
+      return 'var(--accent-blue-bright)';
+    case 'failed':
+      return 'var(--tone-danger-text)';
   }
 }
 
@@ -35,10 +43,7 @@ export function JobStatusPanel({ job }: JobStatusPanelProps) {
   return (
     <section className="space-y-3 p-0">
       <div className="flex items-center gap-4">
-        <h2
-          className="text-base font-bold"
-          style={{ color: 'var(--text-primary)' }}
-        >
+        <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>
           実行中ステータス
         </h2>
         <div className="h-px flex-1" style={{ background: 'var(--border-subtle)' }} />
@@ -56,7 +61,10 @@ export function JobStatusPanel({ job }: JobStatusPanelProps) {
             >
               Job {job.job_id.slice(0, 8)}
             </div>
-            <div className="mt-1 break-all text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+            <div
+              className="mt-1 break-all text-base font-semibold"
+              style={{ color: 'var(--text-primary)' }}
+            >
               {job.filename}
             </div>
           </div>
@@ -111,7 +119,9 @@ export function JobStatusPanel({ job }: JobStatusPanelProps) {
               >
                 {label}
               </div>
-              <div className="font-mono-val mt-1 text-xs">{formatTimestamp(value, { second: '2-digit' })}</div>
+              <div className="font-mono-val mt-1 text-xs">
+                {formatTimestamp(value, { second: '2-digit' })}
+              </div>
             </div>
           ))}
         </div>

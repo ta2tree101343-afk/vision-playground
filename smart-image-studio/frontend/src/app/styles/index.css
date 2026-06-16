@@ -56,19 +56,19 @@
     --tone-success-text: #a8b8d4;
 
     --tone-running-bg: rgba(50, 120, 160, 0.14);
-    --tone-running-border: rgba(80, 150, 190, 0.30);
+    --tone-running-border: rgba(80, 150, 190, 0.3);
     --tone-running-text: #8abcd4;
 
     /* AI result tokens */
     --tone-ai-bg: rgba(105, 80, 135, 0.15);
-    --tone-ai-border: rgba(135, 105, 165, 0.30);
+    --tone-ai-border: rgba(135, 105, 165, 0.3);
     --tone-ai-text: #b9a8cf;
     --tone-ai-accent: #5fae9a;
 
     /* Accent purple (vibrant; used for AI operation chips) */
     --accent-purple-bg: rgba(147, 51, 234, 0.12);
-    --accent-purple-border: rgba(147, 51, 234, 0.30);
-    --accent-purple-border-strong: rgba(147, 51, 234, 0.50);
+    --accent-purple-border: rgba(147, 51, 234, 0.3);
+    --accent-purple-border-strong: rgba(147, 51, 234, 0.5);
     --accent-purple-text: #c084fc;
 
     /* Visualization */
@@ -86,10 +86,10 @@
     /* Interactive accent state backgrounds */
     --accent-blue-bg: rgba(42, 91, 200, 0.12);
     --accent-blue-bg-mid: rgba(42, 91, 200, 0.15);
-    --accent-blue-bg-bold: rgba(42, 91, 200, 0.20);
+    --accent-blue-bg-bold: rgba(42, 91, 200, 0.2);
     --accent-blue-bg-strong: rgba(54, 92, 159, 0.15);
     --accent-blue-bg-dim: rgba(54, 92, 159, 0.18);
-    --accent-blue-border: rgba(42, 91, 200, 0.30);
+    --accent-blue-border: rgba(42, 91, 200, 0.3);
 
     /* Node canvas icon/panel backgrounds */
     --node-icon-bg: rgba(255, 255, 255, 0.04);
@@ -140,7 +140,9 @@
     min-height: 100vh;
   }
 
-  button, input, select {
+  button,
+  input,
+  select {
     font: inherit;
   }
 
@@ -234,9 +236,10 @@
 
 /* Node glow effect */
 .node-selected {
-  box-shadow: 0 0 0 1px var(--node-selected-border),
-              0 0 16px var(--node-selected-glow),
-              0 4px 24px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 1px var(--node-selected-border),
+    0 0 16px var(--node-selected-glow),
+    0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* Slider track fill */
@@ -278,9 +281,21 @@
 }
 
 /* Hover utilities — use instead of onMouseEnter/onMouseLeave to survive React re-renders */
-.hover-border-accent:hover { border-color: var(--accent-blue) !important; }
-.hover-text-primary:hover { color: var(--text-primary) !important; }
-.hover-text-accent:hover { color: var(--accent-blue-bright) !important; }
-.hover-bg-subtle:hover { background: rgba(255,255,255,0.05) !important; }
-.hover-bg-sidebar:hover { background: var(--sidebar-item-hover) !important; }
-.hover-bg-job-result:hover { background: rgba(42,91,200,0.2) !important; }
+.hover-border-accent:hover {
+  border-color: var(--accent-blue) !important;
+}
+.hover-text-primary:hover {
+  color: var(--text-primary) !important;
+}
+.hover-text-accent:hover {
+  color: var(--accent-blue-bright) !important;
+}
+.hover-bg-subtle:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+.hover-bg-sidebar:hover {
+  background: var(--sidebar-item-hover) !important;
+}
+.hover-bg-job-result:hover {
+  background: rgba(42, 91, 200, 0.2) !important;
+}

@@ -20,13 +20,13 @@ type ParameterConstraint = {
 };
 
 export const parameterConstraints: Record<ParameterKey, ParameterConstraint> = {
-  blurStrength:       { min: 1,    max: 25,  integer: true, odd: true },
-  blurSigma:          { min: 0,    max: 10,  integer: false },
-  brightness:         { min: -100, max: 100, integer: false },
-  contrast:           { min: -100, max: 100, integer: false },
-  sharpenStrength:    { min: 1,    max: 5,   integer: true },
-  denoiseStrength:    { min: 1,    max: 30,  integer: true },
-  detectionThreshold: { min: 10,   max: 95,  integer: true },
+  blurStrength: { min: 1, max: 25, integer: true, odd: true },
+  blurSigma: { min: 0, max: 10, integer: false },
+  brightness: { min: -100, max: 100, integer: false },
+  contrast: { min: -100, max: 100, integer: false },
+  sharpenStrength: { min: 1, max: 5, integer: true },
+  denoiseStrength: { min: 1, max: 30, integer: true },
+  detectionThreshold: { min: 10, max: 95, integer: true },
 };
 
 export function sanitizeParameter(key: ParameterKey, value: unknown): number {

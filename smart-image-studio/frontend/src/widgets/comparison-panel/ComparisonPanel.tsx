@@ -3,10 +3,7 @@ import { operationLabels } from '@entities/operation';
 import { LoadingState } from '@shared/ui/LoadingState';
 import { StatusBanner } from '@shared/ui/StatusBanner';
 import type { ProcessImageResponse } from '@shared/types/api';
-import {
-  loadComparisonAssets,
-  type ComparisonAssets,
-} from '@entities/image';
+import { loadComparisonAssets, type ComparisonAssets } from '@entities/image';
 import { ComparisonViewport } from './ComparisonViewport';
 import { HistogramCard } from './HistogramCard';
 import { ComparisonControls } from './ComparisonControls';
@@ -18,10 +15,7 @@ interface ComparisonPanelProps {
   result: ProcessImageResponse | null;
 }
 
-export function ComparisonPanel({
-  beforeImageUrl,
-  result,
-}: ComparisonPanelProps) {
+export function ComparisonPanel({ beforeImageUrl, result }: ComparisonPanelProps) {
   const afterImageUrl = result?.processed_image_url ?? null;
   const appliedOperations = result?.applied_operations.map(
     (item) => operationLabels[item.operation] ?? item.operation,
@@ -105,7 +99,9 @@ export function ComparisonPanel({
 
       {displayErrorMessage ? <StatusBanner message={displayErrorMessage} tone="error" /> : null}
 
-      {displayAssets?.diagnostics ? <StatusBanner message={displayAssets.diagnostics} tone="warning" /> : null}
+      {displayAssets?.diagnostics ? (
+        <StatusBanner message={displayAssets.diagnostics} tone="warning" />
+      ) : null}
 
       {isLoadingAssets ? <LoadingState message="比較データを準備しています..." /> : null}
 
@@ -150,7 +146,11 @@ export function ComparisonPanel({
               onWheel={handleWheel}
             >
               {displayAssets?.diffDataUrl ? (
-                <ImageLayer src={displayAssets.diffDataUrl} alt="Difference" transform={transform} />
+                <ImageLayer
+                  src={displayAssets.diffDataUrl}
+                  alt="Difference"
+                  transform={transform}
+                />
               ) : (
                 <div
                   className="flex h-full items-center justify-center px-6 text-center text-sm leading-6"
@@ -163,8 +163,14 @@ export function ComparisonPanel({
           ) : null}
 
           <div className="grid gap-3 xl:grid-cols-2">
-            <HistogramCard title="Before Histogram" histogram={displayAssets?.before.histogram ?? null} />
-            <HistogramCard title="After Histogram" histogram={displayAssets?.after.histogram ?? null} />
+            <HistogramCard
+              title="Before Histogram"
+              histogram={displayAssets?.before.histogram ?? null}
+            />
+            <HistogramCard
+              title="After Histogram"
+              histogram={displayAssets?.after.histogram ?? null}
+            />
           </div>
         </>
       ) : null}

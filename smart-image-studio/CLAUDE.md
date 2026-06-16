@@ -50,9 +50,7 @@ Services: frontend `:5173`, backend `:8000`, OpenAPI docs `:8000/docs`.
 Source lives under `frontend/src/` with six layers (import direction: app → pages → widgets → features → entities → shared):
 
 | Layer | Path | Purpose |
-
-|---|---|---|
-
+| --- | --- | --- |
 | `app` | `src/app/` | Entry point, providers, routing |
 | `pages` | `src/pages/studio/`, `src/pages/result/` | Full pages |
 | `widgets` | `src/widgets/` | Composed UI sections (panels) |
@@ -67,9 +65,7 @@ TypeScript path aliases: `@app`, `@pages`, `@widgets`, `@features`, `@entities`,
 `StudioPage` composes three independent hooks. Each owns a distinct state domain:
 
 | Hook | Location | State domain |
-
-|---|---|---|
-
+| --- | --- | --- |
 | `useImageFile` | `src/features/image-upload/model/` | File selection, preview URL |
 | `usePipeline` | `src/features/pipeline-edit/model/` | Pipeline steps, presets, draft persistence (localStorage) |
 | `useJobTracking` | `src/features/job-tracking/model/` | Async job lifecycle, polling, completion callback |
@@ -127,6 +123,8 @@ service → infrastructure (OpenCV, OCR, object detection, LLM)
 - `routes/` — HTTP method + URL binding + router aggregation (`health_route`, `image_route`, `job_route`, `router`)
 - `controllers/` — parse request, call services, shape HTTP response (`image_controller`)
 - `services/` — business logic (`image_processor`, `job_service`, `storage_service`, `ocr_service`, `object_detection_service`, `caption_service`)
+- `caption_service` returns `CaptionCandidate(text=text)` — **no `score` field**. The LLM always returned 1.0 (hardcoded), so the field was removed from the schema and generated types entirely. Do not re-add it.
+- `object_detection_service` raises `ModelNotAvailableError` when `mobilenet_iter_73000.caffemodel` is absent (the file is gitignored). `image_controller` catches this and returns HTTP 503 for `object_detection` steps only; other pipeline steps continue normally.
 - `repositories/` — data persistence (`job_repository` reads/writes via SQLAlchemy `Session`; `mark_interrupted_jobs()` resets in-flight rows to `failed` at startup)
 - `infrastructure/` — external lib wrappers: `image_processing/opencv_processor.py`, `object_detection/mobilenet_ssd_detector.py`, `ocr/rapidocr.py`, `llm/lm_studio_client.py`, `storage/local_storage.py`, `queue/background_task_queue.py`
 - `dependencies/service_dependency.py` — `@lru_cache` singleton factories (`get_job_service()`, `get_image_processor()`, etc.)

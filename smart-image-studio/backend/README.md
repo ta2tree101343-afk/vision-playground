@@ -149,7 +149,7 @@ poetry run task dev
 { "operation": "blur", "parameters": { "blur_strength": 5 } }
 ```
 
-**サポートする操作一覧
+### サポートする操作一覧
 
 | operation | 説明 | パラメータ |
 | --- | --- | --- |
@@ -270,7 +270,7 @@ poetry run pytest tests/integration/
 poetry run pytest --cov=app
 ```
 
-**テスト構成
+### テスト構成
 
 | 種別 | 内容 |
 | --- | --- |

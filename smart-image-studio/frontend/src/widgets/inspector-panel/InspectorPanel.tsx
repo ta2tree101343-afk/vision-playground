@@ -5,7 +5,6 @@ import type { ParameterDefinition } from '@entities/operation';
 import type { ParameterKey, PipelinePreset, PipelineStepDraft } from '@entities/pipeline';
 import { InspectorSlider } from './InspectorSlider';
 import { InspectorSection } from './InspectorSection';
-import { MiniHistogram } from './MiniHistogram';
 import { InspectorPresets } from './InspectorPresets';
 
 function PlayIcon(props: SVGProps<SVGSVGElement>) {
@@ -112,7 +111,6 @@ export function InspectorPanel({
                     onChange={(key, val) => onParameterChange(selectedStep.id, key, val)}
                   />
                 ))}
-                {option.parameters.length > 0 && <MiniHistogram />}
               </InspectorSection>
             ) : (
               <div className="px-4 py-6 text-center">

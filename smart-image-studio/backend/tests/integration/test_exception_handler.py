@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import patch
 
@@ -6,7 +7,7 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture()
-def no_raise_client(tmp_upload_dir: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
+def no_raise_client(tmp_upload_dir: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, None]:
     from app.core.config import Settings, get_settings
     from app.main import app
 

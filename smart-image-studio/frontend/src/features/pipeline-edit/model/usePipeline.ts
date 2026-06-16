@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import type { OperationType } from '@shared/types/api';
-import { asUIThreshold, type ParameterKey, type PipelinePreset, type PipelineStepDraft } from '@entities/pipeline';
+import {
+  asUIThreshold,
+  type ParameterKey,
+  type PipelinePreset,
+  type PipelineStepDraft,
+} from '@entities/pipeline';
 import {
   clonePipelineTemplates,
   createPipelineStep,
@@ -70,8 +75,10 @@ export function usePipeline() {
   function reorderSteps(fromIndex: number, toIndex: number) {
     setSteps((current) => {
       if (
-        fromIndex < 0 || fromIndex >= current.length ||
-        toIndex < 0 || toIndex >= current.length ||
+        fromIndex < 0 ||
+        fromIndex >= current.length ||
+        toIndex < 0 ||
+        toIndex >= current.length ||
         fromIndex === toIndex
       ) {
         return current;

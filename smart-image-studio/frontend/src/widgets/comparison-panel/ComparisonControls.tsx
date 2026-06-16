@@ -52,7 +52,10 @@ export function ComparisonControls({
     >
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <div className="text-xs uppercase tracking-[0.22em]" style={{ color: 'var(--text-muted)' }}>
+          <div
+            className="text-xs uppercase tracking-[0.22em]"
+            style={{ color: 'var(--text-muted)' }}
+          >
             Workspace
           </div>
           <h2
@@ -68,8 +71,16 @@ export function ComparisonControls({
 
         <div className="flex flex-col gap-3 xl:items-end">
           <div className="flex flex-wrap gap-2">
-            <ToolButton label="同期比較" active={mode === 'sync'} onClick={() => onSetMode('sync')} />
-            <ToolButton label="差分表示" active={mode === 'diff'} onClick={() => onSetMode('diff')} />
+            <ToolButton
+              label="同期比較"
+              active={mode === 'sync'}
+              onClick={() => onSetMode('sync')}
+            />
+            <ToolButton
+              label="差分表示"
+              active={mode === 'diff'}
+              onClick={() => onSetMode('diff')}
+            />
           </div>
 
           <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -95,12 +106,17 @@ export function ComparisonControls({
         style={{ background: 'var(--bg-shell)', borderColor: 'var(--border-subtle)' }}
       >
         <div>
-          <div className="font-medium" style={{ color: 'var(--text-primary)' }}>処理状況</div>
+          <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
+            処理状況
+          </div>
           <div className="mt-1" style={{ color: 'var(--text-secondary)' }}>
             {message ?? '未実行です。'}
           </div>
           {appliedOperations && appliedOperations.length > 0 ? (
-            <div className="mt-2 text-xs uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
+            <div
+              className="mt-2 text-xs uppercase tracking-[0.18em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {appliedOperations.join(' / ')}
             </div>
           ) : null}

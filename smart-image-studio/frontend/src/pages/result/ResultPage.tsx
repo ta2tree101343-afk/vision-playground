@@ -9,10 +9,16 @@ import { readLatestProcessResult } from '@entities/job';
 import type { OperationStep, OperationType } from '@shared/types/api';
 import { useResultDownload } from './useResultDownload';
 
-const ANALYSIS_ONLY_OPERATIONS = new Set<OperationType>(['ocr', 'object_detection', 'caption_generation']);
+const ANALYSIS_ONLY_OPERATIONS = new Set<OperationType>([
+  'ocr',
+  'object_detection',
+  'caption_generation',
+]);
 
 function isAnalysisOnly(operations: OperationStep[]): boolean {
-  return operations.length > 0 && operations.every((op) => ANALYSIS_ONLY_OPERATIONS.has(op.operation));
+  return (
+    operations.length > 0 && operations.every((op) => ANALYSIS_ONLY_OPERATIONS.has(op.operation))
+  );
 }
 
 export function ResultPage() {
@@ -56,7 +62,11 @@ export function ResultPage() {
                   ? 'ブラウザのストレージへのアクセスが制限されています。プライベートブラウジングを無効にしてお試しください。'
                   : 'まだ結果がありません'
               }
-              action={storageReadFailed ? undefined : { label: 'トップへ戻る', onClick: () => navigateTo('/') }}
+              action={
+                storageReadFailed
+                  ? undefined
+                  : { label: 'トップへ戻る', onClick: () => navigateTo('/') }
+              }
             />
           )}
         </div>

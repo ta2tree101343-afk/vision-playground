@@ -53,7 +53,9 @@ export function StudioPage() {
       ops = pipeline.steps.map(buildOperationStep);
     } catch (error) {
       console.error('[StudioPage] Failed to build operation steps:', error);
-      pipeline.setErrorMessage(error instanceof Error ? error.message : 'パイプラインのビルドに失敗しました。');
+      pipeline.setErrorMessage(
+        error instanceof Error ? error.message : 'パイプラインのビルドに失敗しました。',
+      );
       return;
     }
     void jobs.submitJob(file.selectedFile, ops);

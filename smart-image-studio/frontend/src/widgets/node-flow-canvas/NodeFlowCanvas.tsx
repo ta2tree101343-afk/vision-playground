@@ -1,7 +1,4 @@
-import {
-  useId,
-  useRef,
-} from 'react';
+import { useId, useRef } from 'react';
 import {
   DndContext,
   PointerSensor,
@@ -10,10 +7,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from '@dnd-kit/core';
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { operationOptions } from '@entities/operation';
 import type { PipelineStepDraft } from '@entities/pipeline';
 import { SortableNodeCard } from './NodeCard';
@@ -39,9 +33,7 @@ export function NodeFlowCanvas({
   const nodeRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const { connections, containerRef } = useNodeConnections(steps, selectedNodeId, nodeRefs);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-  );
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -60,7 +52,10 @@ export function NodeFlowCanvas({
           ref={containerRef}
           className="relative h-full overflow-x-auto overflow-y-hidden"
           onClick={(e) => {
-            if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains('flow-bg')) {
+            if (
+              e.target === e.currentTarget ||
+              (e.target as HTMLElement).classList.contains('flow-bg')
+            ) {
               onNodeSelect(null);
             }
           }}
@@ -70,10 +65,24 @@ export function NodeFlowCanvas({
             style={{ width: '100%', height: '100%', overflow: 'visible' }}
           >
             <defs>
-              <marker id={`${uid}-dot-active`} viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4">
+              <marker
+                id={`${uid}-dot-active`}
+                viewBox="0 0 6 6"
+                refX="3"
+                refY="3"
+                markerWidth="4"
+                markerHeight="4"
+              >
                 <circle cx="3" cy="3" r="2.5" fill="var(--accent-blue)" />
               </marker>
-              <marker id={`${uid}-dot-default`} viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4">
+              <marker
+                id={`${uid}-dot-default`}
+                viewBox="0 0 6 6"
+                refX="3"
+                refY="3"
+                markerWidth="4"
+                markerHeight="4"
+              >
                 <circle cx="3" cy="3" r="2.5" fill="var(--wire-color)" />
               </marker>
             </defs>
@@ -91,7 +100,10 @@ export function NodeFlowCanvas({
             ))}
           </svg>
 
-          <div className="flow-bg flex h-full items-center gap-10 px-8 py-6" style={{ minWidth: 'max-content' }}>
+          <div
+            className="flow-bg flex h-full items-center gap-10 px-8 py-6"
+            style={{ minWidth: 'max-content' }}
+          >
             <AddNodeMenu onAdd={onAddOperation} />
 
             {steps.map((step) => (

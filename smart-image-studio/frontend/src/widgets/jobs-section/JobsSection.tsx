@@ -63,20 +63,26 @@ export function JobsSection({
           className="grid grid-cols-3 gap-3 rounded-xl border px-4 py-3"
           style={{ background: 'var(--bg-panel-raised)', borderColor: 'var(--border-default)' }}
         >
-            {[
-              { label: '本日の処理数', value: `${todayJobs.length}` },
-              { label: '完了数', value: `${todayCompleted.length}` },
-              { label: '平均処理時間', value: avgTimeStr },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <div className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-                  {label}
-                </div>
-                <div className="mt-1 font-mono-val text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                  {value}
-                </div>
+          {[
+            { label: '本日の処理数', value: `${todayJobs.length}` },
+            { label: '完了数', value: `${todayCompleted.length}` },
+            { label: '平均処理時間', value: avgTimeStr },
+          ].map(({ label, value }) => (
+            <div key={label}>
+              <div
+                className="text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                {label}
               </div>
-            ))}
+              <div
+                className="mt-1 font-mono-val text-xl font-bold"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {value}
+              </div>
+            </div>
+          ))}
         </div>
         <JobStatusPanel job={activeJob} />
         <JobHistoryPanel

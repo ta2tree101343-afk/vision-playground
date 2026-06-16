@@ -74,14 +74,14 @@ export function InspectorPanel({
       <div className="flex-1 overflow-y-auto">
         {selectedStep && option ? (
           <>
-            <div
-              className="border-b px-4 py-3"
-              style={{ borderColor: 'var(--border-subtle)' }}
-            >
+            <div className="border-b px-4 py-3" style={{ borderColor: 'var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-md"
-                  style={{ background: 'var(--accent-blue-bg-mid)', color: 'var(--accent-blue-bright)' }}
+                  style={{
+                    background: 'var(--accent-blue-bg-mid)',
+                    color: 'var(--accent-blue-bright)',
+                  }}
                 >
                   {(() => {
                     const Icon = NODE_ICONS[selectedStep.operation];
@@ -92,7 +92,10 @@ export function InspectorPanel({
                   {option.label}
                 </span>
               </div>
-              <p className="mt-1.5 text-[11px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              <p
+                className="mt-1.5 text-[11px] leading-relaxed"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 {option.description}
               </p>
             </div>

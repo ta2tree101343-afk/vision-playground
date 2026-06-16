@@ -28,7 +28,10 @@ export function InspectorSection({
         className="flex w-full items-center justify-between px-4 py-3"
         style={{ background: 'transparent' }}
       >
-        <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>
+        <span
+          className="text-xs font-semibold uppercase tracking-widest"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           {title}
         </span>
         <div className="flex items-center" style={{ color: 'var(--text-muted)' }}>

@@ -52,7 +52,12 @@ export function AnalysisPanel({ result }: AnalysisPanelProps) {
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-4">
-        <h2 className="shrink-0 font-sans text-xl font-bold leading-normal pb-[0.05rem]" style={{ color: 'var(--text-primary)' }}>AI Insights</h2>
+        <h2
+          className="shrink-0 font-sans text-xl font-bold leading-normal pb-[0.05rem]"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          AI Insights
+        </h2>
         <div className="h-px flex-1" style={{ background: 'var(--border-subtle)' }} />
       </div>
 
@@ -64,7 +69,10 @@ export function AnalysisPanel({ result }: AnalysisPanelProps) {
               description="検出した物体の bounding box と信頼度を元画像に重ねます。"
               imageUrl={sourceImageUrl}
               entries={detectionEntries}
-              accentStyle={{ borderColor: 'var(--overlay-detection-border)', background: 'var(--overlay-detection-bg)' }}
+              accentStyle={{
+                borderColor: 'var(--overlay-detection-border)',
+                background: 'var(--overlay-detection-bg)',
+              }}
               badgeStyle={{ background: 'var(--overlay-detection-badge-bg)', color: 'white' }}
               emptyMessage="物体検出の結果はありません。"
             />
@@ -75,7 +83,10 @@ export function AnalysisPanel({ result }: AnalysisPanelProps) {
               description="認識した文字の位置と信頼度を元画像に重ねます。"
               imageUrl={sourceImageUrl}
               entries={ocrEntries}
-              accentStyle={{ borderColor: 'var(--overlay-ocr-border)', background: 'var(--overlay-ocr-bg)' }}
+              accentStyle={{
+                borderColor: 'var(--overlay-ocr-border)',
+                background: 'var(--overlay-ocr-bg)',
+              }}
               badgeStyle={{ background: 'var(--overlay-ocr-badge-bg)', color: 'white' }}
               emptyMessage="OCR の結果はありません。"
               layout="side-by-side"
@@ -85,7 +96,9 @@ export function AnalysisPanel({ result }: AnalysisPanelProps) {
       )}
 
       {(showBackgroundMask || showCaptions) && (
-        <div className={`grid gap-4${showBackgroundMask && showCaptions ? ' xl:grid-cols-[1.2fr_0.8fr]' : ''}`}>
+        <div
+          className={`grid gap-4${showBackgroundMask && showCaptions ? ' xl:grid-cols-[1.2fr_0.8fr]' : ''}`}
+        >
           {showBackgroundMask && (
             <BackgroundMaskCard
               maskImageUrl={analysis?.background_removal?.mask_image_url}

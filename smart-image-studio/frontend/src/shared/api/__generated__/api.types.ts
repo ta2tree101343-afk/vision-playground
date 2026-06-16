@@ -7,9 +7,9 @@
 import { customFetch } from '../mutator';
 export type BackgroundRemovalResult = {
   /**
-     * @minimum 0
-     * @maximum 1
-     */
+   * @minimum 0
+   * @maximum 1
+   */
   foreground_ratio: number;
   mask_image_url?: string | null;
 };
@@ -44,8 +44,7 @@ export type CaptionResult = {
   error_message?: string | null;
 };
 
-export type OperationType = typeof OperationType[keyof typeof OperationType];
-
+export type OperationType = (typeof OperationType)[keyof typeof OperationType];
 
 export const OperationType = {
   grayscale: 'grayscale',
@@ -79,9 +78,9 @@ export type ImageOperationStep = {
 export type OcrLine = {
   text: string;
   /**
-     * @minimum 0
-     * @maximum 1
-     */
+   * @minimum 0
+   * @maximum 1
+   */
   confidence: number;
   bounding_box: BoundingBox;
 };
@@ -94,9 +93,9 @@ export type OcrResult = {
 export type DetectedObject = {
   label: string;
   /**
-     * @minimum 0
-     * @maximum 1
-     */
+   * @minimum 0
+   * @maximum 1
+   */
   confidence: number;
   bounding_box: BoundingBox;
 };
@@ -104,9 +103,9 @@ export type DetectedObject = {
 export type ObjectDetectionResult = {
   model: string;
   /**
-     * @minimum 0
-     * @maximum 1
-     */
+   * @minimum 0
+   * @maximum 1
+   */
   threshold: number;
   detections?: DetectedObject[];
 };
@@ -130,9 +129,9 @@ export type ProcessImageResponse = {
 export type CompletedJobResponse = {
   job_id: string;
   /**
-     * @minimum 0
-     * @maximum 100
-     */
+   * @minimum 0
+   * @maximum 100
+   */
   progress: number;
   message: string;
   filename: string;
@@ -151,9 +150,9 @@ export type CompletedJobResponse = {
 export type FailedJobResponse = {
   job_id: string;
   /**
-     * @minimum 0
-     * @maximum 100
-     */
+   * @minimum 0
+   * @maximum 100
+   */
   progress: number;
   message: string;
   filename: string;
@@ -190,9 +189,9 @@ export type HealthCheckResponse = {
 export type QueuedJobResponse = {
   job_id: string;
   /**
-     * @minimum 0
-     * @maximum 100
-     */
+   * @minimum 0
+   * @maximum 100
+   */
   progress: number;
   message: string;
   filename: string;
@@ -213,9 +212,9 @@ export type QueuedJobResponse = {
 export type RunningJobResponse = {
   job_id: string;
   /**
-     * @minimum 0
-     * @maximum 100
-     */
+   * @minimum 0
+   * @maximum 100
+   */
   progress: number;
   message: string;
   filename: string;
@@ -234,83 +233,77 @@ export type RunningJobResponse = {
 };
 
 export type healthCheckHealthGetResponse200 = {
-  data: HealthCheckResponse
-  status: 200
-}
+  data: HealthCheckResponse;
+  status: 200;
+};
 
-export type healthCheckHealthGetResponseSuccess = (healthCheckHealthGetResponse200) & {
+export type healthCheckHealthGetResponseSuccess = healthCheckHealthGetResponse200 & {
   headers: Headers;
 };
-;
-
-export type healthCheckHealthGetResponse = (healthCheckHealthGetResponseSuccess)
+export type healthCheckHealthGetResponse = healthCheckHealthGetResponseSuccess;
 
 export const getHealthCheckHealthGetUrl = () => {
-
-
-
-
-  return `/health`
-}
+  return `/health`;
+};
 
 /**
  * サービスが正常に稼働しているかを確認します。
  * @summary ヘルスチェック
  */
-export const healthCheckHealthGet = async ( options?: RequestInit): Promise<healthCheckHealthGetResponse> => {
-
-  return customFetch<healthCheckHealthGetResponse>(getHealthCheckHealthGetUrl(),
-  {
+export const healthCheckHealthGet = async (
+  options?: RequestInit,
+): Promise<healthCheckHealthGetResponse> => {
+  return customFetch<healthCheckHealthGetResponse>(getHealthCheckHealthGetUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 export type processImageApiImagesProcessPostResponse200 = {
-  data: ProcessImageResponse
-  status: 200
-}
+  data: ProcessImageResponse;
+  status: 200;
+};
 
 export type processImageApiImagesProcessPostResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type processImageApiImagesProcessPostResponse413 = {
-  data: void
-  status: 413
-}
+  data: void;
+  status: 413;
+};
 
 export type processImageApiImagesProcessPostResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
+  data: HTTPValidationError;
+  status: 422;
+};
 
 export type processImageApiImagesProcessPostResponse500 = {
-  data: void
-  status: 500
-}
-
-export type processImageApiImagesProcessPostResponseSuccess = (processImageApiImagesProcessPostResponse200) & {
-  headers: Headers;
-};
-export type processImageApiImagesProcessPostResponseError = (processImageApiImagesProcessPostResponse400 | processImageApiImagesProcessPostResponse413 | processImageApiImagesProcessPostResponse422 | processImageApiImagesProcessPostResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type processImageApiImagesProcessPostResponse = (processImageApiImagesProcessPostResponseSuccess | processImageApiImagesProcessPostResponseError)
+export type processImageApiImagesProcessPostResponseSuccess =
+  processImageApiImagesProcessPostResponse200 & {
+    headers: Headers;
+  };
+export type processImageApiImagesProcessPostResponseError = (
+  | processImageApiImagesProcessPostResponse400
+  | processImageApiImagesProcessPostResponse413
+  | processImageApiImagesProcessPostResponse422
+  | processImageApiImagesProcessPostResponse500
+) & {
+  headers: Headers;
+};
+
+export type processImageApiImagesProcessPostResponse =
+  | processImageApiImagesProcessPostResponseSuccess
+  | processImageApiImagesProcessPostResponseError;
 
 export const getProcessImageApiImagesProcessPostUrl = () => {
-
-
-
-
-  return `/api/images/process`
-}
+  return `/api/images/process`;
+};
 
 /**
  * アップロードされた画像に指定のパイプラインを適用し、加工結果を同期で返します。
@@ -318,100 +311,101 @@ export const getProcessImageApiImagesProcessPostUrl = () => {
  * `operations` は `ImageOperationStep` の JSON 配列（文字列）です。
  * @summary 画像処理
  */
-export const processImageApiImagesProcessPost = async (bodyProcessImageApiImagesProcessPost: BodyProcessImageApiImagesProcessPost, options?: RequestInit): Promise<processImageApiImagesProcessPostResponse> => {
-    const formData = new FormData();
-formData.append(`file`, bodyProcessImageApiImagesProcessPost.file);
-formData.append(`operations`, bodyProcessImageApiImagesProcessPost.operations);
+export const processImageApiImagesProcessPost = async (
+  bodyProcessImageApiImagesProcessPost: BodyProcessImageApiImagesProcessPost,
+  options?: RequestInit,
+): Promise<processImageApiImagesProcessPostResponse> => {
+  const formData = new FormData();
+  formData.append(`file`, bodyProcessImageApiImagesProcessPost.file);
+  formData.append(`operations`, bodyProcessImageApiImagesProcessPost.operations);
 
-  return customFetch<processImageApiImagesProcessPostResponse>(getProcessImageApiImagesProcessPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-    ,
-    body: formData
-  }
-);}
-
-
+  return customFetch<processImageApiImagesProcessPostResponse>(
+    getProcessImageApiImagesProcessPostUrl(),
+    {
+      ...options,
+      method: 'POST',
+      body: formData,
+    },
+  );
+};
 
 export type listProcessJobsApiImagesJobsGetResponse200 = {
-  data: (QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse)[]
-  status: 200
-}
-
-export type listProcessJobsApiImagesJobsGetResponseSuccess = (listProcessJobsApiImagesJobsGetResponse200) & {
-  headers: Headers;
+  data: (QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse)[];
+  status: 200;
 };
-;
 
-export type listProcessJobsApiImagesJobsGetResponse = (listProcessJobsApiImagesJobsGetResponseSuccess)
+export type listProcessJobsApiImagesJobsGetResponseSuccess =
+  listProcessJobsApiImagesJobsGetResponse200 & {
+    headers: Headers;
+  };
+export type listProcessJobsApiImagesJobsGetResponse =
+  listProcessJobsApiImagesJobsGetResponseSuccess;
 
 export const getListProcessJobsApiImagesJobsGetUrl = () => {
-
-
-
-
-  return `/api/images/jobs`
-}
+  return `/api/images/jobs`;
+};
 
 /**
  * 最近のジョブを作成日時の降順で返します。
  * @summary ジョブ一覧を取得
  */
-export const listProcessJobsApiImagesJobsGet = async ( options?: RequestInit): Promise<listProcessJobsApiImagesJobsGetResponse> => {
-
-  return customFetch<listProcessJobsApiImagesJobsGetResponse>(getListProcessJobsApiImagesJobsGetUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+export const listProcessJobsApiImagesJobsGet = async (
+  options?: RequestInit,
+): Promise<listProcessJobsApiImagesJobsGetResponse> => {
+  return customFetch<listProcessJobsApiImagesJobsGetResponse>(
+    getListProcessJobsApiImagesJobsGetUrl(),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
 
 export type createProcessJobApiImagesJobsPostResponse202 = {
-  data: QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse
-  status: 202
-}
+  data: QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse;
+  status: 202;
+};
 
 export type createProcessJobApiImagesJobsPostResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type createProcessJobApiImagesJobsPostResponse413 = {
-  data: void
-  status: 413
-}
+  data: void;
+  status: 413;
+};
 
 export type createProcessJobApiImagesJobsPostResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
+  data: HTTPValidationError;
+  status: 422;
+};
 
 export type createProcessJobApiImagesJobsPostResponse503 = {
-  data: void
-  status: 503
-}
-
-export type createProcessJobApiImagesJobsPostResponseSuccess = (createProcessJobApiImagesJobsPostResponse202) & {
-  headers: Headers;
-};
-export type createProcessJobApiImagesJobsPostResponseError = (createProcessJobApiImagesJobsPostResponse400 | createProcessJobApiImagesJobsPostResponse413 | createProcessJobApiImagesJobsPostResponse422 | createProcessJobApiImagesJobsPostResponse503) & {
-  headers: Headers;
+  data: void;
+  status: 503;
 };
 
-export type createProcessJobApiImagesJobsPostResponse = (createProcessJobApiImagesJobsPostResponseSuccess | createProcessJobApiImagesJobsPostResponseError)
+export type createProcessJobApiImagesJobsPostResponseSuccess =
+  createProcessJobApiImagesJobsPostResponse202 & {
+    headers: Headers;
+  };
+export type createProcessJobApiImagesJobsPostResponseError = (
+  | createProcessJobApiImagesJobsPostResponse400
+  | createProcessJobApiImagesJobsPostResponse413
+  | createProcessJobApiImagesJobsPostResponse422
+  | createProcessJobApiImagesJobsPostResponse503
+) & {
+  headers: Headers;
+};
+
+export type createProcessJobApiImagesJobsPostResponse =
+  | createProcessJobApiImagesJobsPostResponseSuccess
+  | createProcessJobApiImagesJobsPostResponseError;
 
 export const getCreateProcessJobApiImagesJobsPostUrl = () => {
-
-
-
-
-  return `/api/images/jobs`
-}
+  return `/api/images/jobs`;
+};
 
 /**
  * 画像処理ジョブをキューに登録し、非同期で処理を開始します。
@@ -419,65 +413,71 @@ export const getCreateProcessJobApiImagesJobsPostUrl = () => {
  * ジョブ ID を使って `GET /jobs/{job_id}` でステータスをポーリングしてください。
  * @summary ジョブを作成
  */
-export const createProcessJobApiImagesJobsPost = async (bodyCreateProcessJobApiImagesJobsPost: BodyCreateProcessJobApiImagesJobsPost, options?: RequestInit): Promise<createProcessJobApiImagesJobsPostResponse> => {
-    const formData = new FormData();
-formData.append(`file`, bodyCreateProcessJobApiImagesJobsPost.file);
-formData.append(`operations`, bodyCreateProcessJobApiImagesJobsPost.operations);
+export const createProcessJobApiImagesJobsPost = async (
+  bodyCreateProcessJobApiImagesJobsPost: BodyCreateProcessJobApiImagesJobsPost,
+  options?: RequestInit,
+): Promise<createProcessJobApiImagesJobsPostResponse> => {
+  const formData = new FormData();
+  formData.append(`file`, bodyCreateProcessJobApiImagesJobsPost.file);
+  formData.append(`operations`, bodyCreateProcessJobApiImagesJobsPost.operations);
 
-  return customFetch<createProcessJobApiImagesJobsPostResponse>(getCreateProcessJobApiImagesJobsPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-    ,
-    body: formData
-  }
-);}
-
-
+  return customFetch<createProcessJobApiImagesJobsPostResponse>(
+    getCreateProcessJobApiImagesJobsPostUrl(),
+    {
+      ...options,
+      method: 'POST',
+      body: formData,
+    },
+  );
+};
 
 export type getProcessJobApiImagesJobsJobIdGetResponse200 = {
-  data: QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse
-  status: 200
-}
+  data: QueuedJobResponse | RunningJobResponse | CompletedJobResponse | FailedJobResponse;
+  status: 200;
+};
 
 export type getProcessJobApiImagesJobsJobIdGetResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getProcessJobApiImagesJobsJobIdGetResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type getProcessJobApiImagesJobsJobIdGetResponseSuccess = (getProcessJobApiImagesJobsJobIdGetResponse200) & {
-  headers: Headers;
-};
-export type getProcessJobApiImagesJobsJobIdGetResponseError = (getProcessJobApiImagesJobsJobIdGetResponse404 | getProcessJobApiImagesJobsJobIdGetResponse422) & {
-  headers: Headers;
+  data: HTTPValidationError;
+  status: 422;
 };
 
-export type getProcessJobApiImagesJobsJobIdGetResponse = (getProcessJobApiImagesJobsJobIdGetResponseSuccess | getProcessJobApiImagesJobsJobIdGetResponseError)
+export type getProcessJobApiImagesJobsJobIdGetResponseSuccess =
+  getProcessJobApiImagesJobsJobIdGetResponse200 & {
+    headers: Headers;
+  };
+export type getProcessJobApiImagesJobsJobIdGetResponseError = (
+  | getProcessJobApiImagesJobsJobIdGetResponse404
+  | getProcessJobApiImagesJobsJobIdGetResponse422
+) & {
+  headers: Headers;
+};
 
-export const getGetProcessJobApiImagesJobsJobIdGetUrl = (jobId: string,) => {
+export type getProcessJobApiImagesJobsJobIdGetResponse =
+  | getProcessJobApiImagesJobsJobIdGetResponseSuccess
+  | getProcessJobApiImagesJobsJobIdGetResponseError;
 
-
-
-
-  return `/api/images/jobs/${jobId}`
-}
+export const getGetProcessJobApiImagesJobsJobIdGetUrl = (jobId: string) => {
+  return `/api/images/jobs/${jobId}`;
+};
 
 /**
  * 指定した `job_id` のジョブ詳細を返します。
  * @summary ジョブを取得
  */
-export const getProcessJobApiImagesJobsJobIdGet = async (jobId: string, options?: RequestInit): Promise<getProcessJobApiImagesJobsJobIdGetResponse> => {
-
-  return customFetch<getProcessJobApiImagesJobsJobIdGetResponse>(getGetProcessJobApiImagesJobsJobIdGetUrl(jobId),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
+export const getProcessJobApiImagesJobsJobIdGet = async (
+  jobId: string,
+  options?: RequestInit,
+): Promise<getProcessJobApiImagesJobsJobIdGetResponse> => {
+  return customFetch<getProcessJobApiImagesJobsJobIdGetResponse>(
+    getGetProcessJobApiImagesJobsJobIdGetUrl(jobId),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};

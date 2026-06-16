@@ -1,4 +1,9 @@
-import type { ParameterKey, PipelinePreset, PipelineStepDraft, SavedPipelineDraft } from '@entities/pipeline';
+import type {
+  ParameterKey,
+  PipelinePreset,
+  PipelineStepDraft,
+  SavedPipelineDraft,
+} from '@entities/pipeline';
 import { clonePipelineTemplates, toPipelineTemplates } from './pipeline';
 import { parameterConstraints, sanitizeParameter } from '@entities/operation';
 import { isBrowser } from '@shared/lib/browser';
@@ -91,12 +96,13 @@ export function readSavedPipelineDraft(): SavedPipelineDraft | null {
     return null;
   }
 
-  const validSteps = (draft.steps as unknown[])
-    .filter(isPipelineStepLike)
-    .map((step) => {
-      const raw = step as unknown as { parameters?: unknown };
-      return { ...step, parameters: sanitizeParameters(raw.parameters) as unknown as typeof step.parameters };
-    });
+  const validSteps = (draft.steps as unknown[]).filter(isPipelineStepLike).map((step) => {
+    const raw = step as unknown as { parameters?: unknown };
+    return {
+      ...step,
+      parameters: sanitizeParameters(raw.parameters) as unknown as typeof step.parameters,
+    };
+  });
   return {
     ...draft,
     steps: toPipelineTemplates(clonePipelineTemplates(validSteps)),
@@ -124,12 +130,13 @@ export function readSavedPipelinePresets(): PipelinePreset[] {
     .filter((preset) => isObject(preset) && Array.isArray(preset.steps))
     .map((preset) => ({
       ...(preset as PipelinePreset),
-      steps: (preset as { steps: unknown[] }).steps
-        .filter(isPipelineStepLike)
-        .map((step) => {
-          const raw = step as unknown as { parameters?: unknown };
-          return { ...step, parameters: sanitizeParameters(raw.parameters) as unknown as typeof step.parameters };
-        }),
+      steps: (preset as { steps: unknown[] }).steps.filter(isPipelineStepLike).map((step) => {
+        const raw = step as unknown as { parameters?: unknown };
+        return {
+          ...step,
+          parameters: sanitizeParameters(raw.parameters) as unknown as typeof step.parameters,
+        };
+      }),
     }));
 }
 

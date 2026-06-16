@@ -20,7 +20,10 @@ export function PipelineSection({
   return (
     <SectionShell title="パイプライン">
       <div className="mb-4">
-        <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+        <div
+          className="text-xs font-semibold uppercase tracking-widest"
+          style={{ color: 'var(--text-muted)' }}
+        >
           処理を追加
         </div>
         <div className="mt-3 flex flex-wrap gap-2">

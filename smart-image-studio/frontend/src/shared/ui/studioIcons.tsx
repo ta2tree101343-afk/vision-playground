@@ -34,7 +34,10 @@ export const NODE_ICONS: Record<string, (props: SVGProps<SVGSVGElement>) => Reac
   brightness: (p) => (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" {...p}>
       <circle cx="10" cy="10" r="4" />
-      <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4" strokeLinecap="round" />
+      <path
+        d="M10 2v2M10 16v2M2 10h2M16 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4"
+        strokeLinecap="round"
+      />
     </svg>
   ),
   contrast: (p) => (
@@ -58,7 +61,11 @@ export const NODE_ICONS: Record<string, (props: SVGProps<SVGSVGElement>) => Reac
   ),
   object_detection: (p) => (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" {...p}>
-      <path d="M3 6V4h2M17 6V4h-2M3 14v2h2M17 14v2h-2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M3 6V4h2M17 6V4h-2M3 14v2h2M17 14v2h-2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <rect x="6" y="7" width="8" height="6" rx="1" />
     </svg>
   ),
@@ -74,7 +81,10 @@ export const PRESET_ICONS: Record<string, (props: SVGProps<SVGSVGElement>) => Re
   'builtin-sns': (p) => (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" {...p}>
       <circle cx="10" cy="10" r="2.5" />
-      <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4" strokeLinecap="round" />
+      <path
+        d="M10 2v2M10 16v2M2 10h2M16 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4"
+        strokeLinecap="round"
+      />
     </svg>
   ),
   'builtin-ocr': (p) => (
@@ -118,7 +128,11 @@ export const PRESET_ICONS: Record<string, (props: SVGProps<SVGSVGElement>) => Re
   ),
   'builtin-detect': (p) => (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" {...p}>
-      <path d="M3 6V4h2M17 6V4h-2M3 14v2h2M17 14v2h-2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M3 6V4h2M17 6V4h-2M3 14v2h2M17 14v2h-2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <rect x="6" y="7" width="8" height="6" rx="1" />
     </svg>
   ),

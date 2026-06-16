@@ -56,7 +56,9 @@ export function PipelineEditor({
                         </div>
                       </div>
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{option.description}</p>
+                    <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
+                      {option.description}
+                    </p>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -103,7 +105,9 @@ export function PipelineEditor({
                         >
                           <div className="flex items-center justify-between gap-4">
                             <div>
-                              <div className="text-sm font-bold text-[var(--text-primary)]">{definition.label}</div>
+                              <div className="text-sm font-bold text-[var(--text-primary)]">
+                                {definition.label}
+                              </div>
                               <div className="mt-1 text-xs leading-6 text-[var(--text-secondary)]">
                                 {definition.helpText}
                               </div>
@@ -120,7 +124,11 @@ export function PipelineEditor({
                             max={definition.max}
                             step={definition.step}
                             value={currentValue}
-                            style={{ ['--range-fill' as string]: `${((currentValue - definition.min) / (definition.max - definition.min)) * 100}%` } as React.CSSProperties}
+                            style={
+                              {
+                                ['--range-fill' as string]: `${((currentValue - definition.min) / (definition.max - definition.min)) * 100}%`,
+                              } as React.CSSProperties
+                            }
                             onChange={(event) =>
                               onParameterChange(step.id, definition.key, Number(event.target.value))
                             }

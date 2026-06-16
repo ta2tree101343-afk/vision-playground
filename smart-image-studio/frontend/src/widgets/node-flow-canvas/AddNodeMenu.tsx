@@ -11,7 +11,11 @@ function PlusIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[number]['value']) => void }) {
+export function AddNodeMenu({
+  onAdd,
+}: {
+  onAdd: (op: (typeof operationOptions)[number]['value']) => void;
+}) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -57,7 +61,9 @@ export function AddNodeMenu({ onAdd }: { onAdd: (op: (typeof operationOptions)[n
             }}
           >
             {operationOptions.map((opt: OperationOption) => {
-              const Icon = NODE_ICONS[opt.value] ?? (() => <span className="text-xs font-bold">{opt.icon}</span>);
+              const Icon =
+                NODE_ICONS[opt.value] ??
+                (() => <span className="text-xs font-bold">{opt.icon}</span>);
               return (
                 <button
                   key={opt.value}

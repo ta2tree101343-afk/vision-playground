@@ -24,7 +24,9 @@ export function JobsFilterButton({
 
   const hasFilter = searchQuery.trim() !== '' || filterDate !== '' || selectedOperations.length > 0;
   const activeCount =
-    (searchQuery.trim() !== '' ? 1 : 0) + (filterDate !== '' ? 1 : 0) + (selectedOperations.length > 0 ? 1 : 0);
+    (searchQuery.trim() !== '' ? 1 : 0) +
+    (filterDate !== '' ? 1 : 0) +
+    (selectedOperations.length > 0 ? 1 : 0);
 
   return (
     <div className="relative">
@@ -40,7 +42,12 @@ export function JobsFilterButton({
         }}
       >
         <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
-          <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path
+            d="M2 4h12M4 8h8M6 12h4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
         </svg>
         絞り込み
         {hasFilter && (
@@ -56,11 +63,18 @@ export function JobsFilterButton({
       {filterOpen && (
         <div
           className="absolute right-0 top-full z-20 mt-2 rounded-xl border p-4 shadow-xl"
-          style={{ background: 'var(--bg-panel)', borderColor: 'var(--border-default)', width: 'min(480px, calc(100vw - 32px))' }}
+          style={{
+            background: 'var(--bg-panel)',
+            borderColor: 'var(--border-default)',
+            width: 'min(480px, calc(100vw - 32px))',
+          }}
         >
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div>
-              <div className="mb-1.5 text-[10px] font-semibold tracking-widest" style={{ color: 'var(--text-muted)' }}>
+              <div
+                className="mb-1.5 text-[10px] font-semibold tracking-widest"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 ファイル名
               </div>
               <input
@@ -77,7 +91,10 @@ export function JobsFilterButton({
               />
             </div>
             <div>
-              <div className="mb-1.5 text-[10px] font-semibold tracking-widest" style={{ color: 'var(--text-muted)' }}>
+              <div
+                className="mb-1.5 text-[10px] font-semibold tracking-widest"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 日付
               </div>
               <input
@@ -97,7 +114,10 @@ export function JobsFilterButton({
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[10px] font-semibold tracking-widest" style={{ color: 'var(--text-muted)' }}>
+              <span
+                className="text-[10px] font-semibold tracking-widest"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 処理の種類
               </span>
               {hasFilter && (
@@ -128,13 +148,21 @@ export function JobsFilterButton({
                     className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all"
                     style={{
                       background: selected
-                        ? isAI ? 'var(--accent-purple-bg)' : 'var(--accent-blue-bg-mid)'
+                        ? isAI
+                          ? 'var(--accent-purple-bg)'
+                          : 'var(--accent-blue-bg-mid)'
                         : 'var(--bg-input)',
-                      border: `1px solid ${selected
-                        ? isAI ? 'var(--accent-purple-border-strong)' : 'var(--accent-blue)'
-                        : 'var(--border-default)'}`,
+                      border: `1px solid ${
+                        selected
+                          ? isAI
+                            ? 'var(--accent-purple-border-strong)'
+                            : 'var(--accent-blue)'
+                          : 'var(--border-default)'
+                      }`,
                       color: selected
-                        ? isAI ? 'var(--accent-purple-text)' : 'var(--accent-blue-bright)'
+                        ? isAI
+                          ? 'var(--accent-purple-text)'
+                          : 'var(--accent-blue-bright)'
                         : 'var(--text-secondary)',
                     }}
                   >

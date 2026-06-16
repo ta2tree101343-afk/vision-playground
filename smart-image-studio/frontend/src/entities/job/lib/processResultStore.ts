@@ -24,10 +24,12 @@ export function readLatestProcessResult(): ReadProcessResult {
   if (parsed === null) return { status: 'empty' };
   const validation = processImageResponseSchema.safeParse(parsed);
   if (!validation.success) {
-    console.error('[processResultStore] 保存された処理結果の形式が不正です。', validation.error.issues);
+    console.error(
+      '[processResultStore] 保存された処理結果の形式が不正です。',
+      validation.error.issues,
+    );
     removeSessionItem(KEY, LOG);
     return { status: 'error' };
   }
   return { status: 'ok', value: validation.data as ProcessImageResponse };
 }
-

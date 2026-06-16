@@ -2,6 +2,10 @@ class ImageProcessingError(Exception):
     pass
 
 
+class ModelNotAvailableError(Exception):
+    pass
+
+
 class JobNotFoundError(Exception):
     def __init__(self, job_id: str) -> None:
         self.job_id = job_id

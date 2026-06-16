@@ -8,7 +8,7 @@ from threading import RLock
 from typing import TYPE_CHECKING
 
 from app.core.constants import JOB_HISTORY_LIMIT, JOB_QUEUE_MAXSIZE
-from app.core.exceptions import ImageProcessingError, JobNotFoundError, JobQueueFullError, MaskSaveError
+from app.core.exceptions import ImageProcessingError, JobNotFoundError, JobQueueFullError, MaskSaveError, ModelNotAvailableError
 from app.infrastructure.queue.background_task_queue import BackgroundTaskQueue
 from app.schemas.image import ImageOperationStep
 from app.schemas.job import ImageProcessJob, JobStatus
@@ -162,10 +162,11 @@ class JobService:
                 result=result,
                 error_message=None,
             )
+        except ModelNotAvailableError:
+            await asyncio.to_thread(self._mark_failed, job_id, "物体検出モデルが配置されていません。")
         except ImageProcessingError as exc:
             logger.exception("ジョブ %s: 画像処理に失敗しました: %s", job_id, exc)
-            msg = f"画像処理に失敗しました: {exc}"
-            await asyncio.to_thread(self._mark_failed, job_id, msg)
+            await asyncio.to_thread(self._mark_failed, job_id, "画像処理に失敗しました。")
         except MaskSaveError as exc:
             logger.exception("ジョブ %s: 背景マスクの保存に失敗しました: %s", job_id, exc)
             msg = f"背景マスクの保存に失敗しました: {exc}"

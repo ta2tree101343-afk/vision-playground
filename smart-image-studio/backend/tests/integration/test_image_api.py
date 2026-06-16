@@ -120,3 +120,29 @@ def test_process_image_unknown_step_field_returns_400(client: TestClient) -> Non
         data={"operations": operations},
     )
     assert response.status_code == 400
+
+
+def test_process_image_returns_503_when_object_detection_model_unavailable(client: TestClient) -> None:
+    from app.core.exceptions import ModelNotAvailableError
+
+    operations = json.dumps([{"operation": "object_detection"}])
+    with patch("app.services.image_processor.ImageProcessor.process", side_effect=ModelNotAvailableError("no caffemodel")):
+        response = client.post(
+            "/api/images/process",
+            files={"file": ("test.png", make_png_bytes(), "image/png")},
+            data={"operations": operations},
+        )
+    assert response.status_code == 503
+
+
+def test_process_image_503_detail_does_not_leak_model_path(client: TestClient) -> None:
+    from app.core.exceptions import ModelNotAvailableError
+
+    operations = json.dumps([{"operation": "object_detection"}])
+    with patch("app.services.image_processor.ImageProcessor.process", side_effect=ModelNotAvailableError("no caffemodel")):
+        response = client.post(
+            "/api/images/process",
+            files={"file": ("test.png", make_png_bytes(), "image/png")},
+            data={"operations": operations},
+        )
+    assert "caffemodel" not in response.json()["detail"]

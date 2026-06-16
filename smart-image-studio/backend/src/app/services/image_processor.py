@@ -179,20 +179,20 @@ class ImageProcessor:
         if result.ocr is not None and result.ocr.full_text.strip():
             ocr_text = result.ocr.full_text.strip().replace("\n", " ")
 
-        def _add(text: str, score: float) -> None:
+        def _add(text: str) -> None:
             if text not in existing_texts:
-                candidates.append(CaptionCandidate(text=text, score=score))
+                candidates.append(CaptionCandidate(text=text))
                 existing_texts.add(text)
 
         if detection_labels:
-            _add(f"{'、'.join(detection_labels)} を中心に捉えた画像", 0.84)
+            _add(f"{'、'.join(detection_labels)} を中心に捉えた画像")
         if ocr_text:
-            _add(f"「{ocr_text[:32]}」を含む画像", 0.77)
+            _add(f"「{ocr_text[:32]}」を含む画像")
         if detection_labels and ocr_text:
-            _add(f"{'、'.join(detection_labels)} と「{ocr_text[:20]}」が写る画像", 0.71)
+            _add(f"{'、'.join(detection_labels)} と「{ocr_text[:20]}」が写る画像")
         if result.background_removal is not None:
             subject = "、".join(detection_labels) if detection_labels else "被写体"
-            _add(f"{subject} を切り抜いた画像", 0.68)
+            _add(f"{subject} を切り抜いた画像")
 
         if candidates:
             existing_error = result.captions.error_message if result.captions is not None else None

@@ -1,15 +1,12 @@
 import { EmptyState } from '@shared/ui/EmptyState';
 
-function formatConfidence(value: number): string {
-  return `${Math.round(Math.min(100, Math.max(0, value * 100)))}%`;
-}
 
 export function CaptionCandidatesCard({
   candidates,
   errorMessage,
   imageUrl,
 }: {
-  candidates: Array<{ text: string; score: number }>;
+  candidates: Array<{ text: string }>;
   errorMessage?: string | null;
   imageUrl?: string;
 }) {
@@ -20,11 +17,7 @@ export function CaptionCandidatesCard({
         className="rounded-2xl border p-3"
         style={{ borderColor: 'var(--border-subtle)', background: 'var(--bg-panel-raised)' }}
       >
-        <div className="flex items-center justify-between gap-3">
-          <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>候補 {index + 1}</div>
-          <div className="text-xs font-semibold" style={{ color: 'var(--tone-ai-text)' }}>{formatConfidence(candidate.score)}</div>
-        </div>
-        <div className="mt-2 text-sm leading-6" style={{ color: 'var(--text-secondary)' }}>{candidate.text}</div>
+        <div className="text-sm leading-6" style={{ color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>{candidate.text}</div>
       </div>
     ))
   ) : errorMessage ? (
@@ -40,7 +33,7 @@ export function CaptionCandidatesCard({
     >
       <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Caption Candidates</h3>
       <p className="mt-1 text-sm leading-6" style={{ color: 'var(--text-secondary)' }}>
-        AI 分析から組み立てた説明候補です。
+        AI分析から組み立てた説明候補です。
       </p>
 
       {imageUrl ? (

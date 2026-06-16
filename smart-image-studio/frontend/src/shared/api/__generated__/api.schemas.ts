@@ -53,14 +53,8 @@ export const BoundingBox = zod.object({
 export type BoundingBox = zod.input<typeof BoundingBox>;
 export type BoundingBoxOutput = zod.output<typeof BoundingBox>;
 
-export const captionCandidateScoreMin = 0;
-export const captionCandidateScoreMax = 1;
-
-
-
 export const CaptionCandidate = zod.object({
-  "text": zod.string(),
-  "score": zod.number().min(captionCandidateScoreMin).max(captionCandidateScoreMax)
+  "text": zod.string()
 });
 
 export type CaptionCandidate = zod.input<typeof CaptionCandidate>;

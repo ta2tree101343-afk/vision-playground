@@ -27,7 +27,7 @@ vi.mock('./CaptionCandidatesCard', () => ({
     candidates,
     errorMessage,
   }: {
-    candidates: Array<{ text: string; score: number }>;
+    candidates: Array<{ text: string }>;
     errorMessage?: string | null;
   }) => (
     <div data-testid="caption-candidates">
@@ -137,8 +137,8 @@ describe('AnalysisPanel', () => {
           analysis: {
             captions: {
               candidates: [
-                { text: 'a cat sitting on a mat', score: 0.85 },
-                { text: 'a pet resting indoors', score: 0.72 },
+                { text: 'a cat sitting on a mat' },
+                { text: 'a pet resting indoors' },
               ],
             },
           },

@@ -10,4 +10,4 @@ class CaptionService:
 
     def generate(self, image: Image.Image) -> CaptionResult:
         text = self._client.generate_caption(image)
-        return CaptionResult(candidates=[CaptionCandidate(text=text, score=1.0)])
+        return CaptionResult(candidates=[CaptionCandidate(text=text)])

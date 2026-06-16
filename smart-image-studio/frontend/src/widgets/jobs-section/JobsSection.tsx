@@ -59,11 +59,10 @@ export function JobsSection({
   return (
     <SectionShell title="処理履歴" headerRight={filterButton}>
       <div className="space-y-4">
-        {todayJobs.length > 0 && (
-          <div
-            className="grid grid-cols-3 gap-3 rounded-xl border px-4 py-3"
-            style={{ background: 'var(--bg-panel-raised)', borderColor: 'var(--border-default)' }}
-          >
+        <div
+          className="grid grid-cols-3 gap-3 rounded-xl border px-4 py-3"
+          style={{ background: 'var(--bg-panel-raised)', borderColor: 'var(--border-default)' }}
+        >
             {[
               { label: '本日の処理数', value: `${todayJobs.length}` },
               { label: '完了数', value: `${todayCompleted.length}` },
@@ -78,8 +77,7 @@ export function JobsSection({
                 </div>
               </div>
             ))}
-          </div>
-        )}
+        </div>
         <JobStatusPanel job={activeJob} />
         <JobHistoryPanel
           jobs={jobHistory}

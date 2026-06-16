@@ -3,10 +3,13 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import pytest
 from conftest import make_png_bytes
+from fastapi import HTTPException
 from PIL import Image
 
 from app.controllers.image_controller import ImageController
+from app.core.exceptions import ImageProcessingError, ModelNotAvailableError
 from app.infrastructure.storage.local_storage import StoredImage
 from app.schemas.image import ProcessImageResponse
 from app.services.image_processor import ImageProcessingResult, ImageProcessor
@@ -84,3 +87,37 @@ def test_process_analysis_is_none_when_processor_returns_none(tmp_path: Path) ->
         image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
     )
     assert result.analysis is None
+
+
+def test_model_not_available_error_raises_503(tmp_path: Path) -> None:
+    controller, image_processor, _ = _setup(tmp_path)
+    image_processor.process.side_effect = ModelNotAvailableError("caffemodel not found")
+
+    with pytest.raises(HTTPException) as exc_info:
+        controller.process_image(
+            image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        )
+    assert exc_info.value.status_code == 503
+
+
+def test_model_not_available_detail_does_not_leak_internals(tmp_path: Path) -> None:
+    controller, image_processor, _ = _setup(tmp_path)
+    image_processor.process.side_effect = ModelNotAvailableError("caffemodel not found")
+
+    with pytest.raises(HTTPException) as exc_info:
+        controller.process_image(
+            image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        )
+    assert "caffemodel not found" not in exc_info.value.detail
+
+
+def test_image_processing_error_raises_500(tmp_path: Path) -> None:
+    controller, image_processor, _ = _setup(tmp_path)
+    image_processor.process.side_effect = ImageProcessingError("internal error detail")
+
+    with pytest.raises(HTTPException) as exc_info:
+        controller.process_image(
+            image_bytes=make_png_bytes(4, 4), filename="photo.png", operations=_GRAYSCALE_OPS
+        )
+    assert exc_info.value.status_code == 500
+    assert "internal error detail" not in exc_info.value.detail

@@ -46,7 +46,7 @@ class ImageController:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="画像処理に失敗しました。") from exc
         except MaskSaveError as exc:
             logger.exception("背景マスクの保存に失敗しました: %s", exc)
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"背景マスクの保存に失敗しました: {exc}") from exc
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="背景マスクの保存に失敗しました。") from exc
         except OSError as exc:
             logger.exception("画像ファイルの保存に失敗しました: %s", exc)
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="画像ファイルの保存に失敗しました。") from exc

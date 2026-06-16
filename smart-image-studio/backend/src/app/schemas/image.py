@@ -96,7 +96,6 @@ class BackgroundRemovalResult(BaseModel):
 
 class CaptionCandidate(BaseModel):
     text: str
-    score: float = Field(ge=0.0, le=1.0)
 
 
 class CaptionResult(BaseModel):

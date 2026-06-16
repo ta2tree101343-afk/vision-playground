@@ -37,11 +37,6 @@ export type BoundingBox = {
 
 export type CaptionCandidate = {
   text: string;
-  /**
-     * @minimum 0
-     * @maximum 1
-     */
-  score: number;
 };
 
 export type CaptionResult = {

@@ -371,18 +371,11 @@
           "text": {
             "type": "string",
             "title": "Text"
-          },
-          "score": {
-            "type": "number",
-            "maximum": 1.0,
-            "minimum": 0.0,
-            "title": "Score"
           }
         },
         "type": "object",
         "required": [
-          "text",
-          "score"
+          "text"
         ],
         "title": "CaptionCandidate"
       },

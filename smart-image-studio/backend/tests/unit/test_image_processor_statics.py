@@ -76,15 +76,13 @@ def test_append_detection_labels_only_adds_one_candidate() -> None:
     assert result.captions is not None
     texts = [c.text for c in result.captions.candidates]
     assert any("cat" in t for t in texts)
-    scores = [c.score for c in result.captions.candidates]
-    assert 0.84 in scores
 
 
-def test_append_ocr_only_adds_candidate_at_score_077() -> None:
+def test_append_ocr_only_adds_candidate() -> None:
     analysis = _ocr_result("テキスト")
     result = ImageProcessor._append_caption_candidates(analysis)
     assert result.captions is not None
-    assert any(abs(c.score - 0.77) < 0.01 for c in result.captions.candidates)
+    assert any("テキスト" in c.text for c in result.captions.candidates)
 
 
 def test_append_detection_and_ocr_generates_combined_candidate() -> None:
@@ -92,17 +90,17 @@ def test_append_detection_and_ocr_generates_combined_candidate() -> None:
     analysis.ocr = OcrResult(full_text="SALE", lines=[])
     result = ImageProcessor._append_caption_candidates(analysis)
     assert result.captions is not None
-    scores = {round(c.score, 2) for c in result.captions.candidates}
-    assert 0.84 in scores
-    assert 0.77 in scores
-    assert 0.71 in scores
+    texts = [c.text for c in result.captions.candidates]
+    assert any("dog" in t for t in texts)
+    assert any("SALE" in t for t in texts)
+    assert any("dog" in t and "SALE" in t for t in texts)
 
 
 def test_append_background_removal_adds_cutout_candidate() -> None:
     analysis = _bg_result()
     result = ImageProcessor._append_caption_candidates(analysis)
     assert result.captions is not None
-    assert any(abs(c.score - 0.68) < 0.01 for c in result.captions.candidates)
+    assert any("切り抜い" in c.text for c in result.captions.candidates)
 
 
 def test_append_caps_at_four_candidates() -> None:
@@ -117,7 +115,7 @@ def test_append_caps_at_four_candidates() -> None:
 def test_append_deduplicates_existing_candidates() -> None:
     existing_text = "cat を中心に捉えた画像"
     analysis = _detection_result(["cat"])
-    analysis.captions = CaptionResult(candidates=[CaptionCandidate(text=existing_text, score=0.9)])
+    analysis.captions = CaptionResult(candidates=[CaptionCandidate(text=existing_text)])
     result = ImageProcessor._append_caption_candidates(analysis)
     assert result.captions is not None
     texts = [c.text for c in result.captions.candidates]

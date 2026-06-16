@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { defaultParameterState } from '@entities/operation';
-import { readSavedPipelineDraft, savePipelineDraft } from './pipelineStorage';
+import { readSavedPipelineDraft, savePipelineDraft } from '@features/pipeline-edit/lib/pipelineStorage';
 
 const DRAFT_KEY = 'smart-image-studio/pipeline-draft';
 

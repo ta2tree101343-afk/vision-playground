@@ -132,6 +132,11 @@ docker compose down -v # named volume も含めて完全削除
 ### Backend の起動
 
 ```bash
+cd smart-image-studio
+
+# Postgres を先に起動（別プロジェクトとポート衝突を避けるため 5433 で公開）
+docker compose up -d postgres
+
 cd backend
 poetry install
 cp .env.example .env
@@ -142,7 +147,7 @@ poetry run task dev
 ### Frontend の起動
 
 ```bash
-cd frontend
+cd smart-image-studio/frontend
 npm install
 cp .env.example .env
 npm run dev
@@ -166,11 +171,3 @@ npm run dev
 | --- | --- |
 | [frontend/README.md](./frontend/README.md) | FSD 設計・状態管理・API 連携・テスト |
 | [backend/README.md](./backend/README.md) | API 仕様・DB 設計・環境変数・テスト |
-
----
-
-## 今後の拡張案
-
-- ユーザーごとの作業セッション管理
-- クラウドストレージへの保存対応
-- 処理プリセットのサーバーサイド管理・共有

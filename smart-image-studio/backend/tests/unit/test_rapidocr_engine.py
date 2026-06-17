@@ -34,6 +34,7 @@ def small_target_engine() -> RapidOcrEngine:
 # _points_to_bounding_box
 # ---------------------------------------------------------------------------
 
+
 def test_points_to_bounding_box_normal_rectangle() -> None:
     points = [[10.0, 20.0], [110.0, 20.0], [110.0, 70.0], [10.0, 70.0]]
     box = RapidOcrEngine._points_to_bounding_box(points)
@@ -77,15 +78,16 @@ def test_points_to_bounding_box_float_coords_truncated() -> None:
     # int() は切り捨て
     points = [[10.9, 20.9], [60.1, 20.9], [60.1, 50.1], [10.9, 50.1]]
     box = RapidOcrEngine._points_to_bounding_box(points)
-    assert box.x == 10   # int(max(0, 10.9)) = 10
-    assert box.y == 20   # int(max(0, 20.9)) = 20
-    assert box.width == 50   # int(60.1) - 10 = 50
+    assert box.x == 10  # int(max(0, 10.9)) = 10
+    assert box.y == 20  # int(max(0, 20.9)) = 20
+    assert box.width == 50  # int(60.1) - 10 = 50
     assert box.height == 30  # int(50.1) - 20 = 30
 
 
 # ---------------------------------------------------------------------------
 # _prepare_for_ocr
 # ---------------------------------------------------------------------------
+
 
 def test_prepare_for_ocr_large_image_returned_unchanged(engine: RapidOcrEngine) -> None:
     # long_side (2000) >= target_long_side (1600) → そのまま返す

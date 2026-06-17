@@ -46,6 +46,7 @@ def _all_cached_fns() -> list:
         get_ocr_service,
         get_storage_service,
     )
+
     return [
         get_settings,
         get_ocr_service,

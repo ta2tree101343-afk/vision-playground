@@ -26,14 +26,12 @@ def _bg_result() -> ImageAnalysisResult:
 
 
 def _detection_result(labels: list[str]) -> ImageAnalysisResult:
-    detections = [
-        DetectedObject(label=label, confidence=0.9, bounding_box=BoundingBox(x=0, y=0, width=10, height=10))
-        for label in labels
-    ]
+    detections = [DetectedObject(label=label, confidence=0.9, bounding_box=BoundingBox(x=0, y=0, width=10, height=10)) for label in labels]
     return ImageAnalysisResult(object_detection=ObjectDetectionResult(model="test", threshold=0.45, detections=detections))
 
 
 # --- _merge_analysis ---
+
 
 def test_merge_both_none_returns_none() -> None:
     assert ImageProcessor._merge_analysis(None, None) is None
@@ -69,6 +67,7 @@ def test_merge_incoming_field_does_not_overwrite_if_none() -> None:
 
 
 # --- _append_caption_candidates ---
+
 
 def test_append_detection_labels_only_adds_one_candidate() -> None:
     analysis = _detection_result(["cat"])
@@ -123,9 +122,7 @@ def test_append_deduplicates_existing_candidates() -> None:
 
 
 def test_append_preserves_error_message_when_no_candidates_generated() -> None:
-    analysis = ImageAnalysisResult(
-        captions=CaptionResult(candidates=[], error_message="LM Studio 接続失敗")
-    )
+    analysis = ImageAnalysisResult(captions=CaptionResult(candidates=[], error_message="LM Studio 接続失敗"))
     result = ImageProcessor._append_caption_candidates(analysis)
     assert result.captions is not None
     assert result.captions.error_message == "LM Studio 接続失敗"

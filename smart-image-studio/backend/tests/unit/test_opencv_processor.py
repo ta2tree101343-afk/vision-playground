@@ -24,10 +24,10 @@ from app.infrastructure.image_processing.opencv_processor import (
 )
 from app.schemas.image import ImageOperationParameters
 
-
 # ---------------------------------------------------------------------------
 # ヘルパー
 # ---------------------------------------------------------------------------
+
 
 def _rgb(r: int, g: int, b: int, size: tuple[int, int] = (20, 20)) -> Image.Image:
     return Image.new("RGB", size, color=(r, g, b))
@@ -44,6 +44,7 @@ def _params(**kwargs: object) -> ImageOperationParameters:
 # ---------------------------------------------------------------------------
 # normalize_kernel_size
 # ---------------------------------------------------------------------------
+
 
 class TestNormalizeKernelSize:
     def test_odd_value_unchanged(self) -> None:
@@ -76,6 +77,7 @@ class TestNormalizeKernelSize:
 # pil_to_cv / cv_to_pil
 # ---------------------------------------------------------------------------
 
+
 class TestPilCvConversion:
     def test_pil_to_cv_shape(self) -> None:
         img = _rgb(100, 150, 200)
@@ -86,8 +88,8 @@ class TestPilCvConversion:
         img = _rgb(255, 0, 0)  # 純赤
         cv = pil_to_cv(img)
         # BGR 順なので B=0, G=0, R=255
-        assert cv[0, 0, 0] == 0    # B
-        assert cv[0, 0, 1] == 0    # G
+        assert cv[0, 0, 0] == 0  # B
+        assert cv[0, 0, 1] == 0  # G
         assert cv[0, 0, 2] == 255  # R
 
     def test_round_trip_preserves_pixels(self) -> None:
@@ -100,6 +102,7 @@ class TestPilCvConversion:
 # ---------------------------------------------------------------------------
 # apply_grayscale
 # ---------------------------------------------------------------------------
+
 
 class TestApplyGrayscale:
     def test_rgb_output_has_equal_channels(self) -> None:
@@ -132,6 +135,7 @@ class TestApplyGrayscale:
 # ---------------------------------------------------------------------------
 # apply_blur
 # ---------------------------------------------------------------------------
+
 
 class TestApplyBlur:
     def test_output_size_unchanged_rgb(self) -> None:
@@ -170,6 +174,7 @@ class TestApplyBlur:
 # apply_sharpen
 # ---------------------------------------------------------------------------
 
+
 class TestApplySharpen:
     def test_output_size_unchanged(self) -> None:
         result = apply_sharpen(_rgb(100, 150, 200, size=(30, 40)), _params(sharpen_strength=2))
@@ -196,6 +201,7 @@ class TestApplySharpen:
 # apply_denoise
 # ---------------------------------------------------------------------------
 
+
 class TestApplyDenoise:
     def test_output_size_unchanged(self) -> None:
         result = apply_denoise(_rgb(100, 150, 200, size=(30, 40)), _params(denoise_strength=5))
@@ -214,6 +220,7 @@ class TestApplyDenoise:
 # ---------------------------------------------------------------------------
 # apply_edge_detection
 # ---------------------------------------------------------------------------
+
 
 class TestApplyEdgeDetection:
     def test_output_size_unchanged(self) -> None:
@@ -239,6 +246,7 @@ class TestApplyEdgeDetection:
 # ---------------------------------------------------------------------------
 # apply_brightness
 # ---------------------------------------------------------------------------
+
 
 class TestApplyBrightness:
     def test_positive_brightness_increases_pixel_values(self) -> None:
@@ -276,6 +284,7 @@ class TestApplyBrightness:
 # apply_contrast
 # ---------------------------------------------------------------------------
 
+
 class TestApplyContrast:
     def test_positive_contrast_increases_deviation_from_gray(self) -> None:
         img = _rgb(200, 200, 200)
@@ -309,6 +318,7 @@ class TestApplyContrast:
 # ---------------------------------------------------------------------------
 # apply_background_removal
 # ---------------------------------------------------------------------------
+
 
 class TestApplyBackgroundRemoval:
     @pytest.fixture

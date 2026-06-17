@@ -59,6 +59,7 @@ def test_process_image_missing_file_returns_422(client: TestClient) -> None:
 
 def test_process_image_returns_500_on_image_processing_error(client: TestClient) -> None:
     from app.core.exceptions import ImageProcessingError
+
     operations = json.dumps([{"operation": "grayscale"}])
     with patch("app.services.image_processor.ImageProcessor.process", side_effect=ImageProcessingError("cv2 failed")):
         response = client.post(
@@ -71,6 +72,7 @@ def test_process_image_returns_500_on_image_processing_error(client: TestClient)
 
 def test_process_image_returns_500_on_mask_save_error(client: TestClient) -> None:
     from app.core.exceptions import MaskSaveError
+
     operations = json.dumps([{"operation": "grayscale"}])
     with patch("app.controllers.image_controller.save_and_build_response", side_effect=MaskSaveError("mask write failed")):
         response = client.post(

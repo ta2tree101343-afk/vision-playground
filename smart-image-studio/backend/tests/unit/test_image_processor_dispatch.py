@@ -87,6 +87,7 @@ def _stub_caption_service() -> CaptionService:
 
 # --- ファクトリ callable 接続テスト ---
 
+
 def test_ocr_factory_is_called_and_result_mapped_to_analysis() -> None:
     ocr_factory = MagicMock(return_value=_stub_ocr_service())
     processor = _make_processor(ocr_factory=ocr_factory)
@@ -125,6 +126,7 @@ def test_caption_factory_is_called_and_result_mapped_to_analysis() -> None:
 
 # --- CAPTION_GENERATION 例外スワロー分岐 ---
 
+
 def test_caption_service_raising_image_processing_error_is_swallowed() -> None:
     cap_svc = MagicMock(spec=CaptionService)
     cap_svc.generate.side_effect = ImageProcessingError("LM Studio unavailable")
@@ -154,11 +156,13 @@ def test_caption_factory_itself_raising_image_processing_error_is_swallowed() ->
 
 def test_ocr_factory_error_propagates_as_image_processing_error() -> None:
     """OCR/物体検出のファクトリエラーはスワローされず上位に伝播する。"""
+
     def failing_factory() -> OcrService:
         raise ImageProcessingError("OCR model not found")
 
     processor = _make_processor(ocr_factory=failing_factory)
 
     import pytest
+
     with pytest.raises(ImageProcessingError, match="OCR model not found"):
         processor.process(_png_bytes(), [_step(OperationType.OCR)])

@@ -34,6 +34,7 @@ def _patch_settings():
 
 # --- create_job ---
 
+
 async def test_create_job_queue_full_raises_503(controller: JobController, job_svc: MagicMock) -> None:
     job_svc.enqueue_job.side_effect = JobQueueFullError()
 
@@ -47,9 +48,8 @@ def test_create_job_invalid_operations_json_raises_400(controller: JobController
     # parse_operation_steps が HTTPException(400) を raise し、controller はそのまま素通りさせる
     with pytest.raises(HTTPException) as exc_info:
         import asyncio
-        asyncio.get_event_loop().run_until_complete(
-            controller.create_job(image_bytes=b"x", filename="photo.png", operations=_INVALID_OPS)
-        )
+
+        asyncio.get_event_loop().run_until_complete(controller.create_job(image_bytes=b"x", filename="photo.png", operations=_INVALID_OPS))
     assert exc_info.value.status_code == 400
 
 
@@ -72,6 +72,7 @@ async def test_create_job_passes_base_url_from_settings(controller: JobControlle
 
 # --- get_job ---
 
+
 def test_get_job_not_found_raises_404(controller: JobController, job_svc: MagicMock) -> None:
     job_svc.get_job.side_effect = JobNotFoundError("unknown-id")
 
@@ -90,6 +91,7 @@ def test_get_job_returns_job_on_success(controller: JobController, job_svc: Magi
 
 
 # --- list_jobs ---
+
 
 def test_list_jobs_delegates_to_service(controller: JobController, job_svc: MagicMock) -> None:
     job_svc.list_jobs.return_value = []

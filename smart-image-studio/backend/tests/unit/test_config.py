@@ -13,6 +13,7 @@ def _settings(cors_origins: str, upload_dir: str = "uploads") -> Settings:
 # Settings.cors_origin_list
 # ---------------------------------------------------------------------------
 
+
 def test_cors_origin_list_single_origin() -> None:
     s = _settings("http://localhost:5173")
     assert s.cors_origin_list == ["http://localhost:5173"]
@@ -48,6 +49,7 @@ def test_cors_origin_list_whitespace_only_returns_empty_list() -> None:
 # Settings.upload_path
 # ---------------------------------------------------------------------------
 
+
 def test_upload_path_uses_upload_dir() -> None:
     s = _settings("", upload_dir="my_uploads")
     assert s.upload_path.name == "my_uploads"
@@ -61,6 +63,7 @@ def test_upload_path_is_under_project_root() -> None:
 # ---------------------------------------------------------------------------
 # UnicodeJSONResponse.render
 # ---------------------------------------------------------------------------
+
 
 def _render(content: object) -> str:
     return UnicodeJSONResponse(content=None).render(content).decode("utf-8")

@@ -46,6 +46,8 @@ FastAPI + PostgreSQL で構築した画像処理 API サーバーです。
 
 ### Docker を使う場合（推奨）
 
+> **注意**: この構成は開発・デモ用途です。`--reload` で起動しており、本番運用向けではありません。
+
 ```bash
 # リポジトリルートで実行
 cp backend/.env.example backend/.env

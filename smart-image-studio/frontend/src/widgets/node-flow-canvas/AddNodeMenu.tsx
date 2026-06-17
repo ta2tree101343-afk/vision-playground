@@ -1,4 +1,4 @@
-import { useState, useEffect, type SVGProps } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, type SVGProps } from 'react';
 import { NODE_ICONS } from '@shared/ui/studioIcons';
 import { operationOptions } from '@entities/operation';
 import type { OperationOption } from '@entities/operation';
@@ -11,12 +11,23 @@ function PlusIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+const MENU_WIDTH = 192;
+const MENU_GAP = 8;
+const VIEWPORT_MARGIN = 12;
+const MAX_MENU_HEIGHT = 320;
+
 export function AddNodeMenu({
   onAdd,
 }: {
   onAdd: (op: (typeof operationOptions)[number]['value']) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    left: number;
+    top: number;
+    maxHeight: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -27,9 +38,42 @@ export function AddNodeMenu({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open]);
 
+  useLayoutEffect(() => {
+    if (!open) {
+      setMenuPosition(null);
+      return;
+    }
+
+    function updateMenuPosition() {
+      const button = buttonRef.current;
+      if (!button) return;
+
+      const rect = button.getBoundingClientRect();
+      const top = rect.bottom + MENU_GAP;
+      const availableHeight = window.innerHeight - top - VIEWPORT_MARGIN;
+      const maxLeft = window.innerWidth - MENU_WIDTH - VIEWPORT_MARGIN;
+
+      setMenuPosition({
+        left: Math.max(VIEWPORT_MARGIN, Math.min(rect.left, maxLeft)),
+        top,
+        maxHeight: Math.max(0, Math.min(MAX_MENU_HEIGHT, availableHeight)),
+      });
+    }
+
+    updateMenuPosition();
+    window.addEventListener('resize', updateMenuPosition);
+    window.addEventListener('scroll', updateMenuPosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('scroll', updateMenuPosition, true);
+    };
+  }, [open]);
+
   return (
-    <div className="relative">
+    <>
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="flex min-w-[90px] flex-col items-center gap-2 rounded-xl border px-3 py-3 transition-all duration-150 hover-border-accent hover-text-accent"
@@ -53,9 +97,13 @@ export function AddNodeMenu({
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div
-            className="absolute left-0 top-full z-20 mt-2 w-48 overflow-y-auto rounded-xl border p-1 shadow-2xl"
+            className="fixed z-20 overflow-y-auto rounded-xl border p-1 shadow-2xl"
             style={{
-              maxHeight: '320px',
+              width: MENU_WIDTH,
+              left: menuPosition?.left ?? 0,
+              top: menuPosition?.top ?? 0,
+              maxHeight: `${menuPosition?.maxHeight ?? 0}px`,
+              visibility: menuPosition ? 'visible' : 'hidden',
               background: 'var(--bg-panel-raised)',
               borderColor: 'var(--border-default)',
             }}
@@ -88,6 +136,6 @@ export function AddNodeMenu({
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }

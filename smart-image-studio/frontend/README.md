@@ -50,8 +50,6 @@ React + TypeScript で構築した画像処理スタジオの UI です。
 ## 4. セットアップ手順（クイックスタート）
 
 ```bash
-cd smart-image-studio/frontend
-
 # 依存関係インストール
 npm install
 
@@ -253,7 +251,7 @@ CMD ["npm", "run", "dev", "--", "--host"]
 
 ### API コード生成の CI 検証
 
-`.github/workflows/check-generated.yml` が PR ごとに `npm run codegen` を再実行し、生成ファイル（`docs/openapi.json`・`__generated__/`）の差分がないことを確認します。
+PR ごとに `npm run codegen` を再実行し、生成ファイル（`src/shared/api/__generated__/`）の差分がないことを確認します。
 
 ---
 

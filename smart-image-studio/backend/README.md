@@ -58,6 +58,9 @@ API: `http://localhost:8000` / OpenAPI Docs: `http://localhost:8000/docs`
 ### ローカルで直接起動する場合
 
 ```bash
+# Postgres を先に起動（別プロジェクトとポート衝突を避けるため 5433 で公開）
+docker compose up -d postgres
+
 cd backend
 
 # 依存関係インストール
@@ -65,7 +68,7 @@ poetry install
 
 # 環境変数設定
 cp .env.example .env
-# .env の DATABASE_URL を編集して PostgreSQL に接続
+# ローカル起動の場合 DATABASE_URL は localhost:5433 のまま使用可
 
 # DB マイグレーション
 PYTHONPATH=src poetry run alembic upgrade head
@@ -82,7 +85,7 @@ poetry run task dev
 
 | 変数名 | デフォルト値 | 必須 | 説明 |
 | --- | --- | --- | --- |
-| `DATABASE_URL` | — | ✅ | PostgreSQL 接続 URL（例: `postgresql+psycopg://user:pass@localhost:5432/db`） |
+| `DATABASE_URL` | — | ✅ | PostgreSQL 接続 URL（例: `postgresql+psycopg://user:pass@localhost:5433/db`） |
 | `PUBLIC_BASE_URL` | `http://localhost:8000` | | フロントエンドからアクセスできるバックエンドの公開 URL。画像 URL の生成に使用 |
 | `CORS_ORIGINS` | `http://localhost:5173` | | 許可する CORS オリジン（カンマ区切りで複数指定可） |
 | `UPLOAD_DIR` | `uploads` | | アップロードファイルの保存ディレクトリ（プロジェクトルート相対） |

@@ -49,34 +49,22 @@ React + TypeScript で構築した画像処理スタジオの UI です。
 
 ## 4. セットアップ手順（クイックスタート）
 
-### Docker を使う場合（推奨）
-
 ```bash
-# リポジトリルートで実行
-cp frontend/.env.example frontend/.env
-
-docker compose up --build
-```
-
-UI: `http://localhost:5173`
-
-### ローカルで直接起動する場合
-
-```bash
-cd frontend
+cd smart-image-studio/frontend
 
 # 依存関係インストール
 npm install
 
 # 環境変数設定
 cp .env.example .env
-# VITE_API_BASE_URL を編集（バックエンドが別ポートの場合）
 
 # 開発サーバー起動（ホットリロード）
 npm run dev
 ```
 
 UI: `http://localhost:5173`
+
+> フルスタック（バックエンド・DB 含む）の起動手順は [../README.md](../README.md) を参照してください。
 
 ---
 

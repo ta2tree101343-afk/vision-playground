@@ -44,9 +44,8 @@ export const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
             onRemove();
           }}
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-[--border-default] bg-[--bg-panel] text-[--text-muted] opacity-0 transition-opacity group-hover:opacity-100 hover:!opacity-100 hover:text-[--text-secondary]"
+          className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-[--border-default] bg-[--bg-panel] text-[9px] text-[--text-muted] opacity-0 transition-opacity group-hover:opacity-100 hover:!opacity-100 hover:text-[--text-secondary]"
           aria-label="削除"
-          style={{ fontSize: '9px' }}
         >
           ×
         </button>

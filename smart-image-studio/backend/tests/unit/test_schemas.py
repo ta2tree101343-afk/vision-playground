@@ -86,21 +86,34 @@ def test_completed_job_requires_result() -> None:
 
 def test_completed_job_with_result_is_valid() -> None:
     from app.schemas.image import ProcessImageResponse
+
     result = ProcessImageResponse(
-        message="ok", original_image_url="/o", processed_image_url="/p",
-        processed_filename="out.png", applied_operations=[],
+        message="ok",
+        original_image_url="/o",
+        processed_image_url="/p",
+        processed_filename="out.png",
+        applied_operations=[],
     )
-    job = ImageProcessJob(**_base_job(
-        status=JobStatus.COMPLETED, started_at=_NOW, completed_at=_LATER, result=result,
-    ))
+    job = ImageProcessJob(
+        **_base_job(
+            status=JobStatus.COMPLETED,
+            started_at=_NOW,
+            completed_at=_LATER,
+            result=result,
+        )
+    )
     assert job.status == JobStatus.COMPLETED
 
 
 def test_non_completed_job_rejects_result() -> None:
     from app.schemas.image import ProcessImageResponse
+
     result = ProcessImageResponse(
-        message="ok", original_image_url="/o", processed_image_url="/p",
-        processed_filename="out.png", applied_operations=[],
+        message="ok",
+        original_image_url="/o",
+        processed_image_url="/p",
+        processed_filename="out.png",
+        applied_operations=[],
     )
     with pytest.raises(ValidationError):
         ImageProcessJob(**_base_job(status=JobStatus.QUEUED, result=result))
@@ -108,9 +121,13 @@ def test_non_completed_job_rejects_result() -> None:
 
 def test_failed_job_requires_error_message() -> None:
     with pytest.raises(ValidationError):
-        ImageProcessJob(**_base_job(
-            status=JobStatus.FAILED, started_at=_NOW, completed_at=_LATER,
-        ))
+        ImageProcessJob(
+            **_base_job(
+                status=JobStatus.FAILED,
+                started_at=_NOW,
+                completed_at=_LATER,
+            )
+        )
 
 
 def test_non_failed_job_rejects_error_message() -> None:
@@ -132,12 +149,19 @@ def test_job_response_discriminated_union_queued() -> None:
     from pydantic import TypeAdapter
 
     from app.schemas.job_response import ImageProcessJobResponse
+
     adapter = TypeAdapter(ImageProcessJobResponse)
-    job = adapter.validate_python({
-        "job_id": "x", "status": "queued", "progress": 0,
-        "message": "", "filename": "f.png", "created_at": _NOW,
-        "applied_operations": [],
-    })
+    job = adapter.validate_python(
+        {
+            "job_id": "x",
+            "status": "queued",
+            "progress": 0,
+            "message": "",
+            "filename": "f.png",
+            "created_at": _NOW,
+            "applied_operations": [],
+        }
+    )
     assert job.status == "queued"
 
 
@@ -146,17 +170,29 @@ def test_job_response_discriminated_union_completed() -> None:
 
     from app.schemas.image import ProcessImageResponse
     from app.schemas.job_response import ImageProcessJobResponse
+
     adapter = TypeAdapter(ImageProcessJobResponse)
     result = ProcessImageResponse(
-        message="ok", original_image_url="/o", processed_image_url="/p",
-        processed_filename="out.png", applied_operations=[],
+        message="ok",
+        original_image_url="/o",
+        processed_image_url="/p",
+        processed_filename="out.png",
+        applied_operations=[],
     )
-    job = adapter.validate_python({
-        "job_id": "x", "status": "completed", "progress": 100,
-        "message": "", "filename": "f.png", "created_at": _NOW,
-        "started_at": _NOW, "completed_at": _LATER,
-        "applied_operations": [], "result": result.model_dump(mode="json"),
-    })
+    job = adapter.validate_python(
+        {
+            "job_id": "x",
+            "status": "completed",
+            "progress": 100,
+            "message": "",
+            "filename": "f.png",
+            "created_at": _NOW,
+            "started_at": _NOW,
+            "completed_at": _LATER,
+            "applied_operations": [],
+            "result": result.model_dump(mode="json"),
+        }
+    )
     assert job.status == "completed"
     assert job.result.message == "ok"
 
@@ -165,13 +201,22 @@ def test_job_response_discriminated_union_failed() -> None:
     from pydantic import TypeAdapter
 
     from app.schemas.job_response import ImageProcessJobResponse
+
     adapter = TypeAdapter(ImageProcessJobResponse)
-    job = adapter.validate_python({
-        "job_id": "x", "status": "failed", "progress": 0,
-        "message": "", "filename": "f.png", "created_at": _NOW,
-        "started_at": _NOW, "completed_at": _LATER,
-        "applied_operations": [], "error_message": "something went wrong",
-    })
+    job = adapter.validate_python(
+        {
+            "job_id": "x",
+            "status": "failed",
+            "progress": 0,
+            "message": "",
+            "filename": "f.png",
+            "created_at": _NOW,
+            "started_at": _NOW,
+            "completed_at": _LATER,
+            "applied_operations": [],
+            "error_message": "something went wrong",
+        }
+    )
     assert job.status == "failed"
     assert job.error_message == "something went wrong"
 
@@ -180,11 +225,19 @@ def test_completed_job_response_requires_result() -> None:
     from pydantic import TypeAdapter, ValidationError
 
     from app.schemas.job_response import ImageProcessJobResponse
+
     adapter = TypeAdapter(ImageProcessJobResponse)
     with pytest.raises(ValidationError):
-        adapter.validate_python({
-            "job_id": "x", "status": "completed", "progress": 100,
-            "message": "", "filename": "f.png", "created_at": _NOW,
-            "started_at": _NOW, "completed_at": _LATER,
-            "applied_operations": [],
-        })
+        adapter.validate_python(
+            {
+                "job_id": "x",
+                "status": "completed",
+                "progress": 100,
+                "message": "",
+                "filename": "f.png",
+                "created_at": _NOW,
+                "started_at": _NOW,
+                "completed_at": _LATER,
+                "applied_operations": [],
+            }
+        )

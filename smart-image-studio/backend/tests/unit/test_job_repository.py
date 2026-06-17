@@ -160,6 +160,7 @@ def test_completed_job_roundtrip_preserves_result(job_repo: JobRepository) -> No
 
 # --- update() tests ---
 
+
 def test_update_status_and_progress(job_repo: JobRepository) -> None:
     job_repo.save(_queued_job("u-1"))
     job_repo.update("u-1", status=JobStatus.RUNNING, progress=50, message="running now")
@@ -191,6 +192,7 @@ def test_update_sets_started_at_when_not_yet_set(job_repo: JobRepository) -> Non
 
 def test_update_result_and_clears_error_on_completed(job_repo: JobRepository) -> None:
     from app.schemas.image import ProcessImageResponse
+
     job_repo.save(_queued_job("u-4"))
     res = ProcessImageResponse(
         message="done",

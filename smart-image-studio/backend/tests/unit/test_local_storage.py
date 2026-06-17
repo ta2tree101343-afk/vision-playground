@@ -15,6 +15,7 @@ def _blank_image() -> Image.Image:
 
 # --- __init__ ---
 
+
 def test_init_creates_subdirectories(tmp_path: Path) -> None:
     LocalImageStorage(tmp_path)
     assert (tmp_path / "originals").is_dir()
@@ -23,6 +24,7 @@ def test_init_creates_subdirectories(tmp_path: Path) -> None:
 
 
 # --- save_original ---
+
 
 def test_save_original_writes_bytes_to_disk(tmp_path: Path) -> None:
     storage = LocalImageStorage(tmp_path)
@@ -77,6 +79,7 @@ def test_save_original_public_path_contains_filename(tmp_path: Path) -> None:
 
 # --- save_processed ---
 
+
 def test_save_processed_writes_png_to_disk(tmp_path: Path) -> None:
     storage = LocalImageStorage(tmp_path)
     result = storage.save_processed(_blank_image(), "photo.png")
@@ -105,6 +108,7 @@ def test_save_processed_raises_oserror_with_message_on_failure(tmp_path: Path) -
 
 
 # --- save_background_mask ---
+
 
 def test_save_background_mask_filename_ends_with_mask_png(tmp_path: Path) -> None:
     storage = LocalImageStorage(tmp_path)

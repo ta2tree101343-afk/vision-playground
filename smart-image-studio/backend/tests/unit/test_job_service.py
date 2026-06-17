@@ -51,9 +51,7 @@ async def test_process_job_marks_failed_on_image_processing_error(tmp_path: Path
     storage_service.save_original.return_value = _stored(tmp_path)
     image_processor.process.side_effect = ImageProcessingError("bad image")
 
-    job = await svc.enqueue_job(
-        image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops()
-    )
+    job = await svc.enqueue_job(image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops())
     await asyncio.sleep(0.1)
 
     result = svc.get_job(job.job_id)
@@ -94,9 +92,7 @@ async def test_process_job_marks_failed_on_os_error(tmp_path: Path, job_repo: Jo
     image_processor.process.return_value = ImageProcessingResult(image=img)
     storage_service.save_processed.side_effect = OSError("disk full")
 
-    job = await svc.enqueue_job(
-        image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops()
-    )
+    job = await svc.enqueue_job(image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops())
     await asyncio.sleep(0.1)
 
     result = svc.get_job(job.job_id)
@@ -111,9 +107,7 @@ async def test_process_job_marks_failed_on_unexpected_exception(tmp_path: Path, 
     storage_service.save_original.return_value = _stored(tmp_path)
     image_processor.process.side_effect = ValueError("totally unexpected")
 
-    job = await svc.enqueue_job(
-        image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops()
-    )
+    job = await svc.enqueue_job(image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops())
     await asyncio.sleep(0.1)
 
     result = svc.get_job(job.job_id)
@@ -130,6 +124,7 @@ async def test_enqueue_job_removes_from_repo_when_queue_full(tmp_path: Path, job
 
     with patch.object(svc._task_queue, "enqueue_nowait", side_effect=asyncio.QueueFull):
         from app.core.exceptions import JobQueueFullError
+
         with pytest.raises(JobQueueFullError):
             await svc.enqueue_job(
                 image_bytes=make_png_bytes(4, 4), filename="test.png", base_url="http://localhost:8000/", operations=_ops()

@@ -1,5 +1,6 @@
 import { env } from '@shared/config/env';
 import { ApiError } from '@shared/api/apiClient';
+import { parseResponsePayload, buildErrorMessage } from '@shared/api/responsePayload';
 
 const BASE_URL = env.apiBaseUrl.replace(/\/$/, '');
 
@@ -7,33 +8,6 @@ function buildFullUrl(url: string): string {
   if (/^https?:\/\//.test(url)) return url;
   const path = url.startsWith('/') ? url : `/${url}`;
   return `${BASE_URL}${path}`;
-}
-
-async function parseResponsePayload(response: Response): Promise<unknown> {
-  if (response.status === 204) return null;
-  const text = await response.text();
-  if (!text.trim()) return null;
-  const ct = response.headers.get('content-type') ?? '';
-  return ct.includes('application/json') || ct.includes('+json')
-    ? (JSON.parse(text) as unknown)
-    : text;
-}
-
-function toErrorMessage(status: number, payload: unknown): string {
-  if (typeof payload === 'string' && payload.trim()) return payload;
-  if (payload && typeof payload === 'object') {
-    const detail = (payload as { detail?: unknown }).detail;
-    if (typeof detail === 'string' && detail.trim()) return detail;
-    if (Array.isArray(detail)) {
-      const msgs = detail
-        .map((d: unknown) =>
-          d && typeof d === 'object' && 'msg' in d ? (d as { msg?: unknown }).msg : null,
-        )
-        .filter((m): m is string => typeof m === 'string');
-      if (msgs.length) return msgs.join(' / ');
-    }
-  }
-  return `API に接続できませんでした（status: ${status}）。`;
 }
 
 export const customFetch = async <T>(url: string, options: RequestInit): Promise<T> => {
@@ -60,7 +34,7 @@ export const customFetch = async <T>(url: string, options: RequestInit): Promise
   }
 
   if (!response.ok) {
-    throw new ApiError(toErrorMessage(response.status, payload), response.status, payload);
+    throw new ApiError(buildErrorMessage(response.status, payload), response.status, payload);
   }
 
   return { data: payload, status: response.status, headers: response.headers } as T;

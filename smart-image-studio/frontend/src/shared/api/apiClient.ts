@@ -1,5 +1,5 @@
 import { env } from '@shared/config/env';
-import type { ApiErrorBody } from '@shared/types/api';
+import { parseResponsePayload, buildErrorMessage } from '@shared/api/responsePayload';
 
 export class ApiError extends Error {
   readonly status: number;
@@ -18,33 +18,6 @@ function buildUrl(url: string): string {
   const base = env.apiBaseUrl.replace(/\/$/, '');
   const path = url.startsWith('/') ? url : `/${url}`;
   return `${base}${path}`;
-}
-
-function normalizeErrorMessage(status: number, payload: unknown): string {
-  if (typeof payload === 'string' && payload.trim() !== '') return payload;
-  if (payload && typeof payload === 'object') {
-    const detail = (payload as ApiErrorBody).detail;
-    if (typeof detail === 'string' && detail.trim() !== '') return detail;
-    if (Array.isArray(detail)) {
-      const messages = detail
-        .map((item) =>
-          item && typeof item === 'object' && 'msg' in item
-            ? (item as { msg?: unknown }).msg
-            : null,
-        )
-        .filter((m): m is string => typeof m === 'string');
-      if (messages.length > 0) return messages.join(' / ');
-    }
-  }
-  return `API request failed with status ${status}.`;
-}
-
-async function parseResponsePayload(response: Response): Promise<unknown> {
-  if (response.status === 204) return null;
-  const text = await response.text();
-  if (!text.trim()) return null;
-  const ct = response.headers.get('content-type') ?? '';
-  return ct.includes('application/json') || ct.includes('+json') ? JSON.parse(text) : text;
 }
 
 export async function downloadBlob(url: string): Promise<Blob> {
@@ -70,7 +43,7 @@ export async function downloadBlob(url: string): Promise<Blob> {
         error,
       );
     }
-    throw new ApiError(normalizeErrorMessage(response.status, payload), response.status, payload);
+    throw new ApiError(buildErrorMessage(response.status, payload), response.status, payload);
   }
   return response.blob();
 }
